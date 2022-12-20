@@ -6,14 +6,14 @@ import (
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
 
-
 func CreateActionImage(
-	imageFileName		string,
-	buttonWidth			int,
-	buttonHeight		int,
-	colorClass			string,
+	imageFileName string,
+	buttonWidth int,
+	buttonHeight int,
+	colorClass string,
+	pixbufCache *utils.PixbufCache,
 ) *gtk.Image {
-	image := utils.MustImageFromFileWithSize(
+	image := pixbufCache.MustImageFromFileWithSize(
 		imageFileName,
 		buttonWidth,
 		buttonHeight,

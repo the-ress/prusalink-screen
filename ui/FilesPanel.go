@@ -1,7 +1,9 @@
 package ui
 
 import (
+	"context"
 	"fmt"
+
 	// "os"
 	"sort"
 	"strings"
@@ -18,31 +20,39 @@ import (
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
 
-
 type filesPanel struct {
 	CommonPanel
 
-	scrollableListBox		*uiWidgets.ScrollableListBox
-	filesListBoxRows		[]*uiWidgets.FilesListBoxRow
-	actionFooter			*uiWidgets.ActionFooter
+	scrollableListBox *uiWidgets.ScrollableListBox
+	filesListBoxRows  []*uiWidgets.FilesListBoxRow
+	actionFooter      *uiWidgets.ActionFooter
 
-	locationHistory			utils.LocationHistory
-	currentFileResponses	[]*dataModels.FileResponse
+	locationHistory      utils.LocationHistory
+	currentFileResponses []*dataModels.FileResponse
+
+	pixbufCache             *utils.PixbufCache
+	cancelThumbnailDownload context.CancelFunc
+}
+
+type filesPanelRow struct {
+	model         *dataModels.FileResponse
+	previewSubRow *gtk.Box
 }
 
 var filesPanelInstance *filesPanel
 
 func GetFilesPanelInstance(
-	ui					*UI,
+	ui *UI,
 ) *filesPanel {
 	if filesPanelInstance == nil {
-		locationHistory := utils.LocationHistory {
+		locationHistory := utils.LocationHistory{
 			Locations: []dataModels.Location{},
 		}
 
-		instance := &filesPanel {
-			CommonPanel: CreateCommonPanel("FilesPanel", ui),
+		instance := &filesPanel{
+			CommonPanel:     CreateCommonPanel("FilesPanel", ui),
 			locationHistory: locationHistory,
+			pixbufCache:     utils.CreatePixbufCache(),
 		}
 
 		instance.initializeUi()
@@ -54,6 +64,7 @@ func GetFilesPanelInstance(
 }
 
 func (this *filesPanel) initializeUi() {
+	this.Grid().SetRowHomogeneous(false)
 	this.CreateListBox()
 	this.CreateFooter()
 }
@@ -97,6 +108,10 @@ func (this *filesPanel) doClear() {
 func (this *filesPanel) doLoadFiles() {
 	logger.TraceEnter("FilesPanel.doLoadFiles()")
 
+	if this.cancelThumbnailDownload != nil {
+		this.cancelThumbnailDownload()
+	}
+
 	listBoxContainer := this.scrollableListBox.ListBoxContainer()
 	utils.EmptyTheContainer(listBoxContainer)
 
@@ -106,7 +121,7 @@ func (this *filesPanel) doLoadFiles() {
 	// they have to.
 	if atRootLevel && !this.sdIsReady() {
 		atRootLevel = false
-		this.locationHistory = utils.LocationHistory {
+		this.locationHistory = utils.LocationHistory{
 			Locations: []dataModels.Location{dataModels.Local},
 		}
 	}
@@ -117,15 +132,15 @@ func (this *filesPanel) doLoadFiles() {
 		sortedFiles := this.getSortedFiles()
 
 		/*
-		logger.Debugf("FilesPanel.doLoadFiles() sortedFiles:")
-		for i := 0; i < len(sortedFiles); i++ {
-			sortedFile := sortedFiles[i]
-			isFolder := "false"
-			if sortedFile.IsFolder() {
-				isFolder = "TRUE"
+			logger.Debugf("FilesPanel.doLoadFiles() sortedFiles:")
+			for i := 0; i < len(sortedFiles); i++ {
+				sortedFile := sortedFiles[i]
+				isFolder := "false"
+				if sortedFile.IsFolder() {
+					isFolder = "TRUE"
+				}
+				logger.Debugf("FilesPanel.doLoadFiles() - sortedFiles[%d]:%s, isFolder:%s", i, sortedFile.Name, isFolder)
 			}
-			logger.Debugf("FilesPanel.doLoadFiles() - sortedFiles[%d]:%s, isFolder:%s", i, sortedFile.Name, isFolder)
-		}
 		*/
 
 		this.addSortedFiles(sortedFiles)
@@ -137,12 +152,12 @@ func (this *filesPanel) doLoadFiles() {
 }
 
 func (this *filesPanel) sdIsReady() bool {
-	err := (&octoprintApis.SdRefreshRequest {}).Do(this.UI.Client)
+	err := (&octoprintApis.SdRefreshRequest{}).Do(this.UI.Client)
 	if err != nil {
 		return false
 	}
 
-	sdState, err := (&octoprintApis.SdStateRequest {}).Do(this.UI.Client)
+	sdState, err := (&octoprintApis.SdStateRequest{}).Do(this.UI.Client)
 	if err == nil && sdState.IsReady == true {
 		return true
 	} else {
@@ -185,7 +200,7 @@ func (this *filesPanel) getSortedFiles() []*dataModels.FileResponse {
 	logger.Infof("Loading list of files from: %s", string(current))
 
 	if current == dataModels.SDCard {
-		sdRefreshRequest := &octoprintApis.SdRefreshRequest {}
+		sdRefreshRequest := &octoprintApis.SdRefreshRequest{}
 		err := sdRefreshRequest.Do(this.UI.Client)
 		if err != nil {
 			logger.LogError("getSortedFiles()", "sdRefreshRequest.Do()", err)
@@ -198,8 +213,8 @@ func (this *filesPanel) getSortedFiles() []*dataModels.FileResponse {
 		}
 	}
 
-	filesRequest := &octoprintApis.FilesRequest {
-		Location: current,
+	filesRequest := &octoprintApis.FilesRequest{
+		Location:  current,
 		Recursive: false,
 	}
 	filesResponse, err := filesRequest.Do(this.UI.Client)
@@ -284,9 +299,9 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 
 	var actionImage *gtk.Image
 	if location == dataModels.Local {
-		actionImage = uiWidgets.CreateOpenLocationImage(0, this.Scaled(40), this.Scaled(40))
+		actionImage = uiWidgets.CreateOpenLocationImage(0, this.Scaled(40), this.Scaled(40), this.pixbufCache)
 	} else {
-		actionImage = uiWidgets.CreateOpenLocationImage(1, this.Scaled(40), this.Scaled(40))
+		actionImage = uiWidgets.CreateOpenLocationImage(1, this.Scaled(40), this.Scaled(40), this.pixbufCache)
 	}
 
 	actionBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
@@ -295,7 +310,7 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 
 	rootLocationButton, _ := gtk.ButtonNew()
 	rootLocationButton.Connect("clicked", func() {
-		this.locationHistory = utils.LocationHistory {
+		this.locationHistory = utils.LocationHistory{
 			Locations: []dataModels.Location{location},
 		}
 
@@ -310,13 +325,15 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 func (this *filesPanel) addSortedFiles(sortedFiles []*dataModels.FileResponse) {
 	var index int = 0
 
+	rows := make([]filesPanelRow, len(sortedFiles))
+
 	this.currentFileResponses = make([]*dataModels.FileResponse, 0)
 
 	for _, fileResponse := range sortedFiles {
 		if fileResponse.IsFolder() {
 			this.currentFileResponses = append(this.currentFileResponses, fileResponse)
 
-			filesListBoxRow := uiWidgets.CreateFilesListBoxRow(
+			filesListBoxRow, _ := uiWidgets.CreateFilesListBoxRow(
 				fileResponse,
 				this.Scaled(35),
 				this.Scaled(35),
@@ -324,9 +341,14 @@ func (this *filesPanel) addSortedFiles(sortedFiles []*dataModels.FileResponse) {
 				this.Scaled(40),
 				index,
 				this.handleFolderClick,
+				this.pixbufCache,
 			)
 			this.filesListBoxRows = append(this.filesListBoxRows, filesListBoxRow)
 			this.scrollableListBox.Add(filesListBoxRow)
+
+			rows[index] = filesPanelRow{
+				model: fileResponse,
+			}
 
 			index++
 		}
@@ -336,7 +358,7 @@ func (this *filesPanel) addSortedFiles(sortedFiles []*dataModels.FileResponse) {
 		if !fileResponse.IsFolder() {
 			this.currentFileResponses = append(this.currentFileResponses, fileResponse)
 
-			filesListBoxRow := uiWidgets.CreateFilesListBoxRow(
+			filesListBoxRow, previewSubRow := uiWidgets.CreateFilesListBoxRow(
 				fileResponse,
 				this.Scaled(35),
 				this.Scaled(35),
@@ -344,11 +366,44 @@ func (this *filesPanel) addSortedFiles(sortedFiles []*dataModels.FileResponse) {
 				this.Scaled(40),
 				index,
 				this.handleFileClick,
+				this.pixbufCache,
 			)
 			this.filesListBoxRows = append(this.filesListBoxRows, filesListBoxRow)
 			this.scrollableListBox.Add(filesListBoxRow)
 
+			rows[index] = filesPanelRow{
+				model:         fileResponse,
+				previewSubRow: previewSubRow,
+			}
+
 			index++
+		}
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	this.cancelThumbnailDownload = cancel
+	go this.downloadThumbnails(ctx, rows)
+}
+
+func (this *filesPanel) downloadThumbnails(
+	ctx context.Context,
+	rows []filesPanelRow,
+) {
+	for _, row := range rows {
+		select {
+		case <-ctx.Done():
+			return // Abort
+		default:
+		}
+
+		if row.previewSubRow != nil {
+			uiWidgets.CreatePreviewThumbnail(
+				ctx,
+				row.previewSubRow,
+				row.model,
+				this.Scaled(35),
+				this.Scaled(35),
+			)
 		}
 	}
 }
@@ -374,12 +429,12 @@ func (this *filesPanel) handleFolderClick(button *gtk.Button, rowIndex int) {
 	fileResponse := this.currentFileResponses[rowIndex]
 
 	/*
-	isFolder := fileResponse.IsFolder()
-	if isFolder == true {
-		logger.Debugf("FilesPanel.handleFolderClick() - isFolder is true")
-	} else {
-		logger.Debugf("FilesPanel.handleFolderClick() - isFolder is false")
-	}
+		isFolder := fileResponse.IsFolder()
+		if isFolder == true {
+			logger.Debugf("FilesPanel.handleFolderClick() - isFolder is true")
+		} else {
+			logger.Debugf("FilesPanel.handleFolderClick() - isFolder is false")
+		}
 	*/
 
 	logger.Debugf("FilesPanel.handleFolderClick() - fileResponse name: %s", fileResponse.Name)
@@ -415,8 +470,7 @@ func (this *filesPanel) handleFileClick(button *gtk.Button, rowIndex int) {
 	if strLen <= 20 {
 		message = fmt.Sprintf("Do you wish to print %s?", fileResponse.Name)
 	} else {
-		truncatedFileName := utils.TruncateString(fileResponse.Name, 40)
-		message = fmt.Sprintf("Do you wish to print\n%s?", truncatedFileName)
+		message = fmt.Sprintf("Do you wish to print\n%s?", fileResponse.Name)
 	}
 
 	utils.MustConfirmDialogBox(this.UI.window, message, func() {

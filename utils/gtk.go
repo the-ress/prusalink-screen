@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/logger"
 )
 
 // MustWindow returns a new gtk.Window, if error panics.
@@ -238,6 +238,36 @@ func MustImageFromFileWithSize(imageFileName string, width, height int) *gtk.Ima
 	return image
 }
 
+func MustPixbufFromFileWithSize(imageFileName string, width, height int) *gdk.Pixbuf {
+	if imageFileName == "" {
+		logger.Error("MustImageFromFileWithSize() - imageFileName is empty")
+		//debug.PrintStack()			need to import "runtime/debug"
+	}
+
+	imageFilePath := imagePath(imageFileName)
+	if !FileExists(imageFilePath) {
+		logger.Error("MustImageFromFileWithSize() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
+		//debug.PrintStack()			need to import "runtime/debug"
+	}
+
+	pixbuf, err := gdk.PixbufNewFromFileAtScale(imageFilePath, width, height, true)
+	if err != nil {
+		logger.LogError("gtk.MustImageFromFileWithSize()", "PixbufNewFromFileAtScale()", err)
+	}
+
+	return pixbuf
+}
+
+func MustImageFromPixbuf(pixbuf *gdk.Pixbuf) *gtk.Image {
+	image, err := gtk.ImageNewFromPixbuf(pixbuf)
+	if err != nil {
+		logger.LogError("PANIC!!! - MustImageFromFileWithSize()", "gtk.ImageNewFromPixbuf()", err)
+		panic(err)
+	}
+
+	return image
+}
+
 // MustImageFromFile returns a new gtk.Image based on the given file, if error panics.
 func MustImageFromFile(imageFileName string) *gtk.Image {
 	if imageFileName == "" {
@@ -260,13 +290,13 @@ func MustImageFromFile(imageFileName string) *gtk.Image {
 	return image
 }
 
-func ImageFromUrl(imageUrl string) (*gtk.Image, error) {
+func DownloadImageFromUrlToBuffer(imageUrl string) (*bytes.Buffer, error) {
 	if imageUrl == "" {
 		logger.Error("ImageFromUrl() - imageUrl is empty")
 		return nil, errors.New("imageUrl is empty")
 	}
 
-	httpResponse, getErr:= http.Get(imageUrl)
+	httpResponse, getErr := http.Get(imageUrl)
 	if getErr != nil {
 		return nil, getErr
 	}
@@ -284,6 +314,10 @@ func ImageFromUrl(imageUrl string) (*gtk.Image, error) {
 		return nil, errors.New("bytes read was zero")
 	}
 
+	return buffer, nil
+}
+
+func ImageFromBuffer(buffer *bytes.Buffer) (*gtk.Image, error) {
 	pixbufLoader, newPixbufLoaderErr := gdk.PixbufLoaderNew()
 	if newPixbufLoaderErr != nil {
 		return nil, newPixbufLoaderErr
@@ -302,7 +336,6 @@ func ImageFromUrl(imageUrl string) (*gtk.Image, error) {
 
 	return image, imageNewFromPixbufErr
 }
-
 
 // MustCSSProviderFromFile returns a new gtk.CssProvider for a given css file, if error panics.
 func MustCssProviderFromFile(cssFileName string) *gtk.CssProvider {

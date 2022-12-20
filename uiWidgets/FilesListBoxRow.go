@@ -8,30 +8,31 @@ import (
 	// "github.com/Z-Bolt/OctoScreen/logger"
 	// "github.com/Z-Bolt/OctoScreen/octoprintApis"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/Z-Bolt/OctoScreen/utils"
 	// "github.com/Z-Bolt/OctoScreen/utils"
 )
-
 
 type FilesListBoxRow struct {
 	ClickableListBoxRow
 
-	rowIndex				int
+	rowIndex int
 }
 
 func CreateFilesListBoxRow(
-	fileResponse			*dataModels.FileResponse,
-	fileSystemImageWidth	int,
-	fileSystemImageHeight	int,
-	printerImageWidth		int,
-	printerImageHeight		int,
-	rowIndex				int,
-	rowClickHandler			func (button *gtk.Button, index int),
-) *FilesListBoxRow {
+	fileResponse *dataModels.FileResponse,
+	fileSystemImageWidth int,
+	fileSystemImageHeight int,
+	printerImageWidth int,
+	printerImageHeight int,
+	rowIndex int,
+	rowClickHandler func(button *gtk.Button, index int),
+	pixbufCache *utils.PixbufCache,
+) (*FilesListBoxRow, *gtk.Box) {
 	const ROW_PADDING = 0
 	base := CreateClickableListBoxRow(rowIndex, ROW_PADDING, rowClickHandler)
 
-	instance := &FilesListBoxRow {
-		ClickableListBoxRow:	*base,
+	instance := &FilesListBoxRow{
+		ClickableListBoxRow: *base,
 	}
 
 	styleContext, _ := instance.GetStyleContext()
@@ -49,12 +50,14 @@ func CreateFilesListBoxRow(
 		fileSystemImageHeight,
 		printerImageWidth,
 		printerImageHeight,
+		pixbufCache,
 	)
 	verticalLayoutBox.Add(filesInfoAndActionSubRow)
 
 	// Part II
+	var filesPreviewSubRow *gtk.Box = nil
 	if !isFolder {
-		filesPreviewSubRow := CreateFilesPreviewSubRow(
+		filesPreviewSubRow = CreateFilesPreviewSubRow(
 			fileResponse,
 			fileSystemImageWidth,
 			fileSystemImageHeight,
@@ -64,5 +67,5 @@ func CreateFilesListBoxRow(
 
 	instance.Add(verticalLayoutBox)
 
-	return instance
+	return instance, filesPreviewSubRow
 }
