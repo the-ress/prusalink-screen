@@ -5,14 +5,15 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gotk3/gotk3/gtk"
 	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/gotk3/gotk3/gtk"
 )
 
 var cachedExtruderCount = -1
 var cachedHasSharedNozzle = false
+var cachedSettings *dataModels.SettingsResponse
 const MAX_EXTRUDER_COUNT = 5
 
 func getCachedPrinterProfileData(client *octoprintApis.Client) {
@@ -39,7 +40,6 @@ func getCachedPrinterProfileData(client *octoprintApis.Client) {
 
 	cachedHasSharedNozzle = printerProfile.Extruder.HasSharedNozzle
 }
-
 
 func GetExtruderCount(client *octoprintApis.Client) int {
 	if cachedExtruderCount == -1 {
@@ -71,9 +71,6 @@ func GetHasSharedNozzle(client *octoprintApis.Client) bool {
 	return cachedHasSharedNozzle
 }
 
-
-
-
 func GetDisplayNameForTool(toolName string) string {
 	// Since this is such a hack, lets add some bounds checking
 	if toolName == "" {
@@ -99,7 +96,6 @@ func GetDisplayNameForTool(toolName string) string {
 	return displayName
 }
 
-
 func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
 	logger.TraceEnter("Tools.GetToolTarget()")
 
@@ -123,7 +119,6 @@ func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
 	return currentTemperatureData.Target, nil
 }
 
-
 func SetToolTarget(client *octoprintApis.Client, tool string, target float64) error {
 	logger.TraceEnter("Tools.SetToolTarget()")
 
@@ -137,7 +132,6 @@ func SetToolTarget(client *octoprintApis.Client, tool string, target float64) er
 	logger.TraceLeave("Tools.SetToolTarget()")
 	return cmd.Do(client)
 }
-
 
 func GetCurrentTemperatureData(client *octoprintApis.Client) (map[string]dataModels.TemperatureData, error) {
 	logger.TraceEnter("Tools.GetCurrentTemperatureData()")
@@ -181,7 +175,6 @@ func GetCurrentTemperatureData(client *octoprintApis.Client) (map[string]dataMod
 	return temperatureDataResponse.TemperatureStateResponse.CurrentTemperatureData, nil
 }
 
-
 func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, extruderId, action string, parentWindow *gtk.Window) bool {
 	logger.TraceEnter("Tools.CheckIfHotendTemperatureIsTooLow()")
 
@@ -222,7 +215,6 @@ func GetToolheadFileName(hotendIndex, hotendCount int) string {
 	return strImageFileName
 }
 
-
 func GetExtruderFileName(hotendIndex, hotendCount int) string {
 	strImageFileName := ""
 	if hotendIndex == 1 && hotendCount == 1 {
@@ -245,8 +237,6 @@ func GetHotendFileName(hotendIndex, hotendCount int) string {
 	return strImageFileName
 }
 
-
-
 func GetNozzleFileName(hotendIndex, hotendCount int) string {
 	strImageFileName := ""
 	if hotendIndex == 1 && hotendCount == 1 {
@@ -261,7 +251,6 @@ func GetNozzleFileName(hotendIndex, hotendCount int) string {
 func GetTemperatureDataString(temperatureData dataModels.TemperatureData) string {
 	return fmt.Sprintf("%.0f°C / %.0f°C", temperatureData.Actual, temperatureData.Target)
 }
-
 
 // TODO: maybe move HotendTemperatureIsTooLow into a hotend utils file?
 
@@ -302,4 +291,24 @@ func GetPluginInfo(client *octoprintApis.Client, pluginName string) *dataModels.
 	}
 
 	return nil
+}
+
+func GetCachedSettings(client *octoprintApis.Client) (*dataModels.SettingsResponse, error) {
+	if cachedSettings != nil {
+		return cachedSettings, nil
+	}
+
+	settingsResponse, err := (&octoprintApis.SettingsRequest{}).Do(client)
+	if err != nil {
+		logger.LogError("Tools.getCachedSettings()", "Do(SettingsRequest)", err)
+		return nil, err
+	}
+
+	cachedSettings = settingsResponse
+	return cachedSettings, nil
+}
+
+func ReloadCaches(client *octoprintApis.Client) {
+	cachedSettings = nil
+	GetCachedSettings(client)
 }

@@ -20,28 +20,27 @@ import (
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
 
-
 type UI struct {
 	sync.Mutex
 
-	PanelHistory				*stack.Stack
-	Client						*octoprintApis.Client
-	ConnectionState				dataModels.ConnectionState
-	Settings					*dataModels.OctoScreenSettingsResponse
+	PanelHistory    *stack.Stack
+	Client          *octoprintApis.Client
+	ConnectionState dataModels.ConnectionState
+	Settings        *dataModels.OctoScreenSettingsResponse
 
-	UiState						UiState
-	WaitingForUserToContinue	bool
+	UiState                  UiState
+	WaitingForUserToContinue bool
 
-	OctoPrintPluginIsAvailable	bool
-	NotificationsBox			*uiWidgets.NotificationsBox
-	grid						*gtk.Grid
-	window						*gtk.Window
-	time						time.Time
+	OctoPrintPluginIsAvailable bool
+	NotificationsBox           *uiWidgets.NotificationsBox
+	grid                       *gtk.Grid
+	window                     *gtk.Window
+	time                       time.Time
 
-	width						int
-	height						int
-	scaleFactor					int
-	connectionAttempts			int
+	width              int
+	height             int
+	scaleFactor        int
+	connectionAttempts int
 }
 
 func CreateUi() *UI {
@@ -61,18 +60,18 @@ func CreateUi() *UI {
 		panic("the window's height was not specified")
 	}
 
-	instance := &UI {
-		PanelHistory:				stack.New(),
-		Client:						octoprintApis.NewClient(endpoint, key),
-		NotificationsBox:			uiWidgets.NewNotificationsBox(),
-		OctoPrintPluginIsAvailable:	false,
-		Settings:					nil,
-		UiState:					Uninitialized,
-		WaitingForUserToContinue:	false,
-		window:						utils.MustWindow(gtk.WINDOW_TOPLEVEL),
-		time:						time.Now(),
-		width:						width,
-		height:						height,
+	instance := &UI{
+		PanelHistory:               stack.New(),
+		Client:                     octoprintApis.NewClient(endpoint, key),
+		NotificationsBox:           uiWidgets.NewNotificationsBox(),
+		OctoPrintPluginIsAvailable: false,
+		Settings:                   nil,
+		UiState:                    Uninitialized,
+		WaitingForUserToContinue:   false,
+		window:                     utils.MustWindow(gtk.WINDOW_TOPLEVEL),
+		time:                       time.Now(),
+		width:                      width,
+		height:                     height,
 	}
 
 	instance.initialize1()
@@ -87,8 +86,8 @@ func (this *UI) initialize1() {
 	logger.TraceEnter("ui.initialize1()")
 
 	this.window.Connect("configure-event", func(win *gtk.Window) {
-		allocatedWidth:= win.GetAllocatedWidth()
-		allocatedHeight:= win.GetAllocatedHeight()
+		allocatedWidth := win.GetAllocatedWidth()
+		allocatedHeight := win.GetAllocatedHeight()
 		sizeWidth, sizeHeight := win.GetSize()
 
 		if (allocatedWidth > this.width || allocatedHeight > this.height) ||
@@ -109,14 +108,14 @@ func (this *UI) initialize1() {
 	})
 
 	switch {
-		case this.width > 480:
-			this.scaleFactor = 2
+	case this.width > 480:
+		this.scaleFactor = 2
 
-		case this.width > 1000:
-			this.scaleFactor = 3
+	case this.width > 1000:
+		this.scaleFactor = 3
 
-		default:
-			this.scaleFactor = 1
+	default:
+		this.scaleFactor = 1
 	}
 
 	this.initialize2()
@@ -173,13 +172,13 @@ func (this *UI) Update() {
 	connectionManager := utils.GetConnectionManagerInstance(this.Client)
 	if connectionManager.IsConnectedToOctoPrint == true {
 		if this.Settings == nil {
+			go utils.ReloadCaches(this.Client)
 			this.loadSettings()
 		}
 	}
 
 	logger.TraceLeave("ui.Update()")
 }
-
 
 func (this *UI) loadSettings() {
 	logger.TraceEnter("ui.loadSettings()")
@@ -205,14 +204,14 @@ func (this *UI) loadSettings() {
 
 		this.OctoPrintPluginIsAvailable = false
 		// Use default settings
-		this.Settings = &dataModels.OctoScreenSettingsResponse {
-			FilamentInLength: 100,
+		this.Settings = &dataModels.OctoScreenSettingsResponse{
+			FilamentInLength:  100,
 			FilamentOutLength: 100,
-			ToolChanger: false,
-			XAxisInverted: false,
-			YAxisInverted: false,
-			ZAxisInverted: false,
-			MenuStructure: nil,
+			ToolChanger:       false,
+			XAxisInverted:     false,
+			YAxisInverted:     false,
+			ZAxisInverted:     false,
+			MenuStructure:     nil,
 		}
 	} else {
 		logger.Info("The call to GetSettings succeeded and the OctoPrint plug-in is available")

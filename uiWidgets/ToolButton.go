@@ -4,16 +4,15 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gotk3/gotk3/gtk"
 	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/gotk3/gotk3/gtk"
 )
 
-
 func ToolImageFileName(
-	index			int,
+	index int,
 ) string {
 	if index < 0 {
 		return "bed.svg"
@@ -25,31 +24,29 @@ func ToolImageFileName(
 }
 
 func ToolName(
-	index			int,
+	index int,
 ) string {
 	if index < 0 {
 		return "bed"
 	} else if index == 0 {
 		return "tool0"
 	} else {
-		return fmt.Sprintf("tool%d", index - 1)
+		return fmt.Sprintf("tool%d", index-1)
 	}
 }
-
-
 
 type ToolButton struct {
 	*gtk.Button
 	sync.RWMutex
 
-	isHeating		bool
-	tool			string
-	printer			*octoprintApis.Client
+	isHeating bool
+	tool      string
+	printer   *octoprintApis.Client
 }
 
 func CreateToolButton(
-	index			int,
-	printer			*octoprintApis.Client,
+	index int,
+	printer *octoprintApis.Client,
 ) *ToolButton {
 	imageFileName := ToolImageFileName(index)
 	toolName := ToolName(index)
@@ -85,9 +82,9 @@ func (this *ToolButton) SetTemperatures(temperatureData dataModels.TemperatureDa
 func (this *ToolButton) GetProfileTemperature() float64 {
 	temperature := 0.0
 
-	settingsResponse, err := (&octoprintApis.SettingsRequest{}).Do(this.printer)
+	settingsResponse, err := utils.GetCachedSettings(this.printer)
 	if err != nil {
-		logger.LogError("ToolButton.GetProfileTemperature()", "Do(SettingsRequest)", err)
+		logger.LogError("ToolButton.GetProfileTemperature()", "utils.GetCachedSettings", err)
 		return 0
 	}
 
