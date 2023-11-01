@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         debian_packages: [BULLSEYE, BUSTER]
-        arch: [armhf, amd64]
+        arch: [armhf, arm64, amd64]
 
     steps:
       - uses: actions/checkout@v3
