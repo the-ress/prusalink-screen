@@ -1,34 +1,23 @@
 package main
 
 import (
-	// "errors"
 	"fmt"
-	// "io/ioutil"
 	standardLog "log"
-	// "os"
-	// "os/user"
-	// "path/filepath"
 	"runtime"
-	// "strconv"
-	// "strings"
 
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/sirupsen/logrus"
 
 	"github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis"
 	"github.com/Z-Bolt/OctoScreen/ui"
 	"github.com/Z-Bolt/OctoScreen/utils"
-
-	// "gopkg.in/yaml.v1"
 )
-
 
 func main() {
 	defer func() {
 		standardLog.Println("main's defer() was called, now calling recover()")
-		rec := recover();
+		rec := recover()
 		if rec != nil {
 			standardLog.Println("main's defer() - recover:", rec)
 		} else {
@@ -39,11 +28,11 @@ func main() {
 		runtime.ReadMemStats(&ms)
 
 		/*
-		programCounter, fileName, lineNumber, infoWasRecovered := runtime.Caller(2)
-		standardLog.Println("main's defer() - programCounter:", programCounter)
-		standardLog.Println("main's defer() - fileName:", fileName)
-		standardLog.Println("main's defer() - lineNumber:", lineNumber)
-		standardLog.Println("main's defer() - infoWasRecovered:", infoWasRecovered)
+			programCounter, fileName, lineNumber, infoWasRecovered := runtime.Caller(2)
+			standardLog.Println("main's defer() - programCounter:", programCounter)
+			standardLog.Println("main's defer() - fileName:", fileName)
+			standardLog.Println("main's defer() - lineNumber:", lineNumber)
+			standardLog.Println("main's defer() - infoWasRecovered:", infoWasRecovered)
 		*/
 
 		pc := make([]uintptr, 20)
@@ -54,15 +43,15 @@ func main() {
 
 		for i := 1; i < numberOfPcEntries; i++ {
 			/*
-			standardLog.Printf("main's defer() - [%d]", i)
-			standardLog.Printf("main's defer() - [%d]", numberOfPcEntries)
+				standardLog.Printf("main's defer() - [%d]", i)
+				standardLog.Printf("main's defer() - [%d]", numberOfPcEntries)
 
-			programCounter, fileName, lineNumber, infoWasRecovered := runtime.Caller(i)
-			standardLog.Printf("main's defer() - programCounter[%d]: %v", i, programCounter)
-			standardLog.Printf("main's defer() - fileName[%d]: %v", i, fileName)
-			standardLog.Printf("main's defer() - lineNumber[%d]: %v", i, lineNumber)
-			standardLog.Printf("main's defer() - infoWasRecovered[%d]: %v", i, infoWasRecovered)
-			standardLog.Println("")
+				programCounter, fileName, lineNumber, infoWasRecovered := runtime.Caller(i)
+				standardLog.Printf("main's defer() - programCounter[%d]: %v", i, programCounter)
+				standardLog.Printf("main's defer() - fileName[%d]: %v", i, fileName)
+				standardLog.Printf("main's defer() - lineNumber[%d]: %v", i, lineNumber)
+				standardLog.Printf("main's defer() - infoWasRecovered[%d]: %v", i, infoWasRecovered)
+				standardLog.Println("")
 			*/
 
 			_, fileName, lineNumber, infoWasRecovered := runtime.Caller(i)
@@ -74,10 +63,9 @@ func main() {
 		standardLog.Println("main's defer() was called, now exiting func()")
 	}()
 
-
 	logger.Debug("+")
 	logger.Debug("+")
-	logger.TraceEnter("OctoScreen - main.main()")
+	logger.TraceEnter("PrusaLinkScreen - main.main()")
 
 	startSystemDHeartbeat()
 
@@ -119,22 +107,22 @@ func initializeGtk() {
 
 func setLogLevel(logLevel string) {
 	switch logLevel {
-		case "debug":
-			logger.SetLogLevel(logrus.DebugLevel)
+	case "debug":
+		logger.SetLogLevel(logrus.DebugLevel)
 
-		case "info":
-			logger.SetLogLevel(logrus.InfoLevel)
+	case "info":
+		logger.SetLogLevel(logrus.InfoLevel)
 
-		case "warn":
-			logger.SetLogLevel(logrus.WarnLevel)
+	case "warn":
+		logger.SetLogLevel(logrus.WarnLevel)
 
-		case "error":
-			logger.SetLogLevel(logrus.ErrorLevel)
+	case "error":
+		logger.SetLogLevel(logrus.ErrorLevel)
 
-		default:
-			logger.Errorf("main.setLogLevel() - unknown logLevel: %q, defaulting to error", logLevel)
-			logLevel = "error"
-			logger.SetLogLevel(logrus.ErrorLevel)
+	default:
+		logger.Errorf("main.setLogLevel() - unknown logLevel: %q, defaulting to error", logLevel)
+		logLevel = "error"
+		logger.SetLogLevel(logrus.ErrorLevel)
 	}
 
 	standardLog.Printf("main.SetLogLevel() - logLevel is now set to: %q", logLevel)

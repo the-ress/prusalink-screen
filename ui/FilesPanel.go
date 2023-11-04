@@ -389,6 +389,8 @@ func (this *filesPanel) downloadThumbnails(
 	ctx context.Context,
 	rows []filesPanelRow,
 ) {
+	logger.TraceEnter("FilesPanel.downloadThumbnails()")
+
 	for _, row := range rows {
 		select {
 		case <-ctx.Done():
@@ -401,11 +403,14 @@ func (this *filesPanel) downloadThumbnails(
 				ctx,
 				row.previewSubRow,
 				row.model,
+				this.UI.Client,
 				this.Scaled(35),
 				this.Scaled(35),
 			)
 		}
 	}
+
+	logger.TraceLeave("FilesPanel.downloadThumbnails()")
 }
 
 func (this *filesPanel) handleFolderClick(button *gtk.Button, rowIndex int) {
@@ -477,9 +482,9 @@ func (this *filesPanel) handleFileClick(button *gtk.Button, rowIndex int) {
 		selectFileRequest := &octoprintApis.SelectFileRequest{}
 
 		// Set the location to "local" or "sdcard"
-		selectFileRequest.Location = this.locationHistory.Locations[0]
+		selectFileRequest.Location = this.locationHistory.CurrentLocation()
 
-		selectFileRequest.Path = fileResponse.Path
+		selectFileRequest.Path = fileResponse.Name
 		selectFileRequest.Print = true
 
 		logger.Infof("Loading file %q", fileResponse.Name)

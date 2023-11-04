@@ -1,10 +1,7 @@
 package utils
 
-import (
-	// "fmt"
+import ( // "fmt"
 	// "sort"
-
-	"github.com/Z-Bolt/OctoScreen/logger"
 	// "github.com/Z-Bolt/OctoScreen/octoprintApis"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 	// "github.com/Z-Bolt/OctoScreen/uiWidgets"
@@ -21,11 +18,12 @@ func (this *LocationHistory) Length() int {
 func (this *LocationHistory) CurrentLocation() dataModels.Location {
 	length := this.Length()
 	if length < 1 {
-		logger.Error("CurrentLocation() - length < 1")
-		panic("PANIC!!! - LocationHistory.current() - locations is empty")
+		return ""
+		// logger.Error("CurrentLocation() - length < 1")
+		// panic("PANIC!!! - LocationHistory.current() - locations is empty")
 	}
 
-	return this.Locations[length - 1]
+	return this.Locations[length-1]
 }
 
 func (this *LocationHistory) GoForward(folder string) {
@@ -34,7 +32,7 @@ func (this *LocationHistory) GoForward(folder string) {
 }
 
 func (this *LocationHistory) GoBack() {
-	this.Locations = this.Locations[0 : len(this.Locations) - 1]
+	this.Locations = this.Locations[0 : len(this.Locations)-1]
 }
 
 func (this *LocationHistory) IsRoot() bool {

@@ -5,7 +5,6 @@ import (
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
 
-
 type configurationPanel struct {
 	CommonPanel
 }
@@ -13,10 +12,10 @@ type configurationPanel struct {
 var configurationPanelInstance *configurationPanel
 
 func GetConfigurationPanelInstance(
-	ui				*UI,
+	ui *UI,
 ) *configurationPanel {
 	if configurationPanelInstance == nil {
-		instance := &configurationPanel {
+		instance := &configurationPanel{
 			CommonPanel: CreateCommonPanel("ConfigurationPanel", ui),
 		}
 		instance.initialize()
@@ -28,26 +27,6 @@ func GetConfigurationPanelInstance(
 
 func (this *configurationPanel) initialize() {
 	defer this.Initialize()
-
-	bedlevelButton := utils.MustButtonImageStyle(
-		"Bed Level",
-		"bed-level.svg",
-		"color1",
-		this.showBedLevelPanel,
-	)
-	this.Grid().Attach(bedlevelButton, 0, 0, 1, 1)
-
-	/*
-	TODO: The ZOffsetCalibrationPanel and the buttons/functions within it
-	are just too buggy.  Commenting out for now and will look into it later.
-	zOffsetCalibrationButton := utils.MustButtonImageStyle(
-		"Z-Offset Calibration",
-		"z-offset-increase.svg",
-		"color2",
-		this.showZOffsetCalibrationPanel,
-	)
-	this.Grid().Attach(zOffsetCalibrationButton, 1, 0, 1, 1)
-	*/
 
 	networkButton := utils.MustButtonImageStyle(
 		"Network",
@@ -64,10 +43,6 @@ func (this *configurationPanel) initialize() {
 		this.showSystemPanel,
 	)
 	this.Grid().Attach(systemButton, 3, 0, 1, 1)
-}
-
-func (this *configurationPanel) showBedLevelPanel() {
-	this.UI.GoToPanel(GetBedLevelPanelInstance(this.UI))
 }
 
 func (this *configurationPanel) showZOffsetCalibrationPanel() {

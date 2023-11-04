@@ -1,12 +1,8 @@
 package utils
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"net/http"
 	"path/filepath"
 
 	"github.com/Z-Bolt/OctoScreen/logger"
@@ -290,41 +286,14 @@ func MustImageFromFile(imageFileName string) *gtk.Image {
 	return image
 }
 
-func DownloadImageFromUrlToBuffer(imageUrl string) (*bytes.Buffer, error) {
-	if imageUrl == "" {
-		logger.Error("ImageFromUrl() - imageUrl is empty")
-		return nil, errors.New("imageUrl is empty")
-	}
-
-	httpResponse, getErr := http.Get(imageUrl)
-	if getErr != nil {
-		return nil, getErr
-	}
-
-	defer func() {
-		io.Copy(ioutil.Discard, httpResponse.Body)
-		httpResponse.Body.Close()
-	}()
-
-	buffer := new(bytes.Buffer)
-	readLength, readErr := buffer.ReadFrom(httpResponse.Body)
-	if readErr != nil {
-		return nil, readErr
-	} else if readLength < 1 {
-		return nil, errors.New("bytes read was zero")
-	}
-
-	return buffer, nil
-}
-
-func ImageFromBuffer(buffer *bytes.Buffer) (*gtk.Image, error) {
+func ImageFromBuffer(buffer []byte) (*gtk.Image, error) {
 	pixbufLoader, newPixbufLoaderErr := gdk.PixbufLoaderNew()
 	if newPixbufLoaderErr != nil {
 		return nil, newPixbufLoaderErr
 	}
 	defer pixbufLoader.Close()
 
-	writeLength, writeErr := pixbufLoader.Write(buffer.Bytes())
+	writeLength, writeErr := pixbufLoader.Write(buffer)
 	if writeErr != nil {
 		return nil, writeErr
 	} else if writeLength < 1 {

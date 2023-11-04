@@ -50,11 +50,6 @@
         "panel": "menu",
         "items": [
             {
-                "name": "Bed Level",
-                "icon": "bed-level",
-                "panel": "bed-level"
-            },
-            {
                 "name": "ZOffsets",
                 "icon": "z-offset-increase",
                 "panel": "nozzle-calibration"

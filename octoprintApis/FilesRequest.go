@@ -4,12 +4,12 @@ import (
 	// "bytes"
 	"encoding/json"
 	"fmt"
+
 	// "io"
 	// "mime/multipart"
 
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 )
-
 
 // FilesRequest retrieve information regarding all files currently available and
 // regarding the disk space still available locally in the system.

@@ -11,49 +11,16 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-var cachedExtruderCount = -1
+var cachedExtruderCount = 1
 var cachedHasSharedNozzle = false
-var cachedSettings *dataModels.SettingsResponse
+
 const MAX_EXTRUDER_COUNT = 5
 
-func getCachedPrinterProfileData(client *octoprintApis.Client) {
-	if cachedExtruderCount != -1 {
-		return
-	}
-
-	connectionResponse, err := (&octoprintApis.ConnectionRequest{}).Do(client)
-	if err != nil {
-		logger.LogError("Tools.setCachedPrinterProfileData()", "version.Get()", err)
-		return
-	}
-
-	printerProfile, err := (&octoprintApis.PrinterProfilesRequest{Id: connectionResponse.Current.PrinterProfile}).Do(client)
-	if err != nil {
-		logger.LogError("Tools.setCachedPrinterProfileData()", "Do(PrinterProfilesRequest)", err)
-		return
-	}
-
-	cachedExtruderCount = printerProfile.Extruder.Count
-	if cachedExtruderCount > MAX_EXTRUDER_COUNT {
-		cachedExtruderCount = MAX_EXTRUDER_COUNT
-	}
-
-	cachedHasSharedNozzle = printerProfile.Extruder.HasSharedNozzle
-}
-
 func GetExtruderCount(client *octoprintApis.Client) int {
-	if cachedExtruderCount == -1 {
-		getCachedPrinterProfileData(client)
-	}
-
 	return cachedExtruderCount
 }
 
 func GetHotendCount(client *octoprintApis.Client) int {
-	if cachedExtruderCount == -1 {
-		getCachedPrinterProfileData(client)
-	}
-
 	if cachedHasSharedNozzle {
 		return 1
 	} else if cachedExtruderCount > MAX_EXTRUDER_COUNT {
@@ -64,10 +31,6 @@ func GetHotendCount(client *octoprintApis.Client) int {
 }
 
 func GetHasSharedNozzle(client *octoprintApis.Client) bool {
-	if cachedExtruderCount == -1 {
-		getCachedPrinterProfileData(client)
-	}
-
 	return cachedHasSharedNozzle
 }
 
@@ -91,7 +54,7 @@ func GetDisplayNameForTool(toolName string) string {
 
 	toolIndexAsInt, _ := strconv.Atoi(string(toolName[4]))
 	displayName := toolName[0:4]
-	displayName = displayName + strconv.Itoa(toolIndexAsInt + 1)
+	displayName = displayName + strconv.Itoa(toolIndexAsInt+1)
 
 	return displayName
 }
@@ -157,19 +120,17 @@ func GetCurrentTemperatureData(client *octoprintApis.Client) (map[string]dataMod
 		return nil, err
 	}
 
-
 	/*
-	// Comment out the following to test for multiple hotends:
-	currentTemperatureData := make(map[string]dataModels.TemperatureData)
-	currentTemperatureData["bed"] = dataModels.TemperatureData{Actual:0.1, Target:0, Offset:0}
-    currentTemperatureData["tool0"] = dataModels.TemperatureData{Actual:10.1, Target:0, Offset:0}
-    currentTemperatureData["tool1"] = dataModels.TemperatureData{Actual:20.1, Target:0, Offset:0}
-    currentTemperatureData["tool2"] = dataModels.TemperatureData{Actual:30.1, Target:0, Offset:0}
-    currentTemperatureData["tool3"] = dataModels.TemperatureData{Actual:40.1, Target:0, Offset:0}
-    currentTemperatureData["tool4"] = dataModels.TemperatureData{Actual:50.1, Target:0, Offset:0}
-	return currentTemperatureData, nil
+			// Comment out the following to test for multiple hotends:
+			currentTemperatureData := make(map[string]dataModels.TemperatureData)
+			currentTemperatureData["bed"] = dataModels.TemperatureData{Actual:0.1, Target:0, Offset:0}
+		    currentTemperatureData["tool0"] = dataModels.TemperatureData{Actual:10.1, Target:0, Offset:0}
+		    currentTemperatureData["tool1"] = dataModels.TemperatureData{Actual:20.1, Target:0, Offset:0}
+		    currentTemperatureData["tool2"] = dataModels.TemperatureData{Actual:30.1, Target:0, Offset:0}
+		    currentTemperatureData["tool3"] = dataModels.TemperatureData{Actual:40.1, Target:0, Offset:0}
+		    currentTemperatureData["tool4"] = dataModels.TemperatureData{Actual:50.1, Target:0, Offset:0}
+			return currentTemperatureData, nil
 	*/
-
 
 	logger.TraceLeave("Tools.GetCurrentTemperatureData()")
 	return temperatureDataResponse.TemperatureStateResponse.CurrentTemperatureData, nil
@@ -257,9 +218,9 @@ func GetTemperatureDataString(temperatureData dataModels.TemperatureData) string
 const MIN_HOTEND_TEMPERATURE = 150.0
 
 func HotendTemperatureIsTooLow(
-	temperatureData			dataModels.TemperatureData,
-	action					string,
-	parentWindow			*gtk.Window,
+	temperatureData dataModels.TemperatureData,
+	action string,
+	parentWindow *gtk.Window,
 ) bool {
 	targetTemperature := temperatureData.Target
 	logger.Infof("tools.HotendTemperatureIsTooLow() - targetTemperature is %.2f", targetTemperature)
@@ -291,24 +252,4 @@ func GetPluginInfo(client *octoprintApis.Client, pluginName string) *dataModels.
 	}
 
 	return nil
-}
-
-func GetCachedSettings(client *octoprintApis.Client) (*dataModels.SettingsResponse, error) {
-	if cachedSettings != nil {
-		return cachedSettings, nil
-	}
-
-	settingsResponse, err := (&octoprintApis.SettingsRequest{}).Do(client)
-	if err != nil {
-		logger.LogError("Tools.getCachedSettings()", "Do(SettingsRequest)", err)
-		return nil, err
-	}
-
-	cachedSettings = settingsResponse
-	return cachedSettings, nil
-}
-
-func ReloadCaches(client *octoprintApis.Client) {
-	cachedSettings = nil
-	GetCachedSettings(client)
 }

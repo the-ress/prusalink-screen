@@ -1,12 +1,10 @@
 package dataModels
 
-import (
-	// "encoding/json"
-	// "fmt"
-	// "strconv"
-	// "strings"
-	// "time"
-)
+// "encoding/json"
+// "fmt"
+// "strconv"
+// "strings"
+// "time"
 
 // FileResponse contains information regarding a file.
 // https://docs.octoprint.org/en/master/api/datamodel.html#file-information
@@ -32,16 +30,11 @@ type FileResponse struct {
 	// `["folder"]` for folders.
 	TypePath []string `json:"typePath"`
 
-
-
-
 	// Additional properties depend on type. For a type value of folder, see Folders. For any other value see Files.
 
 	// * Folders
 	//     --children
 	//     --size
-
-
 
 	// * Files
 	// Hash is the MD5 hash of the file.  Only available for `local` files.
@@ -65,19 +58,10 @@ type FileResponse struct {
 	// available. Left out in abridged version.
 	GCodeAnalysis GCodeAnalysisInformation `json:"gcodeAnalysis"`
 
-
-
-
 	// * Additional properties not listed in the SDK...
 
 	// Print information from the print stats of a file.
 	Print PrintStats `json:"print"`
-
-
-	// Relative path to the preview thumbnail image (if it exists)
-	// The PrusaSlicer Thumbnails plug-in or the Cura Thumbnails plug-in
-	// is required for this.
-	Thumbnail string `json:"thumbnail"`
 }
 
 // IsFolder it returns true if the file is a folder.

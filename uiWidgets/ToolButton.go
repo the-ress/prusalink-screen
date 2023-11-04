@@ -80,29 +80,11 @@ func (this *ToolButton) SetTemperatures(temperatureData dataModels.TemperatureDa
 }
 
 func (this *ToolButton) GetProfileTemperature() float64 {
-	temperature := 0.0
-
-	settingsResponse, err := utils.GetCachedSettings(this.printer)
-	if err != nil {
-		logger.LogError("ToolButton.GetProfileTemperature()", "utils.GetCachedSettings", err)
-		return 0
-	}
-
-	if len(settingsResponse.Temperature.TemperaturePresets) > 0 {
-		if this.tool == "bed" {
-			temperature = settingsResponse.Temperature.TemperaturePresets[0].Bed
-		} else {
-			temperature = settingsResponse.Temperature.TemperaturePresets[0].Extruder
-		}
+	if this.tool == "bed" {
+		return 75
 	} else {
-		if this.tool == "bed" {
-			temperature = 75
-		} else {
-			temperature = 220
-		}
+		return 220
 	}
-
-	return temperature
 }
 
 func (this *ToolButton) clicked() {

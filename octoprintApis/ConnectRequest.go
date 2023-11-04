@@ -9,7 +9,6 @@ import (
 	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 )
 
-
 // ConnectRequest sets the given target temperature on the printer’s tools.
 type ConnectRequest struct {
 	// Port specific port to connect to. If not set the current `portPreference`
@@ -21,10 +20,6 @@ type ConnectRequest struct {
 	// `baudratePreference` will be used, or if no preference is available auto
 	// detection will be attempted.
 	BaudRate int `json:"baudrate,omitempty"`
-
-	// PrinterProfile specific printer profile to use for connection. If not set
-	// the current default printer profile will be used.
-	PrinterProfile string `json:"printerProfile,omitempty"`
 
 	// Save whether to save the request’s port and baudrate settings as new
 	// preferences.

@@ -9,7 +9,6 @@ import (
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 )
 
-
 // SelectFileRequest selects a file for printing.
 type SelectFileRequest struct {
 	// Location is target location on which to send the command for is located,

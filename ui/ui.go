@@ -172,7 +172,6 @@ func (this *UI) Update() {
 	connectionManager := utils.GetConnectionManagerInstance(this.Client)
 	if connectionManager.IsConnectedToOctoPrint == true {
 		if this.Settings == nil {
-			go utils.ReloadCaches(this.Client)
 			this.loadSettings()
 		}
 	}

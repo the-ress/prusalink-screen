@@ -114,22 +114,6 @@ Config example:
 <br />
 
 
-### Bed leveling
-Config example:
-```
-{
-  "name": "Bed Level",
-  "icon": "bed-level",
-  "panel": "bed-level"
-}
-```
-<img width="320" src="img/bed-level.png" />
-<br />
-<br />
-<br />
-<br />
-
-
 ### Network
 Config example:
 ```

@@ -2,13 +2,13 @@ package uiWidgets
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 
 	"github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis"
+	"github.com/Z-Bolt/OctoScreen/octoprintApis"
+
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
@@ -25,27 +25,23 @@ func CreatePreviewThumbnail(
 	ctx context.Context,
 	previewSubRow *gtk.Box,
 	fileResponse *dataModels.FileResponse,
+	client *octoprintApis.Client,
 	fileSystemImageWidth int,
 	fileSystemImageHeight int,
 ) {
-	if fileResponse.Thumbnail == "" {
+	if fileResponse.Refs.Thumbnail == "" {
 		return
 	}
 
-	logger.Debugf("FilesPreviewSubRow.createPreviewThumbnail() - fileResponse.Thumbnail is %s", fileResponse.Thumbnail)
+	logger.Debugf("FilesPreviewSubRow.createPreviewThumbnail() - fileResponse.Refs.Thumbnail is %s", fileResponse.Refs.Thumbnail)
 
-	octoScreenConfig := utils.GetOctoScreenConfigInstance()
-	octoPrintConfig := octoScreenConfig.OctoPrintConfig
-	thumbnailUrl := fmt.Sprintf("%s/%s", octoPrintConfig.Server.Host, fileResponse.Thumbnail)
-	logger.Debugf("FilesPreviewSubRow.createPreviewThumbnail() - thumbnailPath is: %q", thumbnailUrl)
-
-	imageBuffer, imageFromUrlErr := utils.DownloadImageFromUrlToBuffer(thumbnailUrl)
+	imageBuffer, imageFromUrlErr := (&octoprintApis.ThumbnailRequest{Path: fileResponse.Refs.Thumbnail}).Do(client)
 	if imageFromUrlErr != nil {
-		logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from DownloadImageFromUrlToBuffer:", imageFromUrlErr)
+		logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from ThumbnailRequest:", imageFromUrlErr)
 		return
 	}
 
-	logger.Debug("FilesPreviewSubRow.createPreviewThumbnail() - no error from DownloadImageFromUrlToBuffer, now trying to parse it...")
+	logger.Debug("FilesPreviewSubRow.createPreviewThumbnail() - no error from ThumbnailRequest, now trying to parse it...")
 
 	glib.IdleAddPriority(glib.PRIORITY_LOW, func() {
 		select {
