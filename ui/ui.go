@@ -49,8 +49,8 @@ func CreateUi() *UI {
 	logger.TraceEnter("ui.CreateUi()")
 
 	octoScreenConfig := utils.GetOctoScreenConfigInstance()
-	endpoint := octoScreenConfig.OctoPrintConfig.Server.Host
-	key := octoScreenConfig.OctoPrintConfig.API.Key
+	endpoint := octoScreenConfig.OctoPrintConfig.Host
+	key := octoScreenConfig.OctoPrintConfig.ApiKey
 	width := octoScreenConfig.Width
 	height := octoScreenConfig.Height
 

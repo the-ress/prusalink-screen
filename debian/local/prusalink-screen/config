@@ -26,7 +26,7 @@ OCTOSCREEN_STYLE_PATH=/opt/prusalink-screen/styles/z-bolt/
 # The OCTOPRINT_APIKEY is required, and if it isn't defined in OctoScreen's
 # config file (see OCTOPRINT_APIKEY above), it needs to be defined in OctoPrint's
 # config file.
-OCTOPRINT_CONFIG_FILE=/home/pi/.octoprint/config.yaml
+OCTOPRINT_CONFIG_FILE=/home/jo/prusa_printer_settings.ini
 
 
 # The file path to where the log file will be saved.
