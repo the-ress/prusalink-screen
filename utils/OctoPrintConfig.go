@@ -1,18 +1,17 @@
 package utils
 
 import (
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
+	"github.com/the-ress/prusalink-screen/logger"
 
 	"gopkg.in/yaml.v1"
 )
-
 
 var (
 	configLocation = ".octoprint/config.yaml"
@@ -125,7 +124,7 @@ func (this *OctoPrintConfig) UpdateValues() {
 
 	url := strings.ToLower(this.Server.Host)
 	if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
-		logger.Warn("WARNING!  OCTOPRINT_HOST requires the transport protocol ('http://' or 'https://') but is missing.  'http://' is being added to Server.Host.");
+		logger.Warn("WARNING!  OCTOPRINT_HOST requires the transport protocol ('http://' or 'https://') but is missing.  'http://' is being added to Server.Host.")
 		this.Server.Host = fmt.Sprintf("http://%s", this.Server.Host)
 	}
 
@@ -135,8 +134,8 @@ func (this *OctoPrintConfig) UpdateValues() {
 		// And the second ":" is for the trailing port.
 
 		if this.Server.Port != NoServerPort {
-			logger.Warn("WARNING!  Server.Host includes a port value, but Server.Port has also been defined") 
-			logger.Warn("WARNING!  Ignoring Server.Port and just using Server.Host") 
+			logger.Warn("WARNING!  Server.Host includes a port value, but Server.Port has also been defined")
+			logger.Warn("WARNING!  Ignoring Server.Port and just using Server.Host")
 		}
 	} else {
 		// The Host doesn't specify a port.
@@ -146,7 +145,7 @@ func (this *OctoPrintConfig) UpdateValues() {
 			this.Server.Host = fmt.Sprintf("%s:%d", this.Server.Host, this.Server.Port)
 		}
 	}
-	
+
 	logger.TraceLeave("OctoPrintConfig.UpdateValues()")
 }
 

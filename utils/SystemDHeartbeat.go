@@ -8,7 +8,7 @@ import (
 
 	"github.com/coreos/go-systemd/daemon"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
+	"github.com/the-ress/prusalink-screen/logger"
 )
 
 var systemDHeartbeatOnce sync.Once
@@ -19,7 +19,7 @@ type systemDHeartbeat struct {
 
 var systemDHeartbeatInstance *systemDHeartbeat
 
-func GetSystemDHeartbeatInstance() (*systemDHeartbeat) {
+func GetSystemDHeartbeatInstance() *systemDHeartbeat {
 	if systemDHeartbeatInstance == nil {
 		_, err := daemon.SdNotify(false, daemon.SdNotifyReady)
 		if err != nil {

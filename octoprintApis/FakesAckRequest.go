@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/logger"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
 
 // TODO: FakesAckRequest doesn't seem to be used anywhere... maybe remove it?
@@ -41,7 +41,7 @@ func (this *FakesAckRequest) Do(client *Client) error {
 }
 
 func (cmd *FakesAckRequest) encode(w io.Writer) error {
-	payload := map[string]string {
+	payload := map[string]string{
 		"command": "fake_ack",
 	}
 

@@ -13,19 +13,19 @@ import (
 	"github.com/coreos/go-systemd/daemon"
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	// "github.com/Z-Bolt/OctoScreen/ui"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
+
+	// "github.com/the-ress/prusalink-screen/ui"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
-
 type HttpRequestTestWindow struct {
-	Window						*gtk.Window
-	Label						*gtk.Label
-	Client						*octoprintApis.Client
-	BackgroundTask				*utils.BackgroundTask
-	UpdateCount					int
+	Window         *gtk.Window
+	Label          *gtk.Label
+	Client         *octoprintApis.Client
+	BackgroundTask *utils.BackgroundTask
+	UpdateCount    int
 }
 
 func CreateHttpRequestTestWindow(
@@ -36,15 +36,15 @@ func CreateHttpRequestTestWindow(
 ) *HttpRequestTestWindow {
 	logger.TraceEnter("CreateHttpRequestTestWindow()")
 
-	instance := &HttpRequestTestWindow {
-		Window: nil,
-		Label: nil,
-		Client: octoprintApis.NewClient(endpoint, key),
+	instance := &HttpRequestTestWindow{
+		Window:         nil,
+		Label:          nil,
+		Client:         octoprintApis.NewClient(endpoint, key),
 		BackgroundTask: nil,
-		UpdateCount: 0,
+		UpdateCount:    0,
 	}
 
-	instance.BackgroundTask = utils.CreateBackgroundTask(time.Second * 10, instance.updateTestWindow)
+	instance.BackgroundTask = utils.CreateBackgroundTask(time.Second*10, instance.updateTestWindow)
 
 	instance.createWindow(width, height)
 	instance.addControls()
@@ -55,7 +55,6 @@ func CreateHttpRequestTestWindow(
 	logger.TraceLeave("CreateHttpRequestTestWindow()")
 	return instance
 }
-
 
 func (this *HttpRequestTestWindow) createWindow(
 	width int,
@@ -70,7 +69,6 @@ func (this *HttpRequestTestWindow) createWindow(
 	this.Window.SetTitle("HTTP Request Test")
 	this.Window.SetDefaultSize(width, height)
 
-
 	this.Window.Connect("show", this.BackgroundTask.Start)
 
 	this.Window.Connect("destroy", func() {
@@ -78,7 +76,6 @@ func (this *HttpRequestTestWindow) createWindow(
 		gtk.MainQuit()
 	})
 }
-
 
 func (this *HttpRequestTestWindow) addControls() {
 	// Create a new label widget to show in the window.
@@ -93,7 +90,6 @@ func (this *HttpRequestTestWindow) addControls() {
 	this.Window.Add(this.Label)
 }
 
-
 func (this *HttpRequestTestWindow) updateTestWindow() {
 	logger.TraceEnter("updateTestWindow()")
 
@@ -102,13 +98,11 @@ func (this *HttpRequestTestWindow) updateTestWindow() {
 	logger.Debug(strUpdateCount)
 	this.Label.SetLabel(strUpdateCount)
 
-
 	//this.checkNotification()
 	this.verifyConnection()
 
 	logger.TraceLeave("updateTestWindow()")
 }
-
 
 func (this *HttpRequestTestWindow) verifyConnection() {
 	logger.TraceEnter("verifyConnection()")
@@ -126,7 +120,6 @@ func (this *HttpRequestTestWindow) verifyConnection() {
 
 	logger.TraceLeave("verifyConnection()")
 }
-
 
 func (this *HttpRequestTestWindow) sdNotify(state string) {
 	logger.TraceEnter("sdNotify()")

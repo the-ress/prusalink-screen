@@ -2,8 +2,8 @@ package ui
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	// "github.com/the-ress/prusalink-screen/utils"
 )
 
 func CreateFatalErrorWindow(message string, description string) *gtk.Window {

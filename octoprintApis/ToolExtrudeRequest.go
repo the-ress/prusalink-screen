@@ -3,13 +3,12 @@ package octoprintApis
 import (
 	"bytes"
 	"encoding/json"
+
 	// "fmt"
 	"io"
 	// "strings"
-
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // ToolExtrudeRequest extrudes the given amount of filament from the currently
 // selected tool.

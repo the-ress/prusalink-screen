@@ -3,13 +3,12 @@ package octoprintApis
 import (
 	"bytes"
 	"encoding/json"
+
 	// "fmt"
 	"io"
 	// "strings"
-
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // ToolFlowRateRequest changes the flow rate factor to apply to extrusion of the tool.
 type ToolFlowRateRequest struct {

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/logger"
 )
 
 // MustWindow returns a new gtk.Window, if error panics.

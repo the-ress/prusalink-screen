@@ -4,9 +4,9 @@ import (
 	// "fmt"
 	"strings"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type OctoScreenInfoBox struct {
@@ -14,8 +14,8 @@ type OctoScreenInfoBox struct {
 }
 
 func CreateOctoScreenInfoBox(
-	client				*octoprintApis.Client,
-	octoScreenVersion	string,
+	client *octoprintApis.Client,
+	octoScreenVersion string,
 ) *OctoScreenInfoBox {
 	logoImage := utils.MustImageFromFile("logos/octoscreen-isometric-90%.png")
 
@@ -38,8 +38,8 @@ func CreateOctoScreenInfoBox(
 		str3,
 	)
 
-	instance := &OctoScreenInfoBox {
-		SystemInfoBox:			base,
+	instance := &OctoScreenInfoBox{
+		SystemInfoBox: base,
 	}
 
 	return instance

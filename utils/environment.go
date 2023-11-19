@@ -3,41 +3,40 @@ package utils
 import (
 	"fmt"
 	"os"
+
 	//"strings"
 
-
-	"github.com/Z-Bolt/OctoScreen/logger"
+	"github.com/the-ress/prusalink-screen/logger"
 )
 
-
 // OctoScreenVersion is set during compilation.
-var OctoScreenVersion = "2.8.0"
+var OctoScreenVersion = "0.0.1"
 
 const MISSING_ENV_TOKEN = ">>MISSING<<"
 const INVALID_ENV_TOKEN = "!!!INVALID!!!"
 
 // Required environment variables
 const (
-	EnvStylePath        = "OCTOSCREEN_STYLE_PATH"
-	EnvOctoPrintHost    = "OCTOPRINT_HOST"
-	EnvOctoPrintApiKey  = "OCTOPRINT_APIKEY"
+	EnvStylePath       = "OCTOSCREEN_STYLE_PATH"
+	EnvOctoPrintHost   = "OCTOPRINT_HOST"
+	EnvOctoPrintApiKey = "OCTOPRINT_APIKEY"
 )
 
 // Optional (but good to have) environment variables
 const (
-	EnvLogLevel         = "OCTOSCREEN_LOG_LEVEL"
-	EnvLogFilePath      = "OCTOSCREEN_LOG_FILE_PATH"
-	EnvResolution       = "OCTOSCREEN_RESOLUTION"
-	EnvConfigFilePath   = "OCTOPRINT_CONFIG_FILE"
-	EnvDisplayCursor    = "DISPLAY_CURSOR"
+	EnvLogLevel       = "OCTOSCREEN_LOG_LEVEL"
+	EnvLogFilePath    = "OCTOSCREEN_LOG_FILE_PATH"
+	EnvResolution     = "OCTOSCREEN_RESOLUTION"
+	EnvConfigFilePath = "OCTOPRINT_CONFIG_FILE"
+	EnvDisplayCursor  = "DISPLAY_CURSOR"
 )
 
 func RequiredEnvironmentVariablesAreSet(apiKey string) bool {
-	if( !environmentVariableIsSet(EnvStylePath) ) {
+	if !environmentVariableIsSet(EnvStylePath) {
 		return false
 	}
 
-	if( !environmentVariableIsSet(EnvOctoPrintHost) ) {
+	if !environmentVariableIsSet(EnvOctoPrintHost) {
 		return false
 	}
 
@@ -64,11 +63,11 @@ func environmentVariableIsSet(environmentVariable string) bool {
 }
 
 func NameOfMissingRequiredEnvironmentVariable(apiKey string) string {
-	if( !environmentVariableIsSet(EnvStylePath) ) {
+	if !environmentVariableIsSet(EnvStylePath) {
 		return EnvStylePath
 	}
 
-	if( !environmentVariableIsSet(EnvOctoPrintHost) ) {
+	if !environmentVariableIsSet(EnvOctoPrintHost) {
 		return EnvOctoPrintHost
 	}
 
@@ -162,9 +161,9 @@ func GetObfuscatedValue(value string) string {
 				value[0],
 				value[1],
 				value[2],
-				value[length - 3],
-				value[length - 2],
-				value[length - 1],
+				value[length-3],
+				value[length-2],
+				value[length-1],
 			)
 		}
 	}

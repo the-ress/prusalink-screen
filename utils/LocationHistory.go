@@ -2,9 +2,9 @@ package utils
 
 import ( // "fmt"
 	// "sort"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	// "github.com/Z-Bolt/OctoScreen/uiWidgets"
+	// "github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/uiWidgets"
 )
 
 type LocationHistory struct {

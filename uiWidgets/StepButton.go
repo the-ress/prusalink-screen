@@ -6,30 +6,30 @@ import (
 	"sync"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type Step struct {
-	Label			string
-	ImageFileName	string
-	Image			gtk.IWidget
-	Value			interface{}
+	Label         string
+	ImageFileName string
+	Image         gtk.IWidget
+	Value         interface{}
 }
 
 type StepButton struct {
 	*gtk.Button
 	sync.RWMutex
 
-	Steps			[]Step
-	CurrentStepIndex		int
-	clicked					func()
+	Steps            []Step
+	CurrentStepIndex int
+	clicked          func()
 }
 
 func CreateStepButton(
-	colorVariation			int,
-	clicked					func(),
-	steps 					...Step,
+	colorVariation int,
+	clicked func(),
+	steps ...Step,
 ) *StepButton {
 	stepCount := len(steps)
 	if stepCount < 1 {
@@ -39,16 +39,16 @@ func CreateStepButton(
 
 	base := utils.MustButtonImageUsingFilePath(steps[0].Label, steps[0].ImageFileName, nil)
 	if stepCount > 1 {
-	ctx, _ := base.GetStyleContext()
-	colorClass := fmt.Sprintf("color-dash-%d", colorVariation)
-	ctx.AddClass(colorClass)
+		ctx, _ := base.GetStyleContext()
+		colorClass := fmt.Sprintf("color-dash-%d", colorVariation)
+		ctx.AddClass(colorClass)
 	}
 
 	instance := &StepButton{
-		Button:			base,
-		Steps:			steps,
-		CurrentStepIndex:	-1,
-		clicked:			clicked,
+		Button:           base,
+		Steps:            steps,
+		CurrentStepIndex: -1,
+		clicked:          clicked,
 	}
 
 	if stepCount > 0 {
@@ -102,5 +102,5 @@ func (this *StepButton) handleClick() {
 
 	if this.clicked != nil {
 		this.clicked()
-}
+	}
 }

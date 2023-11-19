@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/gotk3/gotk3/glib"
+	"github.com/the-ress/prusalink-screen/logger"
 )
 
 type BackgroundTask struct {

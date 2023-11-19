@@ -4,12 +4,12 @@ import (
 	// "bytes"
 	"encoding/json"
 	"fmt"
+
 	// "io"
 	// "strings"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // BedStateRequest retrieves the current temperature data (actual, target and
 // offset) plus optionally a (limited) history (actual, target, timestamp) for

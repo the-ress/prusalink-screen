@@ -8,27 +8,27 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/shirou/gopsutil/mem"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type SystemInformationInfoBox struct {
 	*gtk.Box
 
-	parentWindow					*gtk.Window
-	logLevel						string
-	uiScaleFactor					int
-	memoryLabel						*gtk.Label
+	parentWindow  *gtk.Window
+	logLevel      string
+	uiScaleFactor int
+	memoryLabel   *gtk.Label
 	// loadAverageLabel				*gtk.Label
-	octoScreenResolutionLabel		*gtk.Label
-	allocatedResolutionLabel		*gtk.Label
-	currentResolutionLabel			*gtk.Label
+	octoScreenResolutionLabel *gtk.Label
+	allocatedResolutionLabel  *gtk.Label
+	currentResolutionLabel    *gtk.Label
 	// uiScaleFactorLabel				*gtk.Label
 }
 
 func CreateSystemInformationInfoBox(
-	parentWindow		*gtk.Window,
-	uiScaleFactor		int,
+	parentWindow *gtk.Window,
+	uiScaleFactor int,
 ) *SystemInformationInfoBox {
 	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	base.SetVExpand(true)
@@ -39,22 +39,21 @@ func CreateSystemInformationInfoBox(
 	title.SetMarginTop(15)
 	base.Add(title)
 
-	instance := &SystemInformationInfoBox {
-		Box:						base,
-		parentWindow:				parentWindow,
-		logLevel:					logger.LogLevel(),
-		uiScaleFactor:				uiScaleFactor,
-		memoryLabel:				createStyledLabel(),
+	instance := &SystemInformationInfoBox{
+		Box:           base,
+		parentWindow:  parentWindow,
+		logLevel:      logger.LogLevel(),
+		uiScaleFactor: uiScaleFactor,
+		memoryLabel:   createStyledLabel(),
 		// loadAverageLabel:			createStyledLabel(),
-		octoScreenResolutionLabel:	createStyledLabel(),
-		allocatedResolutionLabel:	createStyledLabel(),
-		currentResolutionLabel:		createStyledLabel(),
+		octoScreenResolutionLabel: createStyledLabel(),
+		allocatedResolutionLabel:  createStyledLabel(),
+		currentResolutionLabel:    createStyledLabel(),
 		// uiScaleFactorLabel:			createStyledLabel(),
 	}
 
 	instance.Add(instance.memoryLabel)
 	// instance.Add(instance.loadAverageLabel)
-
 
 	if instance.logLevel == "" {
 		// If not set, default to warning level.
@@ -120,7 +119,6 @@ func (this *SystemInformationInfoBox) refreshOctoScreenResolutionLabel() {
 	this.octoScreenResolutionLabel.SetText(octoScreenResolutionString)
 }
 
-
 func (this *SystemInformationInfoBox) refreshAllocatedResolutionLabel() {
 	allocatedWidth := this.parentWindow.GetAllocatedWidth()
 	allocatedHeight := this.parentWindow.GetAllocatedHeight()
@@ -131,7 +129,6 @@ func (this *SystemInformationInfoBox) refreshAllocatedResolutionLabel() {
 	)
 	this.allocatedResolutionLabel.SetText(allocatedResolutionString)
 }
-
 
 func (this *SystemInformationInfoBox) refreshCurrentResolutionLabel() {
 	currentWidth, currentHeight := this.parentWindow.GetSize()

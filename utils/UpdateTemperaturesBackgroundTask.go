@@ -1,17 +1,15 @@
 // TODO: This file should now be obsolete, and should be deleted
 
-
 package utils
 
 import (
 	"time"
 
-	"github.com/Z-Bolt/OctoScreen/interfaces"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/interfaces"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // TODO: convert this into a singleton
 
@@ -28,7 +26,7 @@ func CreateUpdateTemperaturesBackgroundTask(
 		return
 	}
 
-	UpdateTemperaturesBackgroundTask = CreateBackgroundTask(time.Second * 3, updateTemperaturesCallback)
+	UpdateTemperaturesBackgroundTask = CreateBackgroundTask(time.Second*3, updateTemperaturesCallback)
 	RegisterTemperatureStatusBox(temperatureDataDisplay, client)
 	UpdateTemperaturesBackgroundTask.Start()
 }

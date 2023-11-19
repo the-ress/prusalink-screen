@@ -5,10 +5,9 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/logger"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // TODO: DisconnectRequest doesn't seem to be used anywhere... maybe remove it?
 
@@ -36,7 +35,7 @@ func (this *DisconnectRequest) Do(client *Client) error {
 }
 
 func (cmd *DisconnectRequest) encode(w io.Writer) error {
-	payload := map[string]string {
+	payload := map[string]string{
 		"command": "disconnect",
 	}
 

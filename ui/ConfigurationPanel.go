@@ -1,8 +1,8 @@
 package ui
 
 import (
-	// "github.com/Z-Bolt/OctoScreen/interfaces"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	// "github.com/the-ress/prusalink-screen/interfaces"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type configurationPanel struct {

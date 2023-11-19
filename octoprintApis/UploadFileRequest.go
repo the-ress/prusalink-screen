@@ -7,9 +7,8 @@ import (
 	"io"
 	"mime/multipart"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // UploadFileRequest uploads a file to the selected location or create a new
 // empty folder on it.

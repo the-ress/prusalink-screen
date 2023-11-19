@@ -11,9 +11,9 @@ import (
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/Z-Bolt/OctoScreen/interfaces"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/interfaces"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type connectionPanel struct {

@@ -3,12 +3,10 @@ package octoprintApis
 import (
 	"encoding/json"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
 
-
 const VersionApiUri = "/api/version"
-
 
 // VersionRequest retrieve information regarding server and API version.
 type VersionRequest struct{}

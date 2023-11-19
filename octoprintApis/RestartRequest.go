@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	// "io"
-
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // RestartRequest restart the print of the currently selected file from the
 // beginning. There must be an active print job for this to work and the print

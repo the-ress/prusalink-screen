@@ -2,7 +2,7 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type ToolPrintingButton struct {
@@ -10,11 +10,11 @@ type ToolPrintingButton struct {
 }
 
 func CreateToolPrintingButton(
-	index			int,
+	index int,
 ) *ToolPrintingButton {
 	imageFileName := ToolImageFileName(index)
 	instance := &ToolPrintingButton{
-		Button:  utils.MustButtonImageUsingFilePath("", imageFileName, nil),
+		Button: utils.MustButtonImageUsingFilePath("", imageFileName, nil),
 	}
 
 	ctx, _ := instance.GetStyleContext()

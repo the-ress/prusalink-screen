@@ -5,10 +5,9 @@ import (
 	"encoding/json"
 	// "io"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // ConnectionRequest Retrieve the current connection settings, including
 // information regarding the available baudrates and serial ports and the

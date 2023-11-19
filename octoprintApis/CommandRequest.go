@@ -6,10 +6,8 @@ import (
 	// "fmt"
 	// "io"
 	// "strings"
-
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // CommandRequest sends any command to the printer via the serial interface.
 // Should be used with some care as some commands can interfere with or even

@@ -3,10 +3,10 @@ package ui
 import (
 	// "time"
 
-	// "github.com/Z-Bolt/OctoScreen/interfaces"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/uiWidgets"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	// "github.com/the-ress/prusalink-screen/interfaces"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/uiWidgets"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type systemPanel struct {

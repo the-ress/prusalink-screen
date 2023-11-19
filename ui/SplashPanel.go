@@ -1,22 +1,20 @@
 package ui
 
-
 import (
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/utils"
 )
-
 
 type SplashPanel struct {
 	CommonPanel
-	Label			*gtk.Label
-	RetryButton		*gtk.Button
+	Label       *gtk.Label
+	RetryButton *gtk.Button
 }
 
 func CreateSplashPanel(ui *UI) *SplashPanel {
-	instance := &SplashPanel {
+	instance := &SplashPanel{
 		CommonPanel: CreateCommonPanel("SplashPanel", ui),
 	}
 	instance.initialize()

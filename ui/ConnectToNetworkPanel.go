@@ -1,18 +1,16 @@
-
 package ui
 
 import (
 	"fmt"
 	"time"
 
-	"pifke.org/wpasupplicant"
 	"github.com/gotk3/gotk3/gtk"
+	"pifke.org/wpasupplicant"
 
-	// "github.com/Z-Bolt/OctoScreen/interfaces"
-	// "github.com/Z-Bolt/OctoScreen/uiWidgets"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	// "github.com/the-ress/prusalink-screen/interfaces"
+	// "github.com/the-ress/prusalink-screen/uiWidgets"
+	"github.com/the-ress/prusalink-screen/utils"
 )
-
 
 var keyBoardChars = []byte{
 	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -27,22 +25,22 @@ var keyBoardChars = []byte{
 
 type connectToNetworkPanel struct {
 	CommonPanel
-	pass				*gtk.Entry
-	cursorPosition		int
-	SSID				string
-	SSIDLabel			*gtk.Label
+	pass           *gtk.Entry
+	cursorPosition int
+	SSID           string
+	SSIDLabel      *gtk.Label
 }
 
 var connectToNetworkPanelInstance *connectToNetworkPanel
 
 func GetConnectToNetworkPanelInstance(
-	ui					*UI,
-	SSID				string,
+	ui *UI,
+	SSID string,
 ) *connectToNetworkPanel {
 	if connectToNetworkPanelInstance == nil {
-		instance := &connectToNetworkPanel {
-			CommonPanel:		CreateCommonPanel("ConnectToNetworkPanel", ui),
-			cursorPosition:		0,
+		instance := &connectToNetworkPanel{
+			CommonPanel:    CreateCommonPanel("ConnectToNetworkPanel", ui),
+			cursorPosition: 0,
 		}
 		instance.initialize()
 		connectToNetworkPanelInstance = instance
@@ -88,7 +86,7 @@ func (this *connectToNetworkPanel) createTopBar() *gtk.Box {
 			return
 		}
 
-		this.pass.DeleteText(this.cursorPosition - 1, this.cursorPosition)
+		this.pass.DeleteText(this.cursorPosition-1, this.cursorPosition)
 		this.cursorPosition--
 	})
 
@@ -127,14 +125,14 @@ func (this *connectToNetworkPanel) createKeyboardWindow() *gtk.ScrolledWindow {
 
 	for i, k := range keyBoardChars {
 		buttonHander := &keyButtonHander{
-			char: k,
+			char:                  k,
 			connectToNetworkPanel: this,
 		}
 		button := utils.MustButtonText(string(k), buttonHander.clicked)
 		ctx, _ := button.GetStyleContext()
 		ctx.AddClass("keyboard")
 		button.SetProperty("height-request", this.Scaled(40))
-		keysGrid.Attach(button, i % row, i / row, 1, 1)
+		keysGrid.Attach(button, i%row, i/row, 1, 1)
 	}
 
 	return keyboardWindow
@@ -172,11 +170,9 @@ func (this *connectToNetworkPanel) createConnectToNetworkButton() *gtk.Button {
 	return button
 }
 
-
-
 type keyButtonHander struct {
-	char					byte
-	connectToNetworkPanel	*connectToNetworkPanel
+	char                  byte
+	connectToNetworkPanel *connectToNetworkPanel
 }
 
 func (this *keyButtonHander) clicked() {

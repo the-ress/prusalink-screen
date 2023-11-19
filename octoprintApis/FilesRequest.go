@@ -8,7 +8,7 @@ import (
 	// "io"
 	// "mime/multipart"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
 
 // FilesRequest retrieve information regarding all files currently available and

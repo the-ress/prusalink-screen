@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // PauseRequest pauses/resumes/toggles the current print job.
 type PauseRequest struct {

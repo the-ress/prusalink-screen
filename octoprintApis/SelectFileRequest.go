@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
 
 // SelectFileRequest selects a file for printing.

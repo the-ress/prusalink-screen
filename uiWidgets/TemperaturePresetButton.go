@@ -2,39 +2,39 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type TemperaturePresetButton struct {
 	*gtk.Button
 
-	client						*octoprintApis.Client
-	selectHotendStepButton		*SelectToolStepButton
-	imageFileName				string
-	temperaturePreset			*dataModels.TemperaturePreset
-	callback					func()
+	client                 *octoprintApis.Client
+	selectHotendStepButton *SelectToolStepButton
+	imageFileName          string
+	temperaturePreset      *dataModels.TemperaturePreset
+	callback               func()
 }
 
 func CreateTemperaturePresetButton(
-	client						*octoprintApis.Client,
-	selectHotendStepButton		*SelectToolStepButton,
-	imageFileName				string,
-	temperaturePreset			*dataModels.TemperaturePreset,
-	callback					func(),
+	client *octoprintApis.Client,
+	selectHotendStepButton *SelectToolStepButton,
+	imageFileName string,
+	temperaturePreset *dataModels.TemperaturePreset,
+	callback func(),
 ) *TemperaturePresetButton {
 	presetName := utils.StrEllipsisLen(temperaturePreset.Name, 10)
 	base := utils.MustButtonImageUsingFilePath(presetName, imageFileName, nil)
 
 	instance := &TemperaturePresetButton{
-		Button:						base,
-		client:						client,
-		selectHotendStepButton:		selectHotendStepButton,
-		imageFileName:				imageFileName,
-		temperaturePreset:			temperaturePreset,
-		callback:					callback,
+		Button:                 base,
+		client:                 client,
+		selectHotendStepButton: selectHotendStepButton,
+		imageFileName:          imageFileName,
+		temperaturePreset:      temperaturePreset,
+		callback:               callback,
 	}
 	instance.Button.Connect("clicked", instance.handleClicked)
 
@@ -53,21 +53,21 @@ func (this *TemperaturePresetButton) handleClicked() {
 	}
 
 	/*
-	CreateTemperaturePresetButton is used by TemperaturePresetsPanel.  Strictly speaking,
-	CreateTemperaturePresetButton should only set the temperature of one device at at time,
-	but that's a lousy UX.  Imagine being in the TemperaturePanel... with the tool set to
-	the hotend, click the More button (and go to the TemperaturePresetsPanel), then
-	clicking PLA (and get taken back to the TemperaturePanel), __THEN__ have to click the
-	tool button to change to the bed, and then repeat the process over again.
+		CreateTemperaturePresetButton is used by TemperaturePresetsPanel.  Strictly speaking,
+		CreateTemperaturePresetButton should only set the temperature of one device at at time,
+		but that's a lousy UX.  Imagine being in the TemperaturePanel... with the tool set to
+		the hotend, click the More button (and go to the TemperaturePresetsPanel), then
+		clicking PLA (and get taken back to the TemperaturePanel), __THEN__ have to click the
+		tool button to change to the bed, and then repeat the process over again.
 
-	So, instead, the temperature of both the bed and the selected tool (or tool0 if the bed
-	is selected) are set.
+		So, instead, the temperature of both the bed and the selected tool (or tool0 if the bed
+		is selected) are set.
 
-	NOTE: This only changes the temperature of the bed and the currently selected hotend
-	(which is passed into the TemperaturePresetsPanel, and then passed into
-	CreateTemperaturePresetButton).  The code could be changed so it sets the temperature
-	of every hotend, but this is problematic if one is using different materials with
-	different temperature characteristics.
+		NOTE: This only changes the temperature of the bed and the currently selected hotend
+		(which is passed into the TemperaturePresetsPanel, and then passed into
+		CreateTemperaturePresetButton).  The code could be changed so it sets the temperature
+		of every hotend, but this is problematic if one is using different materials with
+		different temperature characteristics.
 	*/
 
 	// Set the bed's temp.
@@ -82,14 +82,14 @@ func (this *TemperaturePresetButton) handleClicked() {
 	var toolTargetRequest *octoprintApis.ToolTargetRequest
 	if currentTool == "bed" {
 		// If current tool is set to "bed", use tool0.
-		toolTargetRequest = &octoprintApis.ToolTargetRequest {
-			Targets: map[string]float64 {
+		toolTargetRequest = &octoprintApis.ToolTargetRequest{
+			Targets: map[string]float64{
 				"tool0": this.temperaturePreset.Extruder,
 			},
 		}
 	} else {
-		toolTargetRequest = &octoprintApis.ToolTargetRequest {
-			Targets: map[string]float64 {
+		toolTargetRequest = &octoprintApis.ToolTargetRequest{
+			Targets: map[string]float64{
 				currentTool: this.temperaturePreset.Extruder,
 			},
 		}

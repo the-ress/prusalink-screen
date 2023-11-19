@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	// "io"
-
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // StartRequest starts the print of the currently selected file.
 type StartRequest struct{}

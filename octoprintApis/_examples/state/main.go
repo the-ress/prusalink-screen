@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	"github.com/mgutz/logxi/v1"
+	"github.com/mcuadros/go-octoprint"
 )
 
 func main() {

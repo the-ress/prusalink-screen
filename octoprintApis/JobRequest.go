@@ -5,13 +5,11 @@ import (
 	"encoding/json"
 	// "io"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // JobRequest retrieve information about the current job (if there is one).
 type JobRequest struct{}
-
 
 // Do sends an API request and returns the API response.
 func (cmd *JobRequest) Do(client *Client) (*dataModels.JobResponse, error) {

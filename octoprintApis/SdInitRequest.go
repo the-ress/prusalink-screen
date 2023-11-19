@@ -1,15 +1,12 @@
 package octoprintApis
 
-import (
-	// "bytes"
-	// "encoding/json"
-	// "fmt"
-	// "io"
-	// "strings"
+// "bytes"
+// "encoding/json"
+// "fmt"
+// "io"
+// "strings"
 
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-)
-
+// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 
 // SdInitRequest initializes the printer’s SD card, making it available for use.
 // This also includes an initial retrieval of the list of files currently stored

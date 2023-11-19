@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"math"
+
 	// "strings"
 	// "sync"
 	// "time"
@@ -10,25 +11,24 @@ import (
 	// "github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 
-	// "github.com/Z-Bolt/OctoScreen/interfaces"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	// "github.com/the-ress/prusalink-screen/interfaces"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
-
 type CommonPanel struct {
-	name				string
-	UI					*UI
+	name string
+	UI   *UI
 	// parentPanel			interfaces.IPanel
-	includeBackButton	bool
-	grid				*gtk.Grid
-	preShowCallback		func()
+	includeBackButton bool
+	grid              *gtk.Grid
+	preShowCallback   func()
 	///backgroundTask		*utils.BackgroundTask
-	panelWidth			int
-	panelHeight			int
-	backButton			*gtk.Button
-	buttons				[]gtk.IWidget
+	panelWidth  int
+	panelHeight int
+	backButton  *gtk.Button
+	buttons     []gtk.IWidget
 }
 
 func CreateCommonPanel(
@@ -67,15 +67,15 @@ func newCommonPanel(
 	grid.SetRowHomogeneous(true)
 	grid.SetColumnHomogeneous(true)
 
-	return CommonPanel {
-		name:				name,
-		UI:					ui,
+	return CommonPanel{
+		name: name,
+		UI:   ui,
 		// parentPanel:		parentPanel,
-		includeBackButton:	includeBackButton,
-		grid:				grid,
+		includeBackButton: includeBackButton,
+		grid:              grid,
 		// preShowCallback:
-		panelWidth:			4,
-		panelHeight:		3,
+		panelWidth:  4,
+		panelHeight: 3,
 		// buttons:
 	}
 }
@@ -135,6 +135,7 @@ func (this *CommonPanel) Hide() {
 	}
 	**/
 }
+
 // End IPanel implementation
 
 func (this *CommonPanel) Scaled(s int) int {
@@ -142,19 +143,19 @@ func (this *CommonPanel) Scaled(s int) int {
 }
 
 func (this *CommonPanel) arrangeMenuItems(
-	grid			*gtk.Grid,
-	items			[]dataModels.MenuItem,
-	cols			int,
+	grid *gtk.Grid,
+	items []dataModels.MenuItem,
+	cols int,
 ) {
 	for i, item := range items {
 		panel := getPanel(this.UI, this, item)
 		if panel != nil {
-			color := fmt.Sprintf("color%d", (i % 4) + 1)
+			color := fmt.Sprintf("color%d", (i%4)+1)
 			icon := fmt.Sprintf("%s.svg", item.Icon)
 			button := utils.MustButtonImageStyle(item.Name, icon, color, func() {
 				this.UI.GoToPanel(panel)
 			})
-			grid.Attach(button, (i % cols), i / cols, 1, 1)
+			grid.Attach(button, (i % cols), i/cols, 1, 1)
 		}
 	}
 }

@@ -2,26 +2,27 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
+
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type TemperatureIncreaseButton struct {
 	*gtk.Button
 
-	client							*octoprintApis.Client
-	temperatureAmountStepButton		*TemperatureAmountStepButton
-	selectHotendStepButton			*SelectToolStepButton
-	isIncrease						bool
+	client                      *octoprintApis.Client
+	temperatureAmountStepButton *TemperatureAmountStepButton
+	selectHotendStepButton      *SelectToolStepButton
+	isIncrease                  bool
 }
 
 func CreateTemperatureIncreaseButton(
-	client							*octoprintApis.Client,
-	temperatureAmountStepButton		*TemperatureAmountStepButton,
-	selectHotendStepButton			*SelectToolStepButton,
-	isIncrease						bool,
+	client *octoprintApis.Client,
+	temperatureAmountStepButton *TemperatureAmountStepButton,
+	selectHotendStepButton *SelectToolStepButton,
+	isIncrease bool,
 ) *TemperatureIncreaseButton {
 	var base *gtk.Button
 	if isIncrease {
@@ -31,11 +32,11 @@ func CreateTemperatureIncreaseButton(
 	}
 
 	instance := &TemperatureIncreaseButton{
-		Button:							base,
-		client:							client,
-		temperatureAmountStepButton:	temperatureAmountStepButton,
-		selectHotendStepButton:			selectHotendStepButton,
-		isIncrease:						isIncrease,
+		Button:                      base,
+		client:                      client,
+		temperatureAmountStepButton: temperatureAmountStepButton,
+		selectHotendStepButton:      selectHotendStepButton,
+		isIncrease:                  isIncrease,
 	}
 	instance.Button.Connect("clicked", instance.handleClicked)
 

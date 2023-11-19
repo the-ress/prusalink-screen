@@ -9,9 +9,9 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/sirupsen/logrus"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/ui"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/ui"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 func main() {
@@ -130,7 +130,7 @@ func setLogLevel(logLevel string) {
 
 func setCursor(displayCursor bool) {
 	// For reference, see "How to turn on a pointer"
-	// (https://github.com/Z-Bolt/OctoScreen/issues/285)
+	// (https://github.com/the-ress/prusalink-screen/issues/285)
 	// ...and "No mouse pointer when running xinit"
 	// (https://www.raspberrypi.org/forums/viewtopic.php?t=139546)
 

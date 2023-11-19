@@ -3,12 +3,12 @@ package octoprintApis
 import (
 	"bytes"
 	"encoding/json"
+
 	// "fmt"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 type ZOffsetRequest struct {
 	Command string `json:"command"`
@@ -39,9 +39,6 @@ func (this *ZOffsetRequest) Do(client *Client) (*dataModels.ZOffsetResponse, err
 
 	return response, err
 }
-
-
-
 
 // SetZOffsetRequest - retrieves the current configuration of OctoPrint.
 type SetZOffsetRequest struct {

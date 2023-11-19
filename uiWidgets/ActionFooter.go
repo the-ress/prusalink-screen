@@ -3,26 +3,26 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type ActionFooter struct {
 	gtk.Box
 
-	refreshButton				*gtk.Button
-	backButton					*gtk.Button
+	refreshButton *gtk.Button
+	backButton    *gtk.Button
 }
 
 func CreateActionFooter(
-	buttonWidth					int,
-	buttonHeight				int,
-	refreshClicked				func(),
-	backClicked					func(),
+	buttonWidth int,
+	buttonHeight int,
+	refreshClicked func(),
+	backClicked func(),
 ) *ActionFooter {
 	base := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 
-	instance := &ActionFooter {
-		Box:				*base,
+	instance := &ActionFooter{
+		Box: *base,
 	}
 
 	instance.SetHAlign(gtk.ALIGN_END)

@@ -1,14 +1,14 @@
 [Unit]
-Description=OctoScreen
+Description=prusalink-screen
 Conflicts=getty@tty7.service
 After=systemd-user-sessions.service getty@tty7.service plymouth-quit.service
 
 [Service]
 Type=notify
 NotifyAccess=all
-EnvironmentFile=/etc/octoscreen/config
-ExecStart=/usr/bin/xinit /usr/bin/OctoScreen -- :0 -nolisten tcp -nocursor
-ExecStartPost=/bin/bash /etc/octoscreen/disablescreenblank.sh 0
+EnvironmentFile=/etc/prusalink-screen/config
+ExecStart=/usr/bin/xinit /usr/bin/prusalink-screen -- :0 -nolisten tcp -nocursor
+ExecStartPost=/bin/bash /etc/prusalink-screen/disablescreenblank.sh 0
 StandardOutput=journal
 Restart=always
 WatchdogSec=40s

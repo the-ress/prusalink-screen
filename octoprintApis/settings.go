@@ -3,12 +3,10 @@ package octoprintApis
 import (
 	"encoding/json"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
 
-
 const SettingsApiUri = "/api/settings"
-
 
 // SettingsRequest retrieves the current configuration of OctoPrint.
 type SettingsRequest struct{}

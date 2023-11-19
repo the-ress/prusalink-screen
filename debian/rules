@@ -3,8 +3,8 @@
 SHELL := /bin/bash
 
 export DH_VERBOSE := 1
-export DH_GOPKG := github.com/Z-Bolt/OctoScreen
-export DH_GOLANG_BUILDPKG := github.com/Z-Bolt/OctoScreen
+export DH_GOPKG := github.com/the-ress/prusalink-screen
+export DH_GOLANG_BUILDPKG := github.com/the-ress/prusalink-screen
 export DH_GOLANG_INSTALL_ALL := 1
 
 export GOPROXY := https://proxy.golang.org
@@ -51,10 +51,10 @@ override_dh_golang:
 	# dh_golang errors out because the go compiler used was not installed via a package. Therefore the step is skipped
 
 override_dh_install:
-	mkdir -p $(CURDIR)/debian/octoscreen/opt/octoscreen/
-	cp -r styles $(CURDIR)/debian/octoscreen/opt/octoscreen/
-	rm -rf $(CURDIR)/debian/octoscreen/usr/share/gocode
-	chmod -x "debian/octoscreen.install" # Make sure octoscreen.install isn't executable
+	mkdir -p $(CURDIR)/debian/prusalink-screen/opt/prusalink-screen/
+	cp -r styles $(CURDIR)/debian/prusalink-screen/opt/prusalink-screen/
+	rm -rf $(CURDIR)/debian/prusalink-screen/usr/share/gocode
+	chmod -x "debian/prusalink-screen.install" # Make sure prusalink-screen.install isn't executable
 	dh_install -XLICENSE
 
 override_dh_auto_test:

@@ -4,16 +4,15 @@ import (
 	// "fmt"
 	// "sort"
 
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	// "github.com/Z-Bolt/OctoScreen/uiWidgets"
+	// "github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/uiWidgets"
 )
-
 
 type FileResponsesSortedByDate []*dataModels.FileResponse
 
 func (this FileResponsesSortedByDate) Len() int {
-	 return len(this)
+	return len(this)
 }
 
 func (this FileResponsesSortedByDate) Swap(i, j int) {

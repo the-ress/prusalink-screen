@@ -1,13 +1,13 @@
 package ui
 
 import (
-	// "github.com/Z-Bolt/OctoScreen/interfaces"
+	// "github.com/the-ress/prusalink-screen/interfaces"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/uiWidgets"
-	// "github.com/Z-Bolt/OctoScreen/utils"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/uiWidgets"
+	// "github.com/the-ress/prusalink-screen/utils"
 )
 
 type temperaturePresetsPanel struct {

@@ -3,11 +3,11 @@ package octoprintApis
 import (
 	"bytes"
 	"encoding/json"
+
 	// "fmt"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
+	"github.com/the-ress/prusalink-screen/logger"
 )
-
 
 type RunZOffsetCalibrationRequest struct {
 	Command string `json:"command"`

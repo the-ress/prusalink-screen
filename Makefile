@@ -14,7 +14,7 @@ GOTEST = $(GOCMD) test -v
 WORKDIR := $(shell pwd)
 BUILD_PATH := $(WORKDIR)/build
 GOCACHE_PATH = $(WORKDIR)/gocache
-DOCKER_IMAGE_BUILD = mcuadros/octoprint-tft-build
+DOCKER_IMAGE_BUILD = prusalink-screen-build
 
 DEBIAN_PACKAGES = BUSTER
 ARCH = armhf
@@ -33,7 +33,7 @@ BUSTER_GO_TAGS := "gtk_3_22 glib_deprecated glib_2_58 pango_1_42"
 
 # Build information
 #GIT_COMMIT = $(shell git rev-parse HEAD | cut -c1-7)
-VERSION := 2.8.0
+VERSION := 0.0.1
 BUILD_DATE ?= $(shell date --utc +%Y%m%d-%H:%M:%S)
 #BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 
@@ -42,7 +42,7 @@ BUILD_DATE ?= $(shell date --utc +%Y%m%d-%H:%M:%S)
 #endif
 
 # Package information
-PACKAGE_NAME = octoscreen
+PACKAGE_NAME = prusalink-screen
 
 # we export the variable to allow envsubst, substitute the vars in the
 # Dockerfiles
@@ -77,7 +77,7 @@ build-internal: prepare-internal
 prepare-internal:
 	dch --create -v $(VERSION)-1 --package $(PACKAGE_NAME) --controlmaint empty; \
 	cd $(WORKDIR)/..; \
-	tar -czf octoscreen_$(VERSION).orig.tar.gz --exclude-vcs OctoScreen
+	tar -czf prusalink-screen_$(VERSION).orig.tar.gz --exclude-vcs prusalink-screen
 
 clean:
 	rm -rf ${BUILD_PATH}

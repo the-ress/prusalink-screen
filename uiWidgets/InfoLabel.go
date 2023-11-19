@@ -6,14 +6,13 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/Z-Bolt/OctoScreen/utils"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
-
 func CreateInfoLabel(
-	fileResponse		*dataModels.FileResponse,
-	isFolder			bool,
+	fileResponse *dataModels.FileResponse,
+	isFolder bool,
 ) *gtk.Label {
 	label := utils.MustLabel("")
 	label.SetHAlign(gtk.ALIGN_START)

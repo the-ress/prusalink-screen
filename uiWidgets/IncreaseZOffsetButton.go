@@ -2,16 +2,16 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type IncreaseZOffsetButton struct {
 	*gtk.Button
-	isIncrease					bool
+	isIncrease bool
 }
 
 func CreateIncreaseZOffsetButton(
-	isIncrease					bool,
+	isIncrease bool,
 ) *IncreaseZOffsetButton {
 	var base *gtk.Button
 	if isIncrease {
@@ -21,8 +21,8 @@ func CreateIncreaseZOffsetButton(
 	}
 
 	instance := &IncreaseZOffsetButton{
-		Button:						base,
-		isIncrease:					isIncrease,
+		Button:     base,
+		isIncrease: isIncrease,
 	}
 
 	return instance

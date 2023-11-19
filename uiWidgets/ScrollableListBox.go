@@ -3,19 +3,19 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type ScrollableListBox struct {
 	*gtk.ScrolledWindow
-	ListBox					*gtk.Box
+	ListBox *gtk.Box
 }
 
 func CreateScrollableListBox() *ScrollableListBox {
 	base, _ := gtk.ScrolledWindowNew(nil, nil)
 
-	instance := &ScrollableListBox {
-		ScrolledWindow:		base,
+	instance := &ScrollableListBox{
+		ScrolledWindow: base,
 	}
 
 	instance.SetProperty("overlay-scrolling", false)

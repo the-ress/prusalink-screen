@@ -29,7 +29,7 @@ ENV GO_TAGS=${GO_TAGS}
 # We cache go get gtk, to speed up builds.
 #RUN go get -tags ${GO_TAGS} -v github.com/gotk3/gotk3/gtk/...
 
-ADD . /OctoScreen/
+ADD . /prusalink-screen/
 #RUN go get -tags ${GO_TAGS} -v ./...
 
-WORKDIR /OctoScreen/
+WORKDIR /prusalink-screen/

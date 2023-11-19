@@ -1,15 +1,12 @@
 package octoprintApis
 
-import (
-	// "bytes"
-	// "encoding/json"
-	// "fmt"
-	// "io"
-	// "strings"
+// "bytes"
+// "encoding/json"
+// "fmt"
+// "io"
+// "strings"
 
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-)
-
+// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 
 // SdReleaseRequest releases the SD card from the printer. The reverse operation
 // to init. After issuing this command, the SD card won’t be available anymore,

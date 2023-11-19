@@ -3,8 +3,8 @@ package uiWidgets
 import (
 	"fmt"
 
-	"github.com/Z-Bolt/OctoScreen/utils"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 func CreateOpenLocationImage(

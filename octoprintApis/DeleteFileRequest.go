@@ -3,9 +3,8 @@ package octoprintApis
 import (
 	"fmt"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // DeleteFileRequest delete the selected path on the selected location.
 type DeleteFileRequest struct {

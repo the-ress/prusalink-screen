@@ -9,14 +9,12 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/logger"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // ErrUnauthorized missing or invalid API key
 var ErrUnauthorized = errors.New("Missing or invalid API key")
-
 
 // A Client manages communication with the OctoPrint API.
 type Client struct {
@@ -35,12 +33,12 @@ type Client struct {
 // 'Access Control' is enabled at OctoPrint configuration an apiKey should be
 // provided (http://docs.octoprint.org/en/master/api/general.html#authorization).
 func NewClient(endpoint, apiKey string) *Client {
-	return &Client {
+	return &Client{
 		Endpoint: endpoint,
 		APIKey:   apiKey,
-		httpClient: &http.Client {
+		httpClient: &http.Client{
 			Timeout: time.Second * 15,
-			Transport: &http.Transport {
+			Transport: &http.Transport{
 				DisableKeepAlives: true,
 			},
 		},

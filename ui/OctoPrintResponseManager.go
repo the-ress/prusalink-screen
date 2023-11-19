@@ -8,30 +8,30 @@ import (
 
 	// "github.com/gotk3/gotk3/glib"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 // const MAX_CONNECTION_ATTEMPTS = 8
 // const MAX_CONNECTION_ATTEMPTS = 4
 
 type octoPrintResponseManager struct {
-	UI							*UI
+	UI *UI
 	//Client						*octoprintApis.Client
 	// // IsRunning					bool
 	// ConnectAttempts				int
 	// IsConnectedToOctoPrint		bool
 	// IsConnectedToPrinter		bool
-	backgroundTask				*utils.BackgroundTask
-	FullStateResponse			dataModels.FullStateResponse
+	backgroundTask    *utils.BackgroundTask
+	FullStateResponse dataModels.FullStateResponse
 }
 
 var octoPrintResponseManagerInstance *octoPrintResponseManager
 
-//func GetOctoPrintResponseManagerInstance(UI *UI, client *octoprintApis.Client) (*octoPrintResponseManager) {
-func GetOctoPrintResponseManagerInstance(ui *UI) (*octoPrintResponseManager) {
+// func GetOctoPrintResponseManagerInstance(UI *UI, client *octoprintApis.Client) (*octoPrintResponseManager) {
+func GetOctoPrintResponseManagerInstance(ui *UI) *octoPrintResponseManager {
 	if octoPrintResponseManagerInstance == nil {
 		if ui == nil {
 			panic("GetOctoPrintResponseManagerInstance() was called for the first time, but the ui object passed in was nil")
@@ -72,7 +72,6 @@ func (this *octoPrintResponseManager) update() {
 		logger.TraceLeave("OctoPrintResponseManager.update()")
 		return
 	}
-
 
 	// call APIs
 	// uiWidgets/TemperatureStatusBox.go
@@ -170,54 +169,49 @@ func (this *octoPrintResponseManager) update() {
 	// 	}
 	// }
 
-
 	fullStateResponse, err := (&octoprintApis.FullStateRequest{}).Do(this.UI.Client)
 	if err != nil {
 		logger.LogError("OctoPrintResponseManager.update()", "Do(FullStateRequest)", err)
-	
+
 		connectionManager.ReInitializeConnectionState()
 		GoToConnectionPanel(this.UI)
-	
+
 		logger.TraceLeave("OctoPrintResponseManager.update()")
 		return
 	}
 
 	if fullStateResponse == nil /*|| fullStateResponse.Temperature == nil*/ || fullStateResponse.Temperature.CurrentTemperatureData == nil {
 		logger.Error("OctoPrintResponseManager.update() - fullStateResponse.Temperature.CurrentTemperatureData is invalid")
-	
+
 		connectionManager.ReInitializeConnectionState()
 		GoToConnectionPanel(this.UI)
-	
+
 		logger.TraceLeave("OctoPrintResponseManager.update()")
 		return
 	}
 
-
 	/*
-	// Comment out the following to test for multiple hotends:
-	currentTemperatureData := make(map[string]dataModels.TemperatureData)
-	currentTemperatureData["bed"] = dataModels.TemperatureData{Actual:60.1, Target:0, Offset:0}
-    currentTemperatureData["tool0"] = dataModels.TemperatureData{Actual:110.1, Target:0, Offset:0}
-    currentTemperatureData["tool1"] = dataModels.TemperatureData{Actual:120.1, Target:0, Offset:0}
-    currentTemperatureData["tool2"] = dataModels.TemperatureData{Actual:130.1, Target:0, Offset:0}
-    currentTemperatureData["tool3"] = dataModels.TemperatureData{Actual:140.1, Target:0, Offset:0}
-    currentTemperatureData["tool4"] = dataModels.TemperatureData{Actual:150.1, Target:0, Offset:0}
-	fullStateResponse.Temperature.CurrentTemperatureData = currentTemperatureData
+			// Comment out the following to test for multiple hotends:
+			currentTemperatureData := make(map[string]dataModels.TemperatureData)
+			currentTemperatureData["bed"] = dataModels.TemperatureData{Actual:60.1, Target:0, Offset:0}
+		    currentTemperatureData["tool0"] = dataModels.TemperatureData{Actual:110.1, Target:0, Offset:0}
+		    currentTemperatureData["tool1"] = dataModels.TemperatureData{Actual:120.1, Target:0, Offset:0}
+		    currentTemperatureData["tool2"] = dataModels.TemperatureData{Actual:130.1, Target:0, Offset:0}
+		    currentTemperatureData["tool3"] = dataModels.TemperatureData{Actual:140.1, Target:0, Offset:0}
+		    currentTemperatureData["tool4"] = dataModels.TemperatureData{Actual:150.1, Target:0, Offset:0}
+			fullStateResponse.Temperature.CurrentTemperatureData = currentTemperatureData
 	*/
-
 
 	this.FullStateResponse = *fullStateResponse
 
 	logger.TraceLeave("OctoPrintResponseManager.update()")
 }
 
-
 func (this *octoPrintResponseManager) IsConnected() bool {
 	// TODO: should this be named IsFullyConnected()?
 	connectionManager := utils.GetConnectionManagerInstance(this.UI.Client)
 	return connectionManager.IsConnected()
 }
-
 
 // func (this *connectionManager) ReInitializeConnectionState() {
 // 	// this.IsRunning = true
@@ -241,7 +235,7 @@ func (this *octoPrintResponseManager) IsConnected() bool {
 // 		t2 := time.Now()
 // 		logger.Debug("ConnectionManager.UpdateStatus() - finished calling ConnectionRequest.Do()")
 // 		logger.Debugf("time elapsed: %q", t2.Sub(t1))
-		
+
 // 		if err != nil {
 // 			logger.LogError("ConnectionManager.UpdateStatus()", "ConnectionRequest.Do()", err)
 // 								// newUIState, splashMessage = this.getUiStateAndMessageFromError(err, newUIState, splashMessage)
@@ -251,11 +245,11 @@ func (this *octoPrintResponseManager) IsConnected() bool {
 // 			logger.TraceLeave("ConnectionManager.UpdateStatus()")
 // 			return
 // 		}
-		
+
 // 		logger.Debug("ConnectionManager.UpdateStatus() - ConnectionRequest.Do() succeeded")
-		
+
 // 		this.IsConnectedToOctoPrint = true
-		
+
 // 		jsonResponse, err := StructToJson(connectionResponse)
 // 		if err != nil {
 // 			logger.LogError("ConnectionManager.UpdateStatus()", "StructToJson()", err)
@@ -265,7 +259,7 @@ func (this *octoPrintResponseManager) IsConnected() bool {
 // 		} else {
 // 			logger.Debugf("ConnectionManager.UpdateStatus() - connectionResponse is: %s", jsonResponse)
 // 		}
-		
+
 // 		/*
 // 		Example JSON response:
 // 		{
@@ -301,7 +295,7 @@ func (this *octoPrintResponseManager) IsConnected() bool {
 // 			}
 // 		}
 // 		*/
-		
+
 // 		printerConnectionState := connectionResponse.Current.State
 // 		if printerConnectionState.IsOffline() || printerConnectionState.IsError() {
 // 			this.IsConnectedToPrinter = false

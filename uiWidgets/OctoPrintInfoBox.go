@@ -3,20 +3,20 @@ package uiWidgets
 import (
 	"fmt"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/utils"
-)
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/octoprintApis"
 
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
+)
 
 type OctoPrintInfoBox struct {
 	*SystemInfoBox
 }
 
 func CreateOctoPrintInfoBox(
-	client				*octoprintApis.Client,
-	logoWidth			int,
+	client *octoprintApis.Client,
+	logoWidth int,
 ) *OctoPrintInfoBox {
 	logger.TraceEnter("OctoPrintInfoBox.CreateOctoPrintInfoBox()")
 
@@ -43,11 +43,11 @@ func CreateOctoPrintInfoBox(
 		logoImage,
 		"OctoPrint",
 		server,
-		fmt.Sprintf("(API   %s)", apiVersion),   // Use 3 spaces here... 1 space doesn't have enough kerning.
+		fmt.Sprintf("(API   %s)", apiVersion), // Use 3 spaces here... 1 space doesn't have enough kerning.
 	)
 
-	instance := &OctoPrintInfoBox {
-		SystemInfoBox:			base,
+	instance := &OctoPrintInfoBox{
+		SystemInfoBox: base,
 	}
 
 	logger.TraceLeave("OctoPrintInfoBox.CreateOctoPrintInfoBox()")

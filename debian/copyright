@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: OctoScreen
-Source: https://github.com/Z-Bolt/OctoScreen
+Upstream-Name: prusalink-screen
+Source: https://github.com/the-ress/prusalink-screen
 
 Files: *
 Copyright: 2017 Máximo Cuadros

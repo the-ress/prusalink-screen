@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	// "io"
-
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // CancelRequest cancels the current print job.
 type CancelRequest struct{}

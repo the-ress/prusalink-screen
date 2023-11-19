@@ -5,11 +5,11 @@ import (
 
 	"github.com/gotk3/gotk3/gtk"
 
-	// "github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
-	"github.com/Z-Bolt/OctoScreen/utils"
-	// "github.com/Z-Bolt/OctoScreen/utils"
+	// "github.com/the-ress/prusalink-screen/logger"
+	// "github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
+	// "github.com/the-ress/prusalink-screen/utils"
 )
 
 type FilesListBoxRow struct {

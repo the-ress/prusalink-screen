@@ -3,19 +3,19 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type ListBoxRow struct {
 	gtk.ListBoxRow
 
-	ContentsBox			*gtk.Box
-	RowIndex			int
+	ContentsBox *gtk.Box
+	RowIndex    int
 }
 
 func CreateListBoxRow(
-	rowIndex			int,
-	padding				int,
+	rowIndex int,
+	padding int,
 ) *ListBoxRow {
 	/*
 		Object hierarchy (for a static, non-clickable list item):
@@ -39,11 +39,10 @@ func CreateListBoxRow(
 
 	base.Add(contentsBox)
 
-
-	instance := &ListBoxRow {
-		ListBoxRow:				*base,
-		ContentsBox:			contentsBox,
-		RowIndex:				rowIndex,
+	instance := &ListBoxRow{
+		ListBoxRow:  *base,
+		ContentsBox: contentsBox,
+		RowIndex:    rowIndex,
 	}
 
 	return instance
@@ -55,22 +54,21 @@ func CreateListBoxRow(
 // child widget is added to uiWidgets.ListBoxRow, it will actually
 // be added to contentsBox.
 //
-// 	Object hierarchy:
+//	Object hierarchy:
 //		gtk.ListBoxRow (base)
 //			gtk.Box (ContentsBox)
 func (this *ListBoxRow) Add(widget gtk.IWidget) {
 	this.ContentsBox.Add(widget)
 }
 
-
 // Internal functions
 func createListBoxRow(
-	rowIndex		int,
+	rowIndex int,
 ) *gtk.ListBoxRow {
 	listBoxRow, _ := gtk.ListBoxRowNew()
 	listBoxRowStyleContext, _ := listBoxRow.GetStyleContext()
 	listBoxRowStyleContext.AddClass("list-box-row")
-	if rowIndex % 2 != 0 {
+	if rowIndex%2 != 0 {
 		listBoxRowStyleContext.AddClass("list-item-nth-child-even-background-color")
 	} else {
 		listBoxRowStyleContext.AddClass("list-item-nth-child-odd-background-color")

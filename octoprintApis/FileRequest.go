@@ -1,16 +1,16 @@
-//package apis
+// package apis
 package octoprintApis
 
 import (
 	"encoding/json"
 	"fmt"
+
 	// "strconv"
 	// "strings"
 	// "time"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // Retrieve a specific file’s or folder’s information
 // GET /api/files/(string:location)/(path:filename)

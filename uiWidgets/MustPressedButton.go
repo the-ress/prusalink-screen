@@ -5,15 +5,15 @@ import (
 	"time"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 func MustPressedButton(
-	label				string,
-	imageFileName		string,
-	pressed				func(),
-	speed				time.Duration,
+	label string,
+	imageFileName string,
+	pressed func(),
+	speed time.Duration,
 ) *gtk.Button {
 	image := utils.MustImageFromFile(imageFileName)
 	isReleased := make(chan bool)
@@ -36,14 +36,14 @@ func MustPressedButton(
 			go func() {
 				for {
 					select {
-						case <-isReleased:
-							return
+					case <-isReleased:
+						return
 
-						default:
-							mutex.Lock()
-							pressed()
-							time.Sleep(speed * time.Millisecond)
-							mutex.Unlock()
+					default:
+						mutex.Lock()
+						pressed()
+						time.Sleep(speed * time.Millisecond)
+						mutex.Unlock()
 					}
 				}
 			}()

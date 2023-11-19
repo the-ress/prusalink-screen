@@ -3,13 +3,12 @@ package octoprintApis
 import (
 	"bytes"
 	"encoding/json"
+
 	// "fmt"
 	"io"
 	// "strings"
-
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // BedTargetRequest sets the given target temperature on the printer’s bed.
 type BedTargetRequest struct {

@@ -7,27 +7,26 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
+	"github.com/the-ress/prusalink-screen/logger"
 )
-
 
 type octoScreenConfig struct {
 	// Required configs
-	OctoPrintConfig    *OctoPrintConfig
-	CssStyleFilePath   string
+	OctoPrintConfig  *OctoPrintConfig
+	CssStyleFilePath string
 
 	// Optional configs
-	LogFilePath        string
-	LogLevel           string
-	Resolution         string
-	Width              int
-	Height             int
-	DisplayCursor      bool
+	LogFilePath   string
+	LogLevel      string
+	Resolution    string
+	Width         int
+	Height        int
+	DisplayCursor bool
 }
 
 var octoScreenConfigInstance *octoScreenConfig
 
-func GetOctoScreenConfigInstance() (*octoScreenConfig) {
+func GetOctoScreenConfigInstance() *octoScreenConfig {
 	if octoScreenConfigInstance == nil {
 		octoPrintConfig := ReadOctoPrintConfig()
 
@@ -37,12 +36,12 @@ func GetOctoScreenConfigInstance() (*octoScreenConfig) {
 			CssStyleFilePath: "", // default to "" for now, but this must be set in the environment variables
 
 			// Optional configs
-			LogFilePath:      "",
-			LogLevel:         "",
-			Resolution:       "",
-			Width:            -1,
-			Height:           -1,
-			DisplayCursor:    false,
+			LogFilePath:   "",
+			LogLevel:      "",
+			Resolution:    "",
+			Width:         -1,
+			Height:        -1,
+			DisplayCursor: false,
 		}
 
 		octoScreenConfigInstance.overrideConfigsWithEnvironmentValues()
@@ -108,7 +107,7 @@ func (this *octoScreenConfig) setWidthAndHeight() {
 		this.Height = DefaultWindowHeight
 		logger.TraceLeave("OctoScreenConfig.setWidthAndHeight()")
 		return
-	} 
+	}
 
 	var err error = nil
 	width := -1
@@ -163,7 +162,7 @@ func (this *octoScreenConfig) MissingRequiredConfigName() string {
 
 	missingOctoPrintConfigName := this.OctoPrintConfig.MissingRequiredConfigName()
 	if missingOctoPrintConfigName != "" {
-		return missingOctoPrintConfigName;
+		return missingOctoPrintConfigName
 	}
 
 	if this.CssStyleFilePath == "" {

@@ -1,4 +1,4 @@
-module github.com/Z-Bolt/OctoScreen
+module github.com/the-ress/prusalink-screen
 
 go 1.20
 

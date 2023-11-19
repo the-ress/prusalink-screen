@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/Z-Bolt/OctoScreen/logger"
-	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/logger"
+	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
 
 // ConnectRequest sets the given target temperature on the printer’s tools.

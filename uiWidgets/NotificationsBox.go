@@ -8,7 +8,7 @@ import (
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/sirupsen/logrus"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type NotificationsBox struct {
@@ -21,7 +21,7 @@ func NewNotificationsBox() *NotificationsBox {
 	base.SetHAlign(gtk.ALIGN_CENTER)
 	base.SetHExpand(true)
 
-	instance := &NotificationsBox {
+	instance := &NotificationsBox{
 		Box: base,
 	}
 	notificationsHook := NewNotificationsHook(instance)

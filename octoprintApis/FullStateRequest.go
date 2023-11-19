@@ -6,9 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 const URIPrinter = "/api/printer"
 
@@ -67,7 +66,6 @@ func (cmd *FullStateRequest) Do(c *Client) (*dataModels.FullStateResponse, error
 			}
 		}
 	*/
-
 
 	bytes, err := c.doJsonRequest("GET", uri, nil, PrintErrors, true)
 	if err != nil {

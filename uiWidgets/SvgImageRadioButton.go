@@ -3,38 +3,37 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 
-	// "github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/utils"
+	// "github.com/the-ress/prusalink-screen/logger"
+	"github.com/the-ress/prusalink-screen/utils"
 )
-
 
 type SvgImageRadioButton struct {
 	gtk.Button
 
-	image						*gtk.Image
-	selectedImage				*gtk.Image
-	caption						string
+	image         *gtk.Image
+	selectedImage *gtk.Image
+	caption       string
 
-	labelCssClassName			string
-	selectedLabelCssClassName	string
+	labelCssClassName         string
+	selectedLabelCssClassName string
 
-	Index						int
-	IsSelected					bool
-	clicked 					func(*SvgImageRadioButton)
+	Index      int
+	IsSelected bool
+	clicked    func(*SvgImageRadioButton)
 }
 
 func CreateSvgImageRadioButton(
-	image						*gtk.Image,
-	selectedImage				*gtk.Image,
-	caption						string,
+	image *gtk.Image,
+	selectedImage *gtk.Image,
+	caption string,
 
-	buttonCssClassName			string,
-	labelCssClassName			string,
-	selectedLabelCssClassName	string,
+	buttonCssClassName string,
+	labelCssClassName string,
+	selectedLabelCssClassName string,
 
-	index						int,
-	isSelected					bool,
-	clicked 					func(*SvgImageRadioButton),
+	index int,
+	isSelected bool,
+	clicked func(*SvgImageRadioButton),
 ) *SvgImageRadioButton {
 	var base *gtk.Button
 	if isSelected {
@@ -47,17 +46,17 @@ func CreateSvgImageRadioButton(
 	styleContext.AddClass(buttonCssClassName)
 	styleContext.AddClass("text-shadow-none")
 
-	instance := &SvgImageRadioButton {
-		Button:						*base,
+	instance := &SvgImageRadioButton{
+		Button: *base,
 
-		image:						image,
-		selectedImage:				selectedImage,
-		caption:					caption,
-		labelCssClassName:			labelCssClassName,
-		selectedLabelCssClassName:	selectedLabelCssClassName,
-		Index:						index,
-		IsSelected:					isSelected,
-		clicked:					clicked,
+		image:                     image,
+		selectedImage:             selectedImage,
+		caption:                   caption,
+		labelCssClassName:         labelCssClassName,
+		selectedLabelCssClassName: selectedLabelCssClassName,
+		Index:                     index,
+		IsSelected:                isSelected,
+		clicked:                   clicked,
 	}
 	instance.updateStyles()
 	instance.Connect("clicked", instance.handleClick)
@@ -85,7 +84,7 @@ func (this *SvgImageRadioButton) handleClick() {
 		return
 	}
 
-	this.IsSelected = !this.IsSelected;
+	this.IsSelected = !this.IsSelected
 	this.updateStyles()
 	if this.clicked != nil {
 		this.clicked(this)
@@ -95,7 +94,7 @@ func (this *SvgImageRadioButton) handleClick() {
 func (this *SvgImageRadioButton) updateStyles() {
 	styleContext, _ := this.GetStyleContext()
 	if this.IsSelected {
-		this.SetImage(this.selectedImage);
+		this.SetImage(this.selectedImage)
 		if len(this.labelCssClassName) > 0 {
 			styleContext.RemoveClass(this.labelCssClassName)
 		}
@@ -104,7 +103,7 @@ func (this *SvgImageRadioButton) updateStyles() {
 			styleContext.AddClass(this.selectedLabelCssClassName)
 		}
 	} else {
-		this.SetImage(this.image);
+		this.SetImage(this.image)
 		if len(this.selectedLabelCssClassName) > 0 {
 			styleContext.RemoveClass(this.selectedLabelCssClassName)
 		}

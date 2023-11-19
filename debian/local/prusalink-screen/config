@@ -15,7 +15,7 @@ OCTOPRINT_APIKEY=
 
 
 # Location of the application theme
-OCTOSCREEN_STYLE_PATH=/opt/octoscreen/styles/z-bolt/
+OCTOSCREEN_STYLE_PATH=/opt/prusalink-screen/styles/z-bolt/
 
 
 
@@ -54,4 +54,4 @@ OCTOSCREEN_RESOLUTION=800x480
 
 # To display the cursor, uncomment the following line and set to true.
 #DISPLAY_CURSOR=true
-# You will also need to edit /lib/systemd/system/octoscreen.service and remove "-nocursor"
+# You will also need to edit /lib/systemd/system/prusalink-screen.service and remove "-nocursor"

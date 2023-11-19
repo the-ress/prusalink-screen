@@ -7,9 +7,8 @@ import (
 	// "io"
 	// "strings"
 
-	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
-
 
 // SdStateRequest retrieves the current state of the printer’s SD card. For this
 // request no authentication is needed.
