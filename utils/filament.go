@@ -3,20 +3,18 @@ package utils
 import (
 	// "errors"
 
-	"github.com/gotk3/gotk3/gtk"
 	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis"
+	"github.com/gotk3/gotk3/gtk"
 	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 )
 
-
 func Extrude(
-	client					*octoprintApis.Client,
-	isForward				bool,
-	extruderId				string,
-	parentWindow			*gtk.Window,
-	flowRatePercentage		int,
-	length					int,
+	client *octoprintApis.Client,
+	isForward bool,
+	parentWindow *gtk.Window,
+	flowRatePercentage int,
+	length int,
 ) {
 	var action string
 	if isForward {
@@ -25,15 +23,10 @@ func Extrude(
 		action = "retract"
 	}
 
-	if CheckIfHotendTemperatureIsTooLow(client, extruderId, action, parentWindow) {
+	if CheckIfHotendTemperatureIsTooLow(client, action, parentWindow) {
 		logger.Error("filament.Extrude() - temperature is too low")
 		// No need to display an error - CheckIfHotendTemperatureIsTooLow() displays an error to the user
 		// if the temperature is too low.
-		return
-	}
-
-	if err := SelectTool(client, extruderId); err != nil {
-		// TODO: display error?
 		return
 	}
 
@@ -47,25 +40,9 @@ func Extrude(
 	}
 }
 
-func SelectTool(
-	client					*octoprintApis.Client,
-	extruderId				string,
-) error {
-	cmd := &octoprintApis.ToolSelectRequest{}
-	cmd.Tool = extruderId
-
-	logger.Infof("filament.SelectTool() - changing tool to %s", cmd.Tool)
-	if err := cmd.Do(client); err != nil {
-		logger.LogError("filament.SelectTool()", "Go(ToolSelectRequest)", err)
-		return err
-	}
-
-	return nil
-}
-
 func SetFlowRate(
-	client					*octoprintApis.Client,
-	flowRatePercentage		int,
+	client *octoprintApis.Client,
+	flowRatePercentage int,
 ) error {
 	cmd := &octoprintApis.ToolFlowRateRequest{}
 	cmd.Factor = flowRatePercentage
@@ -80,9 +57,9 @@ func SetFlowRate(
 }
 
 func SendExtrudeRrequest(
-	client					*octoprintApis.Client,
-	isForward				bool,
-	length					int,
+	client *octoprintApis.Client,
+	isForward bool,
+	length int,
 ) error {
 	cmd := &octoprintApis.ToolExtrudeRequest{}
 	if isForward {
@@ -98,19 +75,4 @@ func SendExtrudeRrequest(
 	}
 
 	return nil
-}
-
-func FilamentManagerPluginIsInstalled(
-	client *octoprintApis.Client,
-) bool {
-	plugin := GetPluginInfo(client, "filamentmanager")
-	if plugin == nil {
-		return false
-	}
-
-	if (plugin.IsEnabled == false) {
-		return false
-	}
-
-	return true
 }

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/Z-Bolt/OctoScreen/domain"
 	"github.com/Z-Bolt/OctoScreen/logger"
-	"github.com/Z-Bolt/OctoScreen/octoprintApis"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 	"github.com/Z-Bolt/OctoScreen/utils"
 	"github.com/gotk3/gotk3/gtk"
@@ -41,12 +41,12 @@ type ToolButton struct {
 
 	isHeating bool
 	tool      string
-	printer   *octoprintApis.Client
+	printer   *domain.PrinterService
 }
 
 func CreateToolButton(
 	index int,
-	printer *octoprintApis.Client,
+	printer *domain.PrinterService,
 ) *ToolButton {
 	imageFileName := ToolImageFileName(index)
 	toolName := ToolName(index)
@@ -94,7 +94,6 @@ func (this *ToolButton) clicked() {
 
 	var (
 		target float64
-		err    error
 	)
 
 	if this.isHeating {
@@ -104,14 +103,12 @@ func (this *ToolButton) clicked() {
 	}
 
 	if this.tool == "bed" {
-		cmd := &octoprintApis.BedTargetRequest{Target: target}
-		err = cmd.Do(this.printer)
+		err := this.printer.SetBedTemperature(target)
 		if err != nil {
 			logger.LogError("ToolButton.clicked()", "Do(BedTargetRequest)", err)
 		}
 	} else {
-		cmd := &octoprintApis.ToolTargetRequest{Targets: map[string]float64{this.tool: target}}
-		err = cmd.Do(this.printer)
+		err := this.printer.SetHotendTemperature(target)
 		if err != nil {
 			logger.LogError("ToolButton.clicked()", "Do(ToolTargetRequest)", err)
 		}

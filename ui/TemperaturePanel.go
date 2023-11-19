@@ -1,45 +1,45 @@
 package ui
 
 import (
+	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 
 	// "github.com/Z-Bolt/OctoScreen/interfaces"
 	"github.com/Z-Bolt/OctoScreen/logger"
+	"github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 	"github.com/Z-Bolt/OctoScreen/uiWidgets"
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
 
-
 type temperaturePanel struct {
 	CommonPanel
 
-	backgroundTask					*utils.BackgroundTask
-
 	// First row
-	decreaseButton					*uiWidgets.TemperatureIncreaseButton
-	selectHotendStepButton			*uiWidgets.SelectToolStepButton
-	temperatureAmountStepButton		*uiWidgets.TemperatureAmountStepButton
-	increaseButton					*uiWidgets.TemperatureIncreaseButton
+	decreaseButton              *uiWidgets.TemperatureIncreaseButton
+	selectHotendStepButton      *uiWidgets.SelectToolStepButton
+	temperatureAmountStepButton *uiWidgets.TemperatureAmountStepButton
+	increaseButton              *uiWidgets.TemperatureIncreaseButton
 
 	// Second row
-	coolDownButton					*uiWidgets.CoolDownButton
-	temperatureStatusBox			*uiWidgets.TemperatureStatusBox
+	coolDownButton       *uiWidgets.CoolDownButton
+	temperatureStatusBox *uiWidgets.TemperatureStatusBox
 
 	// Third row
-	presetsButton					*gtk.Button
+	presetsButton *gtk.Button
 }
 
 var temperaturePanelInstance *temperaturePanel
 
 func GetTemperaturePanelInstance(
-	ui				*UI,
+	ui *UI,
 ) *temperaturePanel {
 	if temperaturePanelInstance == nil {
-		temperaturePanelInstance = &temperaturePanel {
+		temperaturePanelInstance = &temperaturePanel{
 			CommonPanel: CreateCommonPanel("TemperaturePanel", ui),
 		}
 		temperaturePanelInstance.initialize()
-		temperaturePanelInstance.createBackgroundTask()
+
+		go temperaturePanelInstance.consumeStateUpdates(ui.Printer.GetStateUpdates())
 	}
 
 	return temperaturePanelInstance
@@ -51,7 +51,6 @@ func (this *temperaturePanel) initialize() {
 	// Create the step buttons first, since they are needed by some of the other controls.
 	this.selectHotendStepButton = uiWidgets.CreateSelectHotendStepButton(this.UI.Client, true, 1, nil)
 	this.temperatureAmountStepButton = uiWidgets.CreateTemperatureAmountStepButton(2, nil)
-
 
 	// First row
 	this.decreaseButton = uiWidgets.CreateTemperatureIncreaseButton(
@@ -74,7 +73,6 @@ func (this *temperaturePanel) initialize() {
 	)
 	this.Grid().Attach(this.increaseButton, 3, 0, 1, 1)
 
-
 	// Second row
 	this.coolDownButton = uiWidgets.CreateCoolDownButton(this.UI.Client, nil)
 	this.Grid().Attach(this.coolDownButton, 0, 1, 1, 1)
@@ -82,34 +80,24 @@ func (this *temperaturePanel) initialize() {
 	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client, true, true)
 	this.Grid().Attach(this.temperatureStatusBox, 1, 1, 2, 1)
 
-
 	// Third row
-	this.presetsButton = utils.MustButtonImageStyle("Presets", "heat-up.svg",  "color2", this.showTemperaturePresetsPanel)
+	this.presetsButton = utils.MustButtonImageStyle("Presets", "heat-up.svg", "color2", this.showTemperaturePresetsPanel)
 	this.Grid().Attach(this.presetsButton, 0, 2, 1, 1)
 }
 
-func (this *temperaturePanel) createBackgroundTask() {
-	logger.TraceEnter("TemperaturePanel.createBackgroundTask()")
+func (this *temperaturePanel) consumeStateUpdates(ch chan *dataModels.FullStateResponse) {
+	logger.TraceEnter("TemperaturePanel.consumeStateUpdates()")
 
-	// Default timeout of 1 second.
-	duration := utils.GetExperimentalFrequency(1, "EXPERIMENTAL_IDLE_UPDATE_FREQUENCY")
-	this.backgroundTask = utils.CreateBackgroundTask(duration, this.update)
-	// Update the UI every second, but the data is only updated once every 10 seconds.
-	// See OctoPrintResponseManager.update(). 
-	this.backgroundTask.Start()
+	for fullStateResponse := range ch {
+		glib.IdleAdd(func() {
+			this.updateTemperature(fullStateResponse)
+		})
+	}
 
-	logger.TraceLeave("TemperaturePanel.createBackgroundTask()")
+	logger.TraceLeave("TemperaturePanel.consumeStateUpdates()")
 }
 
-func (this *temperaturePanel) update() {
-	logger.TraceEnter("TemperaturePanel.update()")
-
-	this.updateTemperature()
-
-	logger.TraceLeave("TemperaturePanel.update()")
-}
-
-func (this *temperaturePanel) updateTemperature() {
+func (this *temperaturePanel) updateTemperature(fullStateResponse *dataModels.FullStateResponse) {
 	logger.TraceEnter("TemperaturePanel.updateTemperature()")
 
 	octoPrintResponseManager := GetOctoPrintResponseManagerInstance(this.UI)
@@ -119,7 +107,7 @@ func (this *temperaturePanel) updateTemperature() {
 		return
 	}
 
-	this.temperatureStatusBox.UpdateTemperatureData(octoPrintResponseManager.FullStateResponse.Temperature.CurrentTemperatureData)
+	this.temperatureStatusBox.UpdateTemperatureData(fullStateResponse.Temperature.CurrentTemperatureData)
 
 	logger.TraceLeave("TemperaturePanel.updateTemperature()")
 }

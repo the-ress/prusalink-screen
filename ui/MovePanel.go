@@ -12,16 +12,16 @@ import (
 
 type movePanel struct {
 	CommonPanel
-	amountToMoveStepButton    *uiWidgets.AmountToMoveStepButton
+	amountToMoveStepButton *uiWidgets.AmountToMoveStepButton
 }
 
 var movePanelInstance *movePanel
 
 func GetMovePanelInstance(
-	ui				*UI,
+	ui *UI,
 ) *movePanel {
 	if movePanelInstance == nil {
-		instance := &movePanel {
+		instance := &movePanel{
 			CommonPanel: CreateCommonPanel("MovePanel", ui),
 		}
 		instance.initialize()
@@ -37,36 +37,14 @@ func (this *movePanel) initialize() {
 	// Create the step button first, since it is needed by some of the other controls.
 	this.amountToMoveStepButton = uiWidgets.CreateAmountToMoveStepButton(1, nil)
 
-	xAxisInverted, yAxisInverted, zAxisInverted := false, false, false
-	if this.UI.Settings != nil {
-		xAxisInverted = this.UI.Settings.XAxisInverted
-		yAxisInverted = this.UI.Settings.YAxisInverted
-		zAxisInverted = this.UI.Settings.ZAxisInverted
-	}
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X-", "move-x-.svg", dataModels.XAxis, -1), 0, 1, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X+", "move-x+.svg", dataModels.XAxis, 1), 2, 1, 1, 1)
 
-	if xAxisInverted {
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X-", "move-x-.svg", dataModels.XAxis,  1), 0, 1, 1, 1)
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X+", "move-x+.svg", dataModels.XAxis, -1), 2, 1, 1, 1)
-	} else {
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X-", "move-x-.svg", dataModels.XAxis, -1), 0, 1, 1, 1)
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X+", "move-x+.svg", dataModels.XAxis,  1), 2, 1, 1, 1)
-	}
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y+", "move-y+.svg", dataModels.YAxis, 1), 1, 0, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y-", "move-y-.svg", dataModels.YAxis, -1), 1, 2, 1, 1)
 
-	if yAxisInverted {
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y+", "move-y+.svg", dataModels.YAxis, -1), 1, 0, 1, 1)
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y-", "move-y-.svg", dataModels.YAxis,  1), 1, 2, 1, 1)
-	} else {
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y+", "move-y+.svg", dataModels.YAxis,  1), 1, 0, 1, 1)
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y-", "move-y-.svg", dataModels.YAxis, -1), 1, 2, 1, 1)
-	}
-
-	if zAxisInverted {
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z+", "move-z+.svg", dataModels.ZAxis, -1), 3, 0, 1, 1)
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z-", "move-z-.svg", dataModels.ZAxis,  1), 3, 1, 1, 1)
-	} else {
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z+", "move-z+.svg", dataModels.ZAxis,  1), 3, 0, 1, 1)
-		this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z-", "move-z-.svg", dataModels.ZAxis, -1), 3, 1, 1, 1)
-	}
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z+", "move-z+.svg", dataModels.ZAxis, 1), 3, 0, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z-", "move-z-.svg", dataModels.ZAxis, -1), 3, 1, 1, 1)
 
 	this.Grid().Attach(this.amountToMoveStepButton, 1, 1, 1, 1)
 }

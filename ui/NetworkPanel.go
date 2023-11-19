@@ -3,12 +3,13 @@ package ui
 import (
 	"fmt"
 	"net"
+
 	// "os"
 	// "strconv"
 	// "time"
 
-	"pifke.org/wpasupplicant"
 	"github.com/gotk3/gotk3/gtk"
+	"pifke.org/wpasupplicant"
 
 	// "github.com/Z-Bolt/OctoScreen/interfaces"
 	"github.com/Z-Bolt/OctoScreen/logger"
@@ -16,25 +17,26 @@ import (
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
 
-
 type networkPanel struct {
 	CommonPanel
-	listBox					*gtk.Box
-	netStatus				*gtk.Label
-	wifiStatus				*gtk.Label
-	overrideForDebugging	bool
+	listBox              *gtk.Box
+	netStatus            *gtk.Label
+	wifiStatus           *gtk.Label
+	backgroundTask       *utils.BackgroundTask
+	overrideForDebugging bool
 }
 
 var networkPanelInstance *networkPanel
 
 func GetNetworkPanelInstance(
-	ui				*UI,
+	ui *UI,
 ) *networkPanel {
 	if networkPanelInstance == nil {
-		instance := &networkPanel {
+		instance := &networkPanel{
 			CommonPanel: CreateCommonPanel("NetworkPanel", ui),
 		}
 		instance.initialize()
+		instance.createBackgroundTask()
 
 		networkPanelInstance = instance
 	}
@@ -47,7 +49,29 @@ func (this *networkPanel) initialize() {
 	this.Grid().Attach(this.createLeftBar(), 4, 0, 3, 1)
 
 	// TODO: make sure overrideForDebugging is set to false before checking in.
-	this.overrideForDebugging = false;
+	this.overrideForDebugging = false
+}
+
+func (this *networkPanel) createBackgroundTask() {
+	logger.TraceEnter("NetworkPanel.createBackgroundTask()")
+
+	// Default timeout of 30 seconds.
+	duration := utils.GetExperimentalFrequency(30, "EXPERIMENTAL_NETWORK_UPDATE_FREQUENCY")
+	this.backgroundTask = utils.CreateBackgroundTask(duration, this.update)
+
+	logger.TraceLeave("NetworkPanel.createBackgroundTask()")
+}
+
+func (this *networkPanel) Show() {
+	if this.backgroundTask != nil {
+		this.backgroundTask.Start()
+	}
+}
+
+func (this *networkPanel) Hide() {
+	if this.backgroundTask != nil {
+		this.backgroundTask.Close()
+	}
 }
 
 func (this *networkPanel) update() {
@@ -123,7 +147,7 @@ func (this *networkPanel) setWiFiStatusText(wpa wpasupplicant.Conn) {
 
 func (this *networkPanel) setNetworkListItems(wpa wpasupplicant.Conn) {
 	if this.overrideForDebugging {
-		ssids := []string {
+		ssids := []string{
 			"Vodafone-750C",
 			"KabelBox-4E80",
 			"Vodafone Hotspot",

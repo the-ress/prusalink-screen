@@ -11,29 +11,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-var cachedExtruderCount = 1
-var cachedHasSharedNozzle = false
-
-const MAX_EXTRUDER_COUNT = 5
-
-func GetExtruderCount(client *octoprintApis.Client) int {
-	return cachedExtruderCount
-}
-
-func GetHotendCount(client *octoprintApis.Client) int {
-	if cachedHasSharedNozzle {
-		return 1
-	} else if cachedExtruderCount > MAX_EXTRUDER_COUNT {
-		return MAX_EXTRUDER_COUNT
-	}
-
-	return cachedExtruderCount
-}
-
-func GetHasSharedNozzle(client *octoprintApis.Client) bool {
-	return cachedHasSharedNozzle
-}
-
 func GetDisplayNameForTool(toolName string) string {
 	// Since this is such a hack, lets add some bounds checking
 	if toolName == "" {
@@ -136,7 +113,7 @@ func GetCurrentTemperatureData(client *octoprintApis.Client) (map[string]dataMod
 	return temperatureDataResponse.TemperatureStateResponse.CurrentTemperatureData, nil
 }
 
-func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, extruderId, action string, parentWindow *gtk.Window) bool {
+func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, action string, parentWindow *gtk.Window) bool {
 	logger.TraceEnter("Tools.CheckIfHotendTemperatureIsTooLow()")
 
 	currentTemperatureData, err := GetCurrentTemperatureData(client)
@@ -146,7 +123,7 @@ func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, extruderId, 
 		return true
 	}
 
-	temperatureData := currentTemperatureData[extruderId]
+	temperatureData := currentTemperatureData["tool0"]
 
 	// If the temperature of the hotend is too low, display an error.
 	if HotendTemperatureIsTooLow(temperatureData, action, parentWindow) {
@@ -165,48 +142,20 @@ func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, extruderId, 
 	return false
 }
 
-func GetToolheadFileName(hotendIndex, hotendCount int) string {
-	strImageFileName := ""
-	if hotendIndex == 1 && hotendCount == 1 {
-		strImageFileName = "toolhead.svg"
-	} else {
-		strImageFileName = fmt.Sprintf("toolhead-%d.svg", hotendIndex)
-	}
-
-	return strImageFileName
+func GetToolheadFileName() string {
+	return "toolhead.svg"
 }
 
-func GetExtruderFileName(hotendIndex, hotendCount int) string {
-	strImageFileName := ""
-	if hotendIndex == 1 && hotendCount == 1 {
-		strImageFileName = "extruder-typeB.svg"
-	} else {
-		strImageFileName = fmt.Sprintf("extruder-typeB-%d.svg", hotendIndex)
-	}
-
-	return strImageFileName
+func GetExtruderFileName() string {
+	return "extruder-typeB.svg"
 }
 
-func GetHotendFileName(hotendIndex, hotendCount int) string {
-	strImageFileName := ""
-	if hotendIndex == 1 && hotendCount == 1 {
-		strImageFileName = "hotend.svg"
-	} else {
-		strImageFileName = fmt.Sprintf("hotend-%d.svg", hotendIndex)
-	}
-
-	return strImageFileName
+func GetHotendFileName() string {
+	return "hotend.svg"
 }
 
-func GetNozzleFileName(hotendIndex, hotendCount int) string {
-	strImageFileName := ""
-	if hotendIndex == 1 && hotendCount == 1 {
-		strImageFileName = "nozzle.svg"
-	} else {
-		strImageFileName = fmt.Sprintf("nozzle-%d.svg", hotendIndex)
-	}
-
-	return strImageFileName
+func GetNozzleFileName() string {
+	return "nozzle.svg"
 }
 
 func GetTemperatureDataString(temperatureData dataModels.TemperatureData) string {
@@ -233,23 +182,4 @@ func HotendTemperatureIsTooLow(
 	}
 
 	return false
-}
-
-func GetPluginInfo(client *octoprintApis.Client, pluginName string) *dataModels.Plugin {
-	request := octoprintApis.PluginManagerInfoRequest{}
-
-	pluginManagerInfoResponse, err := request.Do(client)
-	if err != nil {
-		logger.LogError("GetPluginInfo()", "PluginManagerInfoRequest.Do()", err)
-		return nil
-	}
-
-	for i := 0; i < len(pluginManagerInfoResponse.Plugins); i++ {
-		plugin := pluginManagerInfoResponse.Plugins[i]
-		if strings.Compare(plugin.Key, pluginName) == 0 {
-			return &plugin
-		}
-	}
-
-	return nil
 }

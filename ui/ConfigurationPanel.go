@@ -45,10 +45,6 @@ func (this *configurationPanel) initialize() {
 	this.Grid().Attach(systemButton, 3, 0, 1, 1)
 }
 
-func (this *configurationPanel) showZOffsetCalibrationPanel() {
-	this.UI.GoToPanel(GetZOffsetCalibrationPanelInstance(this.UI))
-}
-
 func (this *configurationPanel) showNetworkPanel() {
 	this.UI.GoToPanel(GetNetworkPanelInstance(this.UI))
 }

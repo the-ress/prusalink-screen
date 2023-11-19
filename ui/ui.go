@@ -12,6 +12,7 @@ import (
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
 
+	"github.com/Z-Bolt/OctoScreen/domain"
 	"github.com/Z-Bolt/OctoScreen/interfaces"
 	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis"
@@ -25,8 +26,9 @@ type UI struct {
 
 	PanelHistory    *stack.Stack
 	Client          *octoprintApis.Client
+	Printer         *domain.PrinterService
 	ConnectionState dataModels.ConnectionState
-	Settings        *dataModels.OctoScreenSettingsResponse
+	MenuStructure   []dataModels.MenuItem
 
 	UiState                  UiState
 	WaitingForUserToContinue bool
@@ -60,12 +62,14 @@ func CreateUi() *UI {
 		panic("the window's height was not specified")
 	}
 
+	client := octoprintApis.NewClient(endpoint, key)
 	instance := &UI{
 		PanelHistory:               stack.New(),
-		Client:                     octoprintApis.NewClient(endpoint, key),
+		Client:                     client,
+		Printer:                    domain.NewPrinterService(client),
 		NotificationsBox:           uiWidgets.NewNotificationsBox(),
 		OctoPrintPluginIsAvailable: false,
-		Settings:                   nil,
+		MenuStructure:              nil,
 		UiState:                    Uninitialized,
 		WaitingForUserToContinue:   false,
 		window:                     utils.MustWindow(gtk.WINDOW_TOPLEVEL),
@@ -168,62 +172,8 @@ func (this *UI) loadStyle() {
 }
 
 func (this *UI) Update() {
-	logger.TraceEnter("ui.Update()")
-	connectionManager := utils.GetConnectionManagerInstance(this.Client)
-	if connectionManager.IsConnectedToOctoPrint == true {
-		if this.Settings == nil {
-			this.loadSettings()
-		}
-	}
-
-	logger.TraceLeave("ui.Update()")
-}
-
-func (this *UI) loadSettings() {
-	logger.TraceEnter("ui.loadSettings()")
-
-	if this.Settings != nil {
-		logger.Error("ui.loadSettings() - this.Settings has already been set")
-		logger.TraceLeave("ui.loadSettings()")
-		return
-	}
-
-	settingsResponse, err := (&octoprintApis.OctoScreenSettingsRequest{}).Do(this.Client)
-	if err != nil {
-		text := err.Error()
-		if strings.Contains(strings.ToLower(text), "unexpected status code: 404") {
-			// The call to GetSettings is also used to determine whether or not the
-			// OctoScreen plug-in is available.  If calling GetSettings returns
-			// a 404, the plug-in isn't available.
-			logger.Info("The OctoScreen plug-in is not available")
-		} else {
-			// If we get back any other kind of error, something bad happened, so log an error.
-			logger.LogError("ui.loadSettings()", "Do(GetSettingsRequest)", err)
-		}
-
-		this.OctoPrintPluginIsAvailable = false
-		// Use default settings
-		this.Settings = &dataModels.OctoScreenSettingsResponse{
-			FilamentInLength:  100,
-			FilamentOutLength: 100,
-			ToolChanger:       false,
-			XAxisInverted:     false,
-			YAxisInverted:     false,
-			ZAxisInverted:     false,
-			MenuStructure:     nil,
-		}
-	} else {
-		logger.Info("The call to GetSettings succeeded and the OctoPrint plug-in is available")
-		this.OctoPrintPluginIsAvailable = true
-
-		if !this.validateMenuItems(settingsResponse.MenuStructure, "", true) {
-			settingsResponse.MenuStructure = nil
-		}
-
-		this.Settings = settingsResponse
-	}
-
-	logger.TraceLeave("ui.loadSettings()")
+	// logger.TraceEnter("ui.Update()")
+	// logger.TraceLeave("ui.Update()")
 }
 
 func (this *UI) validateMenuItems(menuItems []dataModels.MenuItem, name string, isRoot bool) bool {

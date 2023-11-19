@@ -6,29 +6,45 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gotk3/gotk3/glib"
 	"github.com/Z-Bolt/OctoScreen/logger"
+	"github.com/gotk3/gotk3/glib"
 )
-
 
 type BackgroundTask struct {
 	sync.Mutex
 
-	duration			time.Duration
-	task				func()
-	close				chan bool
-	isRunning			bool
+	duration  time.Duration
+	task      func()
+	close     chan bool
+	isRunning bool
+	uiThread  bool
 }
 
 func CreateBackgroundTask(
-	duration			time.Duration,
-	task				func(),
+	duration time.Duration,
+	task func(),
 ) *BackgroundTask {
 	thisInstance := &BackgroundTask{
-		task:			task,
-		duration: 		duration,
-		close: 			make(chan bool, 1),
-		isRunning:		false,
+		task:      task,
+		duration:  duration,
+		close:     make(chan bool, 1),
+		isRunning: false,
+		uiThread:  true,
+	}
+
+	return thisInstance
+}
+
+func CreateBackgroundTaskAnyThread(
+	duration time.Duration,
+	task func(),
+) *BackgroundTask {
+	thisInstance := &BackgroundTask{
+		task:      task,
+		duration:  duration,
+		close:     make(chan bool, 1),
+		isRunning: false,
+		uiThread:  false,
 	}
 
 	return thisInstance
@@ -62,24 +78,27 @@ func (this *BackgroundTask) loop() {
 	defer ticker.Stop()
 	for {
 		select {
-			case <-ticker.C:
-				this.execute()
+		case <-ticker.C:
+			this.execute()
 
-			case <-this.close:
-				logger.Info("Background task closed")
-				return
+		case <-this.close:
+			logger.Info("Background task closed")
+			return
 		}
 	}
 }
 
 func (this *BackgroundTask) execute() {
-	glib.IdleAdd(this.task)
+	if this.uiThread {
+		glib.IdleAdd(this.task)
+	} else {
+		this.task()
+	}
 }
 
-
 func GetExperimentalFrequency(
-	defaultTimeout				int,
-	experimentalConfigName		string,
+	defaultTimeout int,
+	experimentalConfigName string,
 ) time.Duration {
 	duration := time.Second * time.Duration(defaultTimeout)
 
@@ -98,6 +117,6 @@ func GetExperimentalFrequency(
 			logger.LogError("BackgroundTask.GetExperimentalFrequency()", "strconv.Atoi()", err)
 		}
 	}
-	
+
 	return duration
 }

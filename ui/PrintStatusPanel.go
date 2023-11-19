@@ -83,55 +83,10 @@ func (this *printStatusPanel) initialize() {
 }
 
 func (this *printStatusPanel) createToolButtons() {
-	// Note: The creation and initialization of the tool buttons in IdleStatusPanel and
-	// PrintStatusPanel look similar, but there are subtle differences between the two
-	// and they can't be reused.
-	hotendCount := utils.GetHotendCount(this.UI.Client)
-	if hotendCount == 1 {
-		this.tool0Button = uiWidgets.CreateToolPrintingButton(0)
-	} else {
-		this.tool0Button = uiWidgets.CreateToolPrintingButton(1)
-	}
-	this.tool1Button = uiWidgets.CreateToolPrintingButton(2)
-	this.tool2Button = uiWidgets.CreateToolPrintingButton(3)
-	this.tool3Button = uiWidgets.CreateToolPrintingButton(4)
-	this.tool4Button = uiWidgets.CreateToolPrintingButton(5)
+	this.tool0Button = uiWidgets.CreateToolPrintingButton(0)
 	this.bedButton = uiWidgets.CreateToolPrintingButton(-1)
-
-	switch hotendCount {
-	case 1:
-		this.Grid().Attach(this.tool0Button, 0, 0, 2, 1)
-		this.Grid().Attach(this.bedButton, 0, 1, 2, 1)
-
-	case 2:
-		this.Grid().Attach(this.tool0Button, 0, 0, 1, 1)
-		this.Grid().Attach(this.tool1Button, 1, 0, 1, 1)
-		this.Grid().Attach(this.bedButton, 0, 1, 2, 1)
-
-	case 3:
-		this.Grid().Attach(this.tool0Button, 0, 0, 1, 1)
-		this.Grid().Attach(this.tool1Button, 1, 0, 1, 1)
-		this.Grid().Attach(this.tool2Button, 0, 1, 1, 1)
-		this.Grid().Attach(this.bedButton, 1, 1, 1, 1)
-
-	case 4:
-		this.Grid().Attach(this.tool0Button, 0, 0, 1, 1)
-		this.Grid().Attach(this.tool1Button, 1, 0, 1, 1)
-		this.Grid().Attach(this.tool2Button, 0, 1, 1, 1)
-		this.Grid().Attach(this.tool3Button, 1, 1, 1, 1)
-		this.Grid().Attach(this.bedButton, 0, 2, 1, 1)
-
-	case 5:
-		this.Grid().Attach(this.tool0Button, 0, 0, 1, 1)
-		this.Grid().Attach(this.tool1Button, 1, 0, 1, 1)
-		this.Grid().Attach(this.tool2Button, 0, 1, 1, 1)
-		this.Grid().Attach(this.tool3Button, 1, 1, 1, 1)
-		// this.Grid().Attach(this.tool4Button, 0, 2, 1, 1)
-		// this.Grid().Attach(this.bedButton,   1, 2, 1, 1)
-		// ...there's not enough sceen realestate for the 5th toolhead button,
-		// ...so use the same layout as the "4 toolhead" version:
-		this.Grid().Attach(this.bedButton, 0, 2, 1, 1)
-	}
+	this.Grid().Attach(this.tool0Button, 0, 0, 2, 1)
+	this.Grid().Attach(this.bedButton, 0, 1, 2, 1)
 }
 
 func (this *printStatusPanel) createInfoBox() *gtk.Box {

@@ -1,7 +1,7 @@
 package uiWidgets
 
 import (
-	"fmt"
+
 	// "strconv"
 	// "strings"
 
@@ -16,26 +16,16 @@ func CreateSelectHotendStepButton(
 	colorVariation int,
 	clicked func(),
 ) *SelectToolStepButton {
-	hotendCount := utils.GetHotendCount(client)
-
 	var steps []Step
-	for i := 0; i < hotendCount; i++ {
-		label := ""
-		if i == 0 && hotendCount == 1 {
-			label = "Hotend"
-		} else {
-			label = fmt.Sprintf("Hotend %d", i+1)
-		}
 
-		step := Step{
-			label,
-			utils.GetHotendFileName(i+1, hotendCount),
-			nil,
-			fmt.Sprintf("tool%d", i),
-		}
-
-		steps = append(steps, step)
+	step := Step{
+		"Hotend",
+		utils.GetHotendFileName(),
+		nil,
+		"tool0",
 	}
+
+	steps = append(steps, step)
 
 	if includeBed {
 		steps = append(steps, Step{"Bed", "bed.svg", nil, "bed"})

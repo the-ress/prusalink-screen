@@ -5,6 +5,7 @@ import (
 
 	"github.com/Z-Bolt/OctoScreen/logger"
 	"github.com/Z-Bolt/OctoScreen/octoprintApis"
+
 	// "github.com/Z-Bolt/OctoScreen/octoprintApis/dataModels"
 	"github.com/Z-Bolt/OctoScreen/utils"
 )
@@ -14,8 +15,8 @@ type OctoScreenPluginInfoBox struct {
 }
 
 func CreateOctoScreenPluginInfoBox(
-	client							*octoprintApis.Client,
-	octoPrintPluginIsInstalled		bool,
+	client *octoprintApis.Client,
+	octoPrintPluginIsInstalled bool,
 ) *OctoScreenPluginInfoBox {
 	logger.TraceEnter("OctoScreenPluginInfoBox.CreateOctoScreenPluginInfoBox()")
 
@@ -23,30 +24,31 @@ func CreateOctoScreenPluginInfoBox(
 	str1 := "OctoScreen plugin"
 
 	str2 := ""
-	if octoPrintPluginIsInstalled {
-		pluginManagerInfoResponse, err := (&octoprintApis.PluginManagerInfoRequest{}).Do(client)
-		if err != nil {
-			logger.LogError("CreateOctoScreenPluginInfoBox()", "PluginManagerInfoRequest.Do()", err)
-			str2 = "Error"
-		} else {
-			found := false
-			for i := 0; i < len(pluginManagerInfoResponse.Plugins) && !found; i++ {
-				plugin := pluginManagerInfoResponse.Plugins[i]
-				if plugin.Key == "zbolt_octoscreen" {
-					found = true
-					str2 = plugin.Version
-				}
-			}
+	// if octoPrintPluginIsInstalled {
+	// 	pluginManagerInfoResponse, err := (&octoprintApis.PluginManagerInfoRequest{}).Do(client)
+	// 	if err != nil {
+	// 		logger.LogError("CreateOctoScreenPluginInfoBox()", "PluginManagerInfoRequest.Do()", err)
+	// 		str2 = "Error"
+	// 	} else {
+	// 		found := false
+	// 		for i := 0; i < len(pluginManagerInfoResponse.Plugins) && !found; i++ {
+	// 			plugin := pluginManagerInfoResponse.Plugins[i]
+	// 			if plugin.Key == "zbolt_octoscreen" {
+	// 				found = true
+	// 				str2 = plugin.Version
+	// 			}
+	// 		}
 
-			if !found {
-				// OK, the plugin is there, we just can't get the info from a GET request.
-				// Default to displaying, "Present"
-				str2 = "Present"
-			}
-		}
-	} else {
-		str2 = "Not installed"
-	}
+	// 		if !found {
+	// 			// OK, the plugin is there, we just can't get the info from a GET request.
+	// 			// Default to displaying, "Present"
+	// 			str2 = "Present"
+	// 		}
+	// 	}
+	// } else {
+	// 	str2 = "Not installed"
+	// }
+	str2 = "Not installed"
 
 	base := CreateSystemInfoBox(
 		client,
@@ -56,8 +58,8 @@ func CreateOctoScreenPluginInfoBox(
 		"",
 	)
 
-	instance := &OctoScreenPluginInfoBox {
-		SystemInfoBox:			base,
+	instance := &OctoScreenPluginInfoBox{
+		SystemInfoBox: base,
 	}
 
 	logger.TraceLeave("OctoScreenPluginInfoBox.CreateOctoScreenPluginInfoBox()")
