@@ -5,7 +5,7 @@
 # Note: the protocol (http:// or https://) is required.
 # If the setting for OCTOPRINT_HOST does not contain the protocol,
 # an error will be displayed when OctoScreen starts.
-OCTOPRINT_HOST=http://localhost:5000
+OCTOPRINT_HOST=http://localhost
 
 
 # OctoScreen expects an API key to be supplied. The API key can

@@ -113,5 +113,5 @@ func (this *temperaturePanel) updateTemperature(fullStateResponse *dataModels.Fu
 }
 
 func (this *temperaturePanel) showTemperaturePresetsPanel() {
-	this.UI.GoToPanel(GetTemperaturePresetsPanelInstance(this.UI, this.selectHotendStepButton))
+	this.UI.GoToPanel(GetTemperaturePresetsPanelInstance(this.UI))
 }

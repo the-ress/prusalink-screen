@@ -95,7 +95,7 @@ func (this *Client) doRequest(
 		return nil, err
 	}
 
-	req.Header.Add("Host", "localhost:5000")
+	req.Header.Add("Host", "localhost")
 	req.Header.Add("Accept", "*/*")
 
 	userAgent := fmt.Sprintf("go-octoprint/%s", Version)

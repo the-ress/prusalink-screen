@@ -45,7 +45,7 @@ type FileResponse struct {
 	Size uint64 `json:"size"`
 
 	// Date when this file was uploaded.  Only available for `local` files.
-	Date JsonTime `json:"date"`
+	Date JsonTime `json:"m_timestamp"`
 
 	// Origin of the file, `local` when stored in OctoPrint’s `uploads` folder,
 	// `sdcard` when stored on the printer’s SD card (if available).

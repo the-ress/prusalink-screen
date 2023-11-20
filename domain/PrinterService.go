@@ -9,6 +9,7 @@ import (
 	// "github.com/gotk3/gotk3/glib"
 
 	"sync"
+	"time"
 
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/octoprintApis"
@@ -54,6 +55,11 @@ func (this *PrinterService) createBackgroundTask() {
 	this.backgroundTask.Start()
 
 	logger.TraceLeave("PrinterService.createBackgroundTask()")
+}
+
+func (this *PrinterService) updateStateAfterTemperatureChange() {
+	time.Sleep(time.Second * 2)
+	this.updateState()
 }
 
 func (this *PrinterService) updateState() {
@@ -135,12 +141,24 @@ func (this *PrinterService) SetHotendTemperature(target float64) error {
 	cmd := &octoprintApis.ToolTargetRequest{
 		Targets: map[string]float64{"tool0": target},
 	}
-	return cmd.Do(this.client)
+	err := cmd.Do(this.client)
+
+	if err == nil {
+		go this.updateStateAfterTemperatureChange()
+	}
+
+	return err
 }
 
 func (this *PrinterService) SetBedTemperature(target float64) error {
 	cmd := &octoprintApis.BedTargetRequest{Target: target}
-	return cmd.Do(this.client)
+	err := cmd.Do(this.client)
+
+	if err == nil {
+		go this.updateStateAfterTemperatureChange()
+	}
+
+	return err
 }
 
 func (this *PrinterService) IsConnected() bool {
