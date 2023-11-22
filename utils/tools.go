@@ -39,9 +39,7 @@ func GetDisplayNameForTool(toolName string) string {
 func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
 	logger.TraceEnter("Tools.GetToolTarget()")
 
-	fullStateRespone, err := (&octoprintApis.FullStateRequest{
-		Exclude: []string{"sd", "state"},
-	}).Do(client)
+	fullStateRespone, err := (&octoprintApis.FullStateRequest{}).Do(client)
 
 	if err != nil {
 		logger.LogError("tools.GetToolTarget()", "Do(StateRequest)", err)
@@ -49,11 +47,7 @@ func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
 		return -1, err
 	}
 
-	currentTemperatureData, ok := fullStateRespone.Temperature.CurrentTemperatureData[tool]
-	if !ok {
-		logger.TraceLeave("Tools.GetToolTarget()")
-		return -1, fmt.Errorf("unable to find tool %q", tool)
-	}
+	currentTemperatureData := fullStateRespone.Temperature.Nozzle
 
 	logger.TraceLeave("Tools.GetToolTarget()")
 	return currentTemperatureData.Target, nil
@@ -73,12 +67,12 @@ func SetToolTarget(client *octoprintApis.Client, tool string, target float64) er
 	return cmd.Do(client)
 }
 
-func GetCurrentTemperatureData(client *octoprintApis.Client) (map[string]dataModels.TemperatureData, error) {
+func GetCurrentTemperatureData(client *octoprintApis.Client) (*dataModels.TemperatureData, error) {
 	logger.TraceEnter("Tools.GetCurrentTemperatureData()")
 
-	temperatureDataResponse, err := (&octoprintApis.TemperatureDataRequest{}).Do(client)
+	temperatureDataResponse, err := (&octoprintApis.FullStateRequest{}).Do(client)
 	if err != nil {
-		logger.LogError("tools.GetCurrentTemperatureData()", "Do(TemperatureDataRequest)", err)
+		logger.LogError("tools.GetCurrentTemperatureData()", "Do(FullStateRequest)", err)
 		logger.TraceLeave("Tools.GetCurrentTemperatureData()")
 		return nil, err
 	}
@@ -89,28 +83,8 @@ func GetCurrentTemperatureData(client *octoprintApis.Client) (map[string]dataMod
 		return nil, err
 	}
 
-	// Can't test for temperatureDataResponse.TemperatureStateResponse == nil (type mismatch)
-
-	if temperatureDataResponse.TemperatureStateResponse.CurrentTemperatureData == nil {
-		logger.Error("tools.GetCurrentTemperatureData() - temperatureDataResponse.TemperatureStateResponse.CurrentTemperatureData is nil")
-		logger.TraceLeave("Tools.GetCurrentTemperatureData()")
-		return nil, err
-	}
-
-	/*
-			// Comment out the following to test for multiple hotends:
-			currentTemperatureData := make(map[string]dataModels.TemperatureData)
-			currentTemperatureData["bed"] = dataModels.TemperatureData{Actual:0.1, Target:0, Offset:0}
-		    currentTemperatureData["tool0"] = dataModels.TemperatureData{Actual:10.1, Target:0, Offset:0}
-		    currentTemperatureData["tool1"] = dataModels.TemperatureData{Actual:20.1, Target:0, Offset:0}
-		    currentTemperatureData["tool2"] = dataModels.TemperatureData{Actual:30.1, Target:0, Offset:0}
-		    currentTemperatureData["tool3"] = dataModels.TemperatureData{Actual:40.1, Target:0, Offset:0}
-		    currentTemperatureData["tool4"] = dataModels.TemperatureData{Actual:50.1, Target:0, Offset:0}
-			return currentTemperatureData, nil
-	*/
-
 	logger.TraceLeave("Tools.GetCurrentTemperatureData()")
-	return temperatureDataResponse.TemperatureStateResponse.CurrentTemperatureData, nil
+	return &temperatureDataResponse.Temperature, nil
 }
 
 func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, action string, parentWindow *gtk.Window) bool {
@@ -123,7 +97,7 @@ func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, action strin
 		return true
 	}
 
-	temperatureData := currentTemperatureData["tool0"]
+	temperatureData := currentTemperatureData.Nozzle
 
 	// If the temperature of the hotend is too low, display an error.
 	if HotendTemperatureIsTooLow(temperatureData, action, parentWindow) {
@@ -158,7 +132,7 @@ func GetNozzleFileName() string {
 	return "nozzle.svg"
 }
 
-func GetTemperatureDataString(temperatureData dataModels.TemperatureData) string {
+func GetTemperatureDataString(temperatureData dataModels.ToolTemperatureData) string {
 	return fmt.Sprintf("%.0f°C / %.0f°C", temperatureData.Actual, temperatureData.Target)
 }
 
@@ -167,7 +141,7 @@ func GetTemperatureDataString(temperatureData dataModels.TemperatureData) string
 const MIN_HOTEND_TEMPERATURE = 150.0
 
 func HotendTemperatureIsTooLow(
-	temperatureData dataModels.TemperatureData,
+	temperatureData dataModels.ToolTemperatureData,
 	action string,
 	parentWindow *gtk.Window,
 ) bool {

@@ -64,8 +64,12 @@ func (this *Client) doJsonRequest(
 	// Use the following only for debugging.
 	if logger.LogLevel() == "debug" {
 		logger.Debug("Client.doJsonRequest() - converting bytes to JSON")
-		json := string(bytes)
-		logger.Debugf("JSON response: %s", json)
+		if bytes != nil {
+			json := string(bytes)
+			logger.Debugf("JSON response: %s", json)
+		} else {
+			logger.Debug("JSON response: nil")
+		}
 	}
 
 	logger.TraceLeave("Client.doJsonRequest()")

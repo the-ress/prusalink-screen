@@ -4,8 +4,6 @@ import (
 	// "time"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/interfaces"
-	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/octoprintApis"
 	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
@@ -13,70 +11,38 @@ import (
 
 type TemperatureStatusBox struct {
 	*gtk.Box
-	interfaces.ITemperatureDataDisplay
 
-	client          *octoprintApis.Client
-	labelWithImages map[string]*utils.LabelWithImage
+	client      *octoprintApis.Client
+	nozzleLabel *utils.LabelWithImage
+	bedLabel    *utils.LabelWithImage
 }
 
 func CreateTemperatureStatusBox(
 	client *octoprintApis.Client,
-	includeHotends bool,
-	includeBed bool,
 ) *TemperatureStatusBox {
-	if !includeHotends && !includeBed {
-		logger.Error("TemperatureStatusBox.CreateTemperatureStatusBox() - both includeToolheads and includeBed are false, but at least one needs to be true")
-		return nil
-	}
-
-	currentTemperatureData, err := utils.GetCurrentTemperatureData(client)
-	if err != nil {
-		logger.LogError("TemperatureStatusBox.CreateTemperatureStatusBox()", "GetCurrentTemperatureData(client)", err)
-		return nil
-	}
-
 	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 
 	instance := &TemperatureStatusBox{
-		Box:             base,
-		client:          client,
-		labelWithImages: map[string]*utils.LabelWithImage{},
+		Box:    base,
+		client: client,
 	}
 
 	instance.SetVAlign(gtk.ALIGN_CENTER)
 	instance.SetHAlign(gtk.ALIGN_CENTER)
 
-	var bedTemperatureData *dataModels.TemperatureData = nil
-	for key, temperatureData := range currentTemperatureData {
-		switch key {
-		case "bed":
-			bedTemperatureData = &temperatureData
-		case "tool0":
-			if includeHotends {
-				strImageFileName := utils.GetNozzleFileName()
-				instance.labelWithImages[key] = utils.MustLabelWithImage(strImageFileName, "")
-				instance.Add(instance.labelWithImages[key])
-			}
-		}
-	}
+	instance.nozzleLabel = utils.MustLabelWithImage(utils.GetNozzleFileName(), "")
+	instance.Add(instance.nozzleLabel)
 
-	if bedTemperatureData != nil {
-		if includeBed {
-			instance.labelWithImages["bed"] = utils.MustLabelWithImage("bed.svg", "")
-			instance.Add(instance.labelWithImages["bed"])
-		}
-	}
+	instance.bedLabel = utils.MustLabelWithImage("bed.svg", "")
+	instance.Add(instance.bedLabel)
 
 	return instance
 }
 
-// interfaces.ITemperatureDataDisplay
-func (this *TemperatureStatusBox) UpdateTemperatureData(currentTemperatureData map[string]dataModels.TemperatureData) {
-	for key, temperatureData := range currentTemperatureData {
-		if labelWithImage, ok := this.labelWithImages[key]; ok {
-			temperatureDataString := utils.GetTemperatureDataString(temperatureData)
-			labelWithImage.Label.SetText(temperatureDataString)
-			labelWithImage.ShowAll()
-		}
-	}
+func (this *TemperatureStatusBox) UpdateTemperatureData(temperatureData dataModels.TemperatureData) {
+	this.nozzleLabel.Label.SetText(utils.GetTemperatureDataString(temperatureData.Nozzle))
+	this.nozzleLabel.ShowAll()
+
+	this.bedLabel.Label.SetText(utils.GetTemperatureDataString(temperatureData.Bed))
+	this.bedLabel.ShowAll()
 }

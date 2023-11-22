@@ -39,14 +39,13 @@ type UI struct {
 	window                     *gtk.Window
 	time                       time.Time
 
-	width              int
-	height             int
-	scaleFactor        int
-	connectionAttempts int
+	width       int
+	height      int
+	scaleFactor int
 }
 
-func CreateUi() *UI {
-	logger.TraceEnter("ui.CreateUi()")
+func NewUi() *UI {
+	logger.TraceEnter("ui.NewUi()")
 
 	octoScreenConfig := utils.GetOctoScreenConfigInstance()
 	endpoint := octoScreenConfig.OctoPrintConfig.Host
@@ -80,7 +79,7 @@ func CreateUi() *UI {
 
 	instance.initialize1()
 
-	logger.TraceLeave("ui.CreateUi()")
+	logger.TraceLeave("ui.NewUi()")
 
 	return instance
 }
@@ -123,7 +122,7 @@ func (this *UI) initialize1() {
 	}
 
 	this.initialize2()
-	GoToConnectionPanel(this)
+	this.GoToConnectionPanel()
 
 	logger.TraceLeave("ui.initialize1()")
 }
@@ -148,8 +147,6 @@ func (this *UI) initialize2() {
 
 	this.grid = utils.MustGrid()
 	overlay.Add(this.grid)
-
-	GetOctoPrintResponseManagerInstance(this)
 
 	logger.TraceLeave("ui.initialize2()")
 }
@@ -305,6 +302,14 @@ func (this *UI) RemovePanelFromUi(panel interfaces.IPanel) {
 	this.grid.Remove(panel.Grid())
 
 	logger.TraceLeave("ui.RemovePanelFromUi()")
+}
+
+func (this *UI) GoToConnectionPanel() {
+	if this.UiState != Connecting {
+		this.UiState = Connecting
+		instance := getConnectionPanelInstance(this, this.Printer)
+		this.GoToPanel(instance)
+	}
 }
 
 func (this *UI) errToUser(err error) string {

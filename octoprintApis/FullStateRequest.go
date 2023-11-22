@@ -3,8 +3,6 @@ package octoprintApis
 import (
 	// "bytes"
 	"encoding/json"
-	"fmt"
-	"strings"
 
 	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 )
@@ -12,28 +10,11 @@ import (
 const URIPrinter = "/api/printer"
 
 // FullStateRequest retrieves the current state of the printer.
-type FullStateRequest struct {
-	// bytes if true retrieve the temperature history.
-	IncludeHistory bool
-
-	// Limit limits the amount of returned history data points.
-	Limit int
-
-	// Exclude list of fields to exclude from the response (e.g. if not
-	// needed by the client). Valid values to supply here are `temperature`,
-	// `sd` and `state`.
-	Exclude []string
-}
+type FullStateRequest struct{}
 
 // Do sends an API request and returns the API response.
 func (cmd *FullStateRequest) Do(c *Client) (*dataModels.FullStateResponse, error) {
-	uri := fmt.Sprintf(
-		"%s?history=%t&limit=%d&exclude=%s",
-		URIPrinter,
-		cmd.IncludeHistory,
-		cmd.Limit,
-		strings.Join(cmd.Exclude, ","),
-	)
+	uri := URIPrinter
 
 	// log.Printf("TODO-Remove: StateRequest (FullStateResponse) uri is: %s", uri)
 	//StateRequest uri is: %s /api/printer?history=true&limit=1&exclude=sd,state

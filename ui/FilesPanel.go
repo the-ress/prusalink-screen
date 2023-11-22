@@ -158,7 +158,7 @@ func (this *filesPanel) sdIsReady() bool {
 	}
 
 	sdState, err := (&octoprintApis.SdStateRequest{}).Do(this.UI.Client)
-	if err == nil && sdState.IsReady == true {
+	if err == nil && sdState.IsReady {
 		return true
 	} else {
 		return false
@@ -435,7 +435,7 @@ func (this *filesPanel) handleFolderClick(button *gtk.Button, rowIndex int) {
 
 	/*
 		isFolder := fileResponse.IsFolder()
-		if isFolder == true {
+		if isFolder {
 			logger.Debugf("FilesPanel.handleFolderClick() - isFolder is true")
 		} else {
 			logger.Debugf("FilesPanel.handleFolderClick() - isFolder is false")

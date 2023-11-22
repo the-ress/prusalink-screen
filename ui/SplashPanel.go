@@ -100,7 +100,6 @@ func (this *SplashPanel) releaseFromHold() {
 	ctx.AddClass("hidden")
 
 	this.Label.SetText("Loading...")
-	this.UI.connectionAttempts = 0
 
 	logger.TraceLeave("SplashPanel.releaseFromHold()")
 }

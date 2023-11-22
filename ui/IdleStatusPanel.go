@@ -10,6 +10,7 @@ import (
 
 	// "github.com/the-ress/prusalink-screen/octoprintApis"
 	"github.com/gotk3/gotk3/glib"
+	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
@@ -100,42 +101,21 @@ func (this *idleStatusPanel) showTools() {
 	logger.TraceLeave("IdleStatusPanel.showTools()")
 }
 
-func (this *idleStatusPanel) consumeStateUpdates(ch chan *dataModels.FullStateResponse) {
+func (this *idleStatusPanel) consumeStateUpdates(ch chan domain.PrinterState) {
 	logger.TraceEnter("IdleStatusPanel.consumeStateUpdates()")
 
-	for fullStateResponse := range ch {
+	for state := range ch {
 		glib.IdleAdd(func() {
-			this.updateTemperature(fullStateResponse)
+			if state.IsConnectedToPrinter {
+				this.updateTemperature(state.Temperature)
+			}
 		})
 	}
 
 	logger.TraceLeave("IdleStatusPanel.consumeStateUpdates()")
 }
 
-func (this *idleStatusPanel) updateTemperature(fullStateResponse *dataModels.FullStateResponse) {
-	logger.TraceEnter("IdleStatusPanel.updateTemperature()")
-
-	octoPrintResponseManager := GetOctoPrintResponseManagerInstance(this.UI)
-	if octoPrintResponseManager.IsConnected() != true {
-		// If not connected, do nothing and leave.
-		logger.TraceLeave("IdleStatusPanel.updateTemperature() (not connected)")
-		return
-	}
-
-	for tool, currentTemperatureData := range fullStateResponse.Temperature.CurrentTemperatureData {
-		switch tool {
-		case "bed":
-			logger.Debug("Updating the UI's bed temp")
-			this.bedButton.SetTemperatures(currentTemperatureData)
-
-		case "tool0":
-			logger.Debug("Updating the UI's tool0 temp")
-			this.tool0Button.SetTemperatures(currentTemperatureData)
-
-		default:
-			logger.Errorf("IdleStatusPanel.updateTemperature() - GetOctoPrintResponseManagerInstance() returned an unknown tool: %q", tool)
-		}
-	}
-
-	logger.TraceLeave("IdleStatusPanel.updateTemperature()")
+func (this *idleStatusPanel) updateTemperature(temperature dataModels.TemperatureData) {
+	this.tool0Button.SetTemperatures(temperature.Nozzle)
+	this.bedButton.SetTemperatures(temperature.Bed)
 }

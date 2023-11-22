@@ -18,6 +18,11 @@ func (cmd *JobRequest) Do(client *Client) (*dataModels.JobResponse, error) {
 		return nil, err
 	}
 
+	if bytes == nil {
+		// No active job
+		return nil, nil
+	}
+
 	response := &dataModels.JobResponse{}
 	if err := json.Unmarshal(bytes, response); err != nil {
 		return nil, err

@@ -3,6 +3,7 @@ package uiWidgets
 import (
 	"fmt"
 
+	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/octoprintApis"
 
@@ -16,6 +17,7 @@ type OctoPrintInfoBox struct {
 
 func CreateOctoPrintInfoBox(
 	client *octoprintApis.Client,
+	printer *domain.PrinterService,
 	logoWidth int,
 ) *OctoPrintInfoBox {
 	logger.TraceEnter("OctoPrintInfoBox.CreateOctoPrintInfoBox()")
@@ -26,9 +28,8 @@ func CreateOctoPrintInfoBox(
 	server := "Unknown?"
 	apiVersion := "Unknown?"
 
-	connectionManager := utils.GetConnectionManagerInstance(client)
-	if connectionManager.IsConnectedToOctoPrint == true {
-		// Only call if we're connected to OctoPrint
+	if printer.GetState().IsConnectedToPrusaLink {
+		// Only call if we're connected to PrusaLink
 		versionResponse, err := (&octoprintApis.VersionRequest{}).Do(client)
 		if err != nil {
 			logger.LogError("OctoPrintInfoBox.CreateOctoPrintInfoBox()", "VersionRequest.Do()", err)

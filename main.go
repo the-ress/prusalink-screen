@@ -72,7 +72,7 @@ func main() {
 	initializeGtk()
 
 	octoScreenConfig := utils.GetOctoScreenConfigInstance()
-	if octoScreenConfig.RequiredConfigsAreSet() != true {
+	if !octoScreenConfig.RequiredConfigsAreSet() {
 		message := fmt.Sprintf("Required setting is not set: %s", octoScreenConfig.MissingRequiredConfigName())
 		panic(message)
 	}
@@ -85,7 +85,7 @@ func main() {
 
 	setCursor(octoScreenConfig.DisplayCursor)
 
-	_ = ui.CreateUi()
+	_ = ui.NewUi()
 
 	gtk.Main()
 
@@ -134,7 +134,7 @@ func setCursor(displayCursor bool) {
 	// ...and "No mouse pointer when running xinit"
 	// (https://www.raspberrypi.org/forums/viewtopic.php?t=139546)
 
-	if displayCursor != true {
+	if !displayCursor {
 		return
 	}
 

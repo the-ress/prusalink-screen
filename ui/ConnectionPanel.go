@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"fmt"
+
 	// "os"
 	// "strconv"
 	// "strings"
@@ -9,8 +9,10 @@ import (
 	// "time"
 
 	"github.com/gotk3/gotk3/gdk"
+	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 
+	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/interfaces"
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/utils"
@@ -20,7 +22,7 @@ type connectionPanel struct {
 	CommonPanel
 
 	IsCheckingConnection bool
-	backgroundTask       *utils.BackgroundTask
+	printer              *domain.PrinterService
 
 	// First row
 	Logo *gtk.Image
@@ -35,28 +37,22 @@ type connectionPanel struct {
 
 var connectionPanelInstance *connectionPanel
 
-func getConnectionPanelInstance(ui *UI) *connectionPanel {
+func getConnectionPanelInstance(ui *UI, printer *domain.PrinterService) *connectionPanel {
 	logger.TraceEnter("ConnectionPanel.getConnectionPanelInstance()")
 
 	if connectionPanelInstance == nil {
 		connectionPanelInstance = &connectionPanel{
 			CommonPanel:          CreateCommonPanel("ConnectionPanel", ui),
 			IsCheckingConnection: true,
+			printer:              printer,
 		}
 		connectionPanelInstance.initialize()
-		connectionPanelInstance.createBackgroundTask()
+
+		go connectionPanelInstance.consumeStateUpdates(ui.Printer.GetStateUpdates())
 	}
 
 	logger.TraceLeave("ConnectionPanel.getConnectionPanelInstance()")
 	return connectionPanelInstance
-}
-
-func GoToConnectionPanel(ui *UI) {
-	if ui.UiState != Connecting {
-		ui.UiState = Connecting
-		instance := getConnectionPanelInstance(ui)
-		ui.GoToPanel(instance)
-	}
 }
 
 func (this *connectionPanel) initialize() {
@@ -135,59 +131,47 @@ func (this *connectionPanel) displayButtons(display bool) {
 	}
 }
 
-func (this *connectionPanel) createBackgroundTask() {
-	logger.TraceEnter("ConnectionPanel.createBackgroundTask()")
-
-	this.initializeConnectionState()
-
-	// Default timeout of 5 seconds.
-	duration := utils.GetExperimentalFrequency(5, "EXPERIMENTAL_CONNECTION_PANEL_UPDATE_FREQUENCY")
-	this.backgroundTask = utils.CreateBackgroundTask(duration, this.update)
-	this.backgroundTask.Start()
-
-	logger.TraceLeave("ConnectionPanel.createBackgroundTask()")
+func (this *connectionPanel) consumeStateUpdates(ch chan domain.PrinterState) {
+	for state := range ch {
+		glib.IdleAdd(func() {
+			this.update(state)
+		})
+	}
 }
 
-func (this *connectionPanel) update() {
-	logger.TraceEnter("ConnectionPanel.update()")
-
-	connectionManager := utils.GetConnectionManagerInstance(this.UI.Client)
-	// connectionManager.UpdateStatus()
-
+func (this *connectionPanel) update(state domain.PrinterState) {
 	msg := ""
-	if connectionManager.IsConnectedToOctoPrint != true {
-		if connectionManager.ConnectAttempts >= utils.MAX_CONNECTION_ATTEMPTS {
-			msg = fmt.Sprintf("Unable to connect to OctoPrint")
-			this.displayButtons(true)
-		} else if connectionManager.ConnectAttempts == 0 {
-			msg = fmt.Sprintf("Attempting to connect to OctoPrint")
-		} else {
-			msg = fmt.Sprintf("Attempting to connect to OctoPrint...%d", connectionManager.ConnectAttempts+1)
-		}
-	} else if connectionManager.IsConnectedToPrinter != true {
-		if connectionManager.ConnectAttempts >= utils.MAX_CONNECTION_ATTEMPTS {
-			msg = fmt.Sprintf("Unable to connect to the printer")
-			this.displayButtons(true)
-		} else if connectionManager.ConnectAttempts == 0 {
-			msg = fmt.Sprintf("Attempting to connect to the printer")
-		} else {
-			msg = fmt.Sprintf("Attempting to connect to the printer...%d", connectionManager.ConnectAttempts+1)
-		}
+	if !state.IsConnectedToPrusaLink {
+		msg = "Attempting to connect to PrusaLink"
+		// if connectionManager.ConnectAttempts >= utils.MAX_CONNECTION_ATTEMPTS {
+		// 	msg = fmt.Sprintf("Unable to connect to PrusaLink")
+		// 	this.displayButtons(true)
+		// } else if connectionManager.ConnectAttempts == 0 {
+		// 	msg = fmt.Sprintf("Attempting to connect to PrusaLink")
+		// } else {
+		// 	msg = fmt.Sprintf("Attempting to connect to PrusaLink...%d", connectionManager.ConnectAttempts+1)
+		// }
+	} else if !state.IsConnectedToPrinter {
+		msg = "Attempting to connect to the printer"
+		// if connectionManager.ConnectAttempts >= utils.MAX_CONNECTION_ATTEMPTS {
+		// 	msg = fmt.Sprintf("Unable to connect to the printer")
+		// 	this.displayButtons(true)
+		// } else if connectionManager.ConnectAttempts == 0 {
+		// 	msg = fmt.Sprintf("Attempting to connect to the printer")
+		// } else {
+		// 	msg = fmt.Sprintf("Attempting to connect to the printer...%d", connectionManager.ConnectAttempts+1)
+		// }
 	}
 
 	if msg != "" {
-		logger.Debugf("Attempting to connect.  The message is: '%s'", msg)
+		logger.Debugf("Attempting to connect. The message is: '%s'", msg)
 		this.Label.SetText(msg)
-		connectionManager.UpdateStatus()
-		logger.TraceLeave("ConnectionPanel.update()")
 		return
 	}
 
-	octoPrintResponseManager := GetOctoPrintResponseManagerInstance(this.UI)
-	if octoPrintResponseManager.IsConnected() != true {
+	if !state.IsConnectedToPrinter {
 		// If not connected, do nothing and leave.
-		logger.Debugf("Not connected, now leaving")
-		logger.TraceLeave("ConnectionPanel.update()")
+		logger.Debug("Not connected, now leaving")
 		return
 	}
 
@@ -195,21 +179,14 @@ func (this *connectionPanel) update() {
 	currentPanelName := currentPanel.Name()
 
 	logger.Debugf("ConnectionPanel.update() - current panel is '%s'", currentPanelName)
-	logger.Debugf("ConnectionPanel.update() - current response state is '%s'", octoPrintResponseManager.FullStateResponse.State.Text)
-
-	if octoPrintResponseManager.FullStateResponse.State.Text == "" {
-		// ?????, do nothing and leave.
-		logger.Warnf("ConnectionPanel.update() - FullStateResponse.State.Text is empty")
-		logger.TraceLeave("ConnectionPanel.update()")
-		return
-	}
+	logger.Debugf("ConnectionPanel.update() - current response state is '%s'", state.Text)
 
 	this.UI.Update()
 
-	switch octoPrintResponseManager.FullStateResponse.State.Text {
+	switch state.Text {
 	case "Operational": // aka Idle
 		if this.UI.UiState != Idle {
-			if this.UI.WaitingForUserToContinue != true {
+			if !this.UI.WaitingForUserToContinue {
 				this.UI.UiState = Idle
 				GoToIdleStatusPanel(this.UI)
 			}
@@ -232,13 +209,10 @@ func (this *connectionPanel) update() {
 		break
 
 	default:
-		logger.Debugf("unknown FullStateResponse.State: '%s'", octoPrintResponseManager.FullStateResponse.State.Text)
-		logger.Debugf("State flags is: '%+v'", octoPrintResponseManager.FullStateResponse.State.Flags)
+		logger.Debugf("State flags is: '%+v'", state.Flags)
 		logger.Debugf("UiState is: '%s'", this.UI.UiState)
-		logger.Panicf("unknown FullStateResponse.State: '%s'", octoPrintResponseManager.FullStateResponse.State.Text)
+		logger.Panicf("unknown state: '%s'", state.Text)
 	}
-
-	logger.TraceLeave("ConnectionPanel.update()")
 }
 
 func (this *connectionPanel) initializeConnectionState() {
@@ -247,8 +221,7 @@ func (this *connectionPanel) initializeConnectionState() {
 	this.displayButtons(false)
 
 	this.Label.SetText("Attempting to connect to OctoPrint")
-	connectionManager := utils.GetConnectionManagerInstance(this.UI.Client)
-	connectionManager.ReInitializeConnectionState()
+	// this.printer.GetConnectionManager().SetDisconnected()
 
 	logger.TraceLeave("ConnectionPanel.initializeConnectionState()")
 }

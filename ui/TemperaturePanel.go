@@ -5,8 +5,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 
 	// "github.com/the-ress/prusalink-screen/interfaces"
-	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -77,7 +76,7 @@ func (this *temperaturePanel) initialize() {
 	this.coolDownButton = uiWidgets.CreateCoolDownButton(this.UI.Client, nil)
 	this.Grid().Attach(this.coolDownButton, 0, 1, 1, 1)
 
-	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client, true, true)
+	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client)
 	this.Grid().Attach(this.temperatureStatusBox, 1, 1, 2, 1)
 
 	// Third row
@@ -85,31 +84,14 @@ func (this *temperaturePanel) initialize() {
 	this.Grid().Attach(this.presetsButton, 0, 2, 1, 1)
 }
 
-func (this *temperaturePanel) consumeStateUpdates(ch chan *dataModels.FullStateResponse) {
-	logger.TraceEnter("TemperaturePanel.consumeStateUpdates()")
-
-	for fullStateResponse := range ch {
-		glib.IdleAdd(func() {
-			this.updateTemperature(fullStateResponse)
-		})
+func (this *temperaturePanel) consumeStateUpdates(ch chan domain.PrinterState) {
+	for state := range ch {
+		if state.IsConnectedToPrinter {
+			glib.IdleAdd(func() {
+				this.temperatureStatusBox.UpdateTemperatureData(state.Temperature)
+			})
+		}
 	}
-
-	logger.TraceLeave("TemperaturePanel.consumeStateUpdates()")
-}
-
-func (this *temperaturePanel) updateTemperature(fullStateResponse *dataModels.FullStateResponse) {
-	logger.TraceEnter("TemperaturePanel.updateTemperature()")
-
-	octoPrintResponseManager := GetOctoPrintResponseManagerInstance(this.UI)
-	if octoPrintResponseManager.IsConnected() != true {
-		// If not connected, do nothing and leave.
-		logger.TraceLeave("TemperaturePanel.updateTemperature() (not connected)")
-		return
-	}
-
-	this.temperatureStatusBox.UpdateTemperatureData(fullStateResponse.Temperature.CurrentTemperatureData)
-
-	logger.TraceLeave("TemperaturePanel.updateTemperature()")
 }
 
 func (this *temperaturePanel) showTemperaturePresetsPanel() {

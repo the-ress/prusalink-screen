@@ -73,7 +73,7 @@ func (this *ToolButton) UpdateStatus(heating bool) {
 	this.isHeating = heating
 }
 
-func (this *ToolButton) SetTemperatures(temperatureData dataModels.TemperatureData) {
+func (this *ToolButton) SetTemperatures(temperatureData dataModels.ToolTemperatureData) {
 	text := utils.GetTemperatureDataString(temperatureData)
 	this.SetLabel(text)
 	this.UpdateStatus(temperatureData.Target > 0)
