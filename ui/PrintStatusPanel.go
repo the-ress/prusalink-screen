@@ -10,6 +10,7 @@ import (
 
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/gotk3/gotk3/pango"
 
 	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/logger"
@@ -93,6 +94,8 @@ func (this *printStatusPanel) createInfoBox() *gtk.Box {
 	this.fileLabelWithImage = utils.MustLabelWithImage("file-gcode.svg", "")
 	ctx, _ := this.fileLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
+	this.fileLabelWithImage.Label.SetEllipsize(pango.ELLIPSIZE_END)
+	this.fileLabelWithImage.Label.SetMarginEnd(this.Scaled(20))
 
 	this.timeLabelWithImage = utils.MustLabelWithImage("time.svg", "Print time:")
 	ctx, _ = this.timeLabelWithImage.GetStyleContext()
@@ -237,7 +240,6 @@ func (this *printStatusPanel) updateInfoBox(job *dataModels.JobResponse) {
 		jobFileName = job.File.DisplayName
 		jobFileName = strings.Replace(jobFileName, ".gcode", "", -1)
 		jobFileName = strings.Replace(jobFileName, ".gco", "", -1)
-		jobFileName = utils.TruncateString(jobFileName, 20)
 	}
 
 	this.fileLabelWithImage.Label.SetLabel(jobFileName)
