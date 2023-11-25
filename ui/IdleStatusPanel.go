@@ -38,11 +38,6 @@ func getIdleStatusPanelInstance(ui *UI) *idleStatusPanel {
 	return idleStatusPanelInstance
 }
 
-func GoToIdleStatusPanel(ui *UI) {
-	instance := getIdleStatusPanelInstance(ui)
-	ui.GoToPanel(instance)
-}
-
 func (this *idleStatusPanel) initialize() {
 	logger.TraceEnter("IdleStatusPanel.initialize()")
 

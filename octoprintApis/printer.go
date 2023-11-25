@@ -13,8 +13,6 @@ const PrinterPrintHeadApiUri = "/api/printer/printhead"
 const PrinterToolApiUri = "/api/printer/tool"
 const PrinterBedApiUri = "/api/printer/bed"
 const PrinterSdApiUri = "/api/printer/sd"
-const PrinterCommandApiUri = "/api/printer/command"
-const PrinterCommandCustomApiUri = "/api/printer/command/custom"
 
 var (
 	PrintErrors = StatusMapping{

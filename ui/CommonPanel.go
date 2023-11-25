@@ -12,7 +12,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 
 	// "github.com/the-ress/prusalink-screen/interfaces"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+
 	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -158,10 +158,4 @@ func (this *CommonPanel) arrangeMenuItems(
 			grid.Attach(button, (i % cols), i/cols, 1, 1)
 		}
 	}
-}
-
-func (this *CommonPanel) command(gcode string) error {
-	cmd := &octoprintApis.CommandRequest{}
-	cmd.Commands = []string{gcode}
-	return cmd.Do(this.UI.Client)
 }

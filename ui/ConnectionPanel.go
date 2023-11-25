@@ -13,7 +13,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 
 	"github.com/the-ress/prusalink-screen/domain"
-	"github.com/the-ress/prusalink-screen/interfaces"
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -140,7 +139,7 @@ func (this *connectionPanel) consumeStateUpdates(ch chan domain.PrinterState) {
 }
 
 func (this *connectionPanel) update(state domain.PrinterState) {
-	msg := ""
+	var msg string
 	if !state.IsConnectedToPrusaLink {
 		msg = "Attempting to connect to PrusaLink"
 		// if connectionManager.ConnectAttempts >= utils.MAX_CONNECTION_ATTEMPTS {
@@ -161,58 +160,11 @@ func (this *connectionPanel) update(state domain.PrinterState) {
 		// } else {
 		// 	msg = fmt.Sprintf("Attempting to connect to the printer...%d", connectionManager.ConnectAttempts+1)
 		// }
+	} else {
+		msg = "Connected"
 	}
 
-	if msg != "" {
-		logger.Debugf("Attempting to connect. The message is: '%s'", msg)
-		this.Label.SetText(msg)
-		return
-	}
-
-	if !state.IsConnectedToPrinter {
-		// If not connected, do nothing and leave.
-		logger.Debug("Not connected, now leaving")
-		return
-	}
-
-	currentPanel := this.UI.PanelHistory.Peek().(interfaces.IPanel)
-	currentPanelName := currentPanel.Name()
-
-	logger.Debugf("ConnectionPanel.update() - current panel is '%s'", currentPanelName)
-	logger.Debugf("ConnectionPanel.update() - current response state is '%s'", state.Text)
-
-	this.UI.Update()
-
-	switch state.Text {
-	case "Operational": // aka Idle
-		if this.UI.UiState != Idle {
-			if !this.UI.WaitingForUserToContinue {
-				this.UI.UiState = Idle
-				GoToIdleStatusPanel(this.UI)
-			}
-		}
-
-	case "Printing":
-		if this.UI.UiState != Printing {
-			this.UI.UiState = Printing
-			this.UI.WaitingForUserToContinue = true
-			GoToPrintStatusPanel(this.UI)
-		}
-
-	case "Cancelling":
-		break
-
-	case "Paused":
-		break
-
-	case "Busy":
-		break
-
-	default:
-		logger.Debugf("State flags is: '%+v'", state.Flags)
-		logger.Debugf("UiState is: '%s'", this.UI.UiState)
-		logger.Panicf("unknown state: '%s'", state.Text)
-	}
+	this.Label.SetText(msg)
 }
 
 func (this *connectionPanel) initializeConnectionState() {

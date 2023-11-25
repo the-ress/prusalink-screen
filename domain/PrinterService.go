@@ -36,8 +36,7 @@ func NewPrinterService(client *octoprintApis.Client) *PrinterService {
 func (this *PrinterService) createBackgroundTask() {
 	logger.TraceEnter("PrinterService.createBackgroundTask()")
 
-	// Default timeout of 10 seconds.
-	duration := utils.GetExperimentalFrequency(5, "EXPERIMENTAL_OCTO_PRINT_RESPONSE_MANGER_UPDATE_FREQUENCY")
+	duration := utils.GetExperimentalFrequency(1, "EXPERIMENTAL_OCTO_PRINT_RESPONSE_MANGER_UPDATE_FREQUENCY")
 	this.backgroundTask = utils.CreateBackgroundTaskAnyThread(duration, this.updateState)
 	this.backgroundTask.Start()
 

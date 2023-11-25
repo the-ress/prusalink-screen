@@ -37,20 +37,19 @@ func GetDisplayNameForTool(toolName string) string {
 }
 
 func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
-	logger.TraceEnter("Tools.GetToolTarget()")
 
 	fullStateRespone, err := (&octoprintApis.FullStateRequest{}).Do(client)
 
 	if err != nil {
 		logger.LogError("tools.GetToolTarget()", "Do(StateRequest)", err)
-		logger.TraceLeave("Tools.GetToolTarget()")
 		return -1, err
 	}
 
-	currentTemperatureData := fullStateRespone.Temperature.Nozzle
-
-	logger.TraceLeave("Tools.GetToolTarget()")
-	return currentTemperatureData.Target, nil
+	if tool == "bed" {
+		return fullStateRespone.Printer.TargetBed, nil
+	} else {
+		return fullStateRespone.Printer.TargetNozzle, nil
+	}
 }
 
 func SetToolTarget(client *octoprintApis.Client, tool string, target float64) error {
@@ -67,40 +66,36 @@ func SetToolTarget(client *octoprintApis.Client, tool string, target float64) er
 	return cmd.Do(client)
 }
 
-func GetCurrentTemperatureData(client *octoprintApis.Client) (*dataModels.TemperatureData, error) {
-	logger.TraceEnter("Tools.GetCurrentTemperatureData()")
-
+func GetNozzleTemperatureData(client *octoprintApis.Client) (*dataModels.ToolTemperatureData, error) {
 	temperatureDataResponse, err := (&octoprintApis.FullStateRequest{}).Do(client)
 	if err != nil {
 		logger.LogError("tools.GetCurrentTemperatureData()", "Do(FullStateRequest)", err)
-		logger.TraceLeave("Tools.GetCurrentTemperatureData()")
 		return nil, err
 	}
 
 	if temperatureDataResponse == nil {
 		logger.Error("tools.GetCurrentTemperatureData() - temperatureDataResponse is nil")
-		logger.TraceLeave("Tools.GetCurrentTemperatureData()")
 		return nil, err
 	}
 
-	logger.TraceLeave("Tools.GetCurrentTemperatureData()")
-	return &temperatureDataResponse.Temperature, nil
+	return &dataModels.ToolTemperatureData{
+		Actual: temperatureDataResponse.Printer.TempNozzle,
+		Target: temperatureDataResponse.Printer.TargetNozzle,
+	}, nil
 }
 
 func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, action string, parentWindow *gtk.Window) bool {
 	logger.TraceEnter("Tools.CheckIfHotendTemperatureIsTooLow()")
 
-	currentTemperatureData, err := GetCurrentTemperatureData(client)
+	temperatureData, err := GetNozzleTemperatureData(client)
 	if err != nil {
-		logger.LogError("tools.CurrentHotendTemperatureIsTooLow()", "GetCurrentTemperatureData()", err)
+		logger.LogError("tools.CurrentHotendTemperatureIsTooLow()", "GetNozzleTemperatureData()", err)
 		logger.TraceLeave("Tools.CheckIfHotendTemperatureIsTooLow()")
 		return true
 	}
 
-	temperatureData := currentTemperatureData.Nozzle
-
 	// If the temperature of the hotend is too low, display an error.
-	if HotendTemperatureIsTooLow(temperatureData, action, parentWindow) {
+	if HotendTemperatureIsTooLow(*temperatureData, action, parentWindow) {
 		errorMessage := fmt.Sprintf(
 			"The temperature of the hotend is too low to %s.\n(the current temperature is only %.0f°C)\n\nPlease increase the temperature and try again.",
 			action,

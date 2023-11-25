@@ -11,15 +11,15 @@ import (
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
-type OctoPrintInfoBox struct {
+type PrusaLinkInfoBox struct {
 	*SystemInfoBox
 }
 
-func CreateOctoPrintInfoBox(
+func CreatePrusaLinkInfoBox(
 	client *octoprintApis.Client,
 	printer *domain.PrinterService,
 	logoWidth int,
-) *OctoPrintInfoBox {
+) *PrusaLinkInfoBox {
 	logger.TraceEnter("OctoPrintInfoBox.CreateOctoPrintInfoBox()")
 
 	logoHeight := int(float64(logoWidth) * 1.25)
@@ -47,7 +47,7 @@ func CreateOctoPrintInfoBox(
 		fmt.Sprintf("(API   %s)", apiVersion), // Use 3 spaces here... 1 space doesn't have enough kerning.
 	)
 
-	instance := &OctoPrintInfoBox{
+	instance := &PrusaLinkInfoBox{
 		SystemInfoBox: base,
 	}
 

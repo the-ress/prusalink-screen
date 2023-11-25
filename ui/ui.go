@@ -2,6 +2,8 @@ package ui
 
 import (
 	"fmt"
+	"slices"
+
 	// "os"
 	// "strconv"
 	"strings"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/golang-collections/collections/stack"
 	"github.com/gotk3/gotk3/gdk"
+	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 
 	"github.com/the-ress/prusalink-screen/domain"
@@ -30,8 +33,10 @@ type UI struct {
 	ConnectionState dataModels.ConnectionState
 	MenuStructure   []dataModels.MenuItem
 
-	UiState                  UiState
-	WaitingForUserToContinue bool
+	UiState      UiState
+	finishedIdle bool
+
+	currentState domain.PrinterState
 
 	OctoPrintPluginIsAvailable bool
 	NotificationsBox           *uiWidgets.NotificationsBox
@@ -70,7 +75,7 @@ func NewUi() *UI {
 		OctoPrintPluginIsAvailable: false,
 		MenuStructure:              nil,
 		UiState:                    Uninitialized,
-		WaitingForUserToContinue:   false,
+		finishedIdle:               false,
 		window:                     utils.MustWindow(gtk.WINDOW_TOPLEVEL),
 		time:                       time.Now(),
 		width:                      width,
@@ -122,9 +127,76 @@ func (this *UI) initialize1() {
 	}
 
 	this.initialize2()
-	this.GoToConnectionPanel()
+
+	go this.consumeStateUpdates(this.Printer.GetStateUpdates())
 
 	logger.TraceLeave("ui.initialize1()")
+}
+
+func (this *UI) consumeStateUpdates(ch chan domain.PrinterState) {
+	for state := range ch {
+		glib.IdleAdd(func() {
+			this.update(state)
+		})
+	}
+}
+
+func (this *UI) update(state domain.PrinterState) {
+	this.currentState = state
+	this.refresh()
+}
+
+func (this *UI) refresh() {
+	state := this.currentState
+
+	if this.PanelHistory.Peek() != nil {
+		currentPanel := this.PanelHistory.Peek().(interfaces.IPanel)
+		currentPanelName := currentPanel.Name()
+
+		logger.Debugf("ConnectionPanel.update() - current panel is '%s'", currentPanelName)
+		logger.Debugf("ConnectionPanel.update() - current response state is '%s'", state.Text)
+	}
+
+	if !state.IsConnectedToPrusaLink || !state.IsConnectedToPrinter {
+		if this.UiState != Connecting {
+			logger.Debugf("Switching to connecting state")
+			this.UiState = Connecting
+			this.GoToConnectionPanel()
+		}
+
+		return
+	}
+
+	isFinishedState := slices.Contains(dataModels.FINISHED_STATES, state.Text)
+
+	if slices.Contains(dataModels.IDLE_STATES, state.Text) ||
+		(this.finishedIdle && isFinishedState) {
+
+		if !isFinishedState {
+			this.finishedIdle = false
+		}
+
+		if this.UiState != Idle {
+			logger.Debugf("Switching to idle state")
+			this.UiState = Idle
+			this.GoToIdleStatusPanel()
+		}
+		return
+	} else if slices.Contains(dataModels.PRINTING_STATES, state.Text) {
+		if this.UiState != Printing {
+			logger.Debugf("Switching to printing state")
+
+			this.UiState = Printing
+			this.GoToPrintStatusPanel()
+		}
+		return
+	}
+	// TODO ERROR_STATES
+}
+
+func (this *UI) SetFinishedIdle() {
+	this.finishedIdle = true
+	this.refresh()
 }
 
 func (this *UI) initialize2() {
@@ -163,14 +235,9 @@ func (this *UI) loadStyle() {
 		return
 	}
 
-	gtk.AddProviderForScreen(screenDefault, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_USER)
+	gtk.AddProviderForScreen(screenDefault, cssProvider, uint(gtk.STYLE_PROVIDER_PRIORITY_USER))
 
 	logger.TraceLeave("ui.loadStyle()")
-}
-
-func (this *UI) Update() {
-	// logger.TraceEnter("ui.Update()")
-	// logger.TraceLeave("ui.Update()")
 }
 
 func (this *UI) validateMenuItems(menuItems []dataModels.MenuItem, name string, isRoot bool) bool {
@@ -305,11 +372,19 @@ func (this *UI) RemovePanelFromUi(panel interfaces.IPanel) {
 }
 
 func (this *UI) GoToConnectionPanel() {
-	if this.UiState != Connecting {
-		this.UiState = Connecting
-		instance := getConnectionPanelInstance(this, this.Printer)
-		this.GoToPanel(instance)
-	}
+	instance := getConnectionPanelInstance(this, this.Printer)
+	this.GoToPanel(instance)
+}
+
+func (this *UI) GoToIdleStatusPanel() {
+	instance := getIdleStatusPanelInstance(this)
+	this.GoToPanel(instance)
+}
+
+func (this *UI) GoToPrintStatusPanel() {
+	instance := getPrintStatusPanelInstance(this)
+	instance.progressBar.SetText("0%")
+	this.GoToPanel(instance)
 }
 
 func (this *UI) errToUser(err error) string {

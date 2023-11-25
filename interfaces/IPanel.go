@@ -4,7 +4,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-
 type IPanel interface {
 	// Initialize()
 	// AddButton()
@@ -20,5 +19,4 @@ type IPanel interface {
 	// 	items			[]dataModels.MenuItem,
 	// 	cols			int,
 	// )
-	// command(gcode string) error
 }

@@ -23,8 +23,6 @@ import (
 type printStatusPanel struct {
 	CommonPanel
 
-	PrintWasCanceled bool
-
 	// Tools
 	tool0Button *uiWidgets.ToolPrintingButton
 	tool1Button *uiWidgets.ToolPrintingButton
@@ -48,9 +46,12 @@ type printStatusPanel struct {
 
 	// Toolbar buttons
 	pauseButton     *gtk.Button
+	resumeButton    *gtk.Button
 	cancelButton    *gtk.Button
 	controlButton   *gtk.Button
 	completedButton *gtk.Button
+
+	currentJobId int
 }
 
 var printStatusPanelInstance *printStatusPanel
@@ -58,20 +59,14 @@ var printStatusPanelInstance *printStatusPanel
 func getPrintStatusPanelInstance(ui *UI) *printStatusPanel {
 	if printStatusPanelInstance == nil {
 		printStatusPanelInstance = &printStatusPanel{
-			CommonPanel:      CreateTopLevelCommonPanel("PrintStatusPanel", ui),
-			PrintWasCanceled: false,
+			CommonPanel:  CreateTopLevelCommonPanel("PrintStatusPanel", ui),
+			currentJobId: -1,
 		}
 		printStatusPanelInstance.initialize()
 		go printStatusPanelInstance.consumeStateUpdates(ui.Printer.GetStateUpdates())
 	}
 
 	return printStatusPanelInstance
-}
-
-func GoToPrintStatusPanel(ui *UI) {
-	instance := getPrintStatusPanelInstance(ui)
-	instance.progressBar.SetText("0%")
-	ui.GoToPanel(instance)
 }
 
 func (this *printStatusPanel) initialize() {
@@ -144,6 +139,13 @@ func (this *printStatusPanel) createToolBarButtons() {
 	)
 	this.Grid().Attach(this.pauseButton, 1, 2, 1, 1)
 
+	this.resumeButton = utils.MustButtonImageUsingFilePath(
+		"Resume",
+		"resume.svg",
+		this.handleResumeClicked,
+	)
+	this.Grid().Attach(this.resumeButton, 1, 2, 1, 1)
+
 	this.cancelButton = utils.MustButtonImageStyle(
 		"Cancel",
 		"stop.svg",
@@ -161,7 +163,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	this.Grid().Attach(this.controlButton, 3, 2, 1, 1)
 
 	this.completedButton = utils.MustButtonImageStyle(
-		"Completed",
+		"Done",
 		"complete.svg",
 		"color3",
 		this.handleCompleteClicked,
@@ -177,12 +179,13 @@ func (this *printStatusPanel) update(state domain.PrinterState) {
 		return
 	}
 
-	logger.Debugf("PrintStatusPanel.update() - job.State is %s", state.Job.State)
+	this.currentJobId = state.Job.Id
 
-	this.updateStates(state.Job)
-	this.updateInfoBox(state.Job)
-	this.updateProgress(state.Job)
-	this.updateToolBarButtons(state.Job)
+	logger.Debugf("PrintStatusPanel.update() - state.Text is %s", state.Text)
+
+	this.updateInfoBox(state)
+	this.updateProgress(state)
+	this.updateToolBarButtons(state.Text)
 }
 
 func (this *printStatusPanel) consumeStateUpdates(ch chan domain.PrinterState) {
@@ -195,45 +198,13 @@ func (this *printStatusPanel) consumeStateUpdates(ch chan domain.PrinterState) {
 	}
 }
 
-func (this *printStatusPanel) updateStates(job *dataModels.JobResponse) {
-	if job.State == "STOPPED" {
-		this.PrintWasCanceled = true
-	}
-
-	if job.State == "PRINTING" || job.State == "FINISHED" {
-		if float64(job.TimeRemaining) <= 0.0 {
-			// Special case for handling the buttons
-			this.pauseButton.SetSensitive(false)
-			this.pauseButton.Hide()
-
-			this.cancelButton.SetSensitive(false)
-			this.cancelButton.Hide()
-
-			this.controlButton.SetSensitive(false)
-			this.controlButton.Hide()
-
-			this.completedButton.Show()
-			this.completedButton.SetSensitive(true)
-
-			this.progressBar.Hide()
-
-			this.timeLeftLabelWithImage.Label.SetLabel("Print time left: 00:00:00")
-		}
-	}
-}
-
 func (this *printStatusPanel) updateToolTemperature(temperature dataModels.TemperatureData) {
 	this.tool0Button.SetLabel(utils.GetTemperatureDataString(temperature.Nozzle))
 	this.bedButton.SetLabel(utils.GetTemperatureDataString(temperature.Bed))
 }
 
-func (this *printStatusPanel) updateInfoBox(job *dataModels.JobResponse) {
-	logger.TraceEnter("PrintStatusPanel.updateInfoBox()")
-
-	if job.State != "PRINTING" {
-		logger.TraceLeave("PrintStatusPanel.updateInfoBox()")
-		return
-	}
+func (this *printStatusPanel) updateInfoBox(state domain.PrinterState) {
+	job := state.Job
 
 	jobFileName := "<i>not-set</i>"
 	if job.File.DisplayName != "" {
@@ -246,7 +217,8 @@ func (this *printStatusPanel) updateInfoBox(job *dataModels.JobResponse) {
 
 	var timeSpent string
 	var timeLeft string
-	if job.Progress == 100 {
+
+	if job.Progress == 100 && state.Text == dataModels.FINISHED {
 		timeSpent = fmt.Sprintf("Completed in %s", time.Duration(job.TimePrinting)*time.Second)
 		timeLeft = ""
 	} else {
@@ -260,44 +232,48 @@ func (this *printStatusPanel) updateInfoBox(job *dataModels.JobResponse) {
 		}
 	}
 
-	if job.TimePrinting == 0 {
+	if state.Text == dataModels.PRINTING && job.Progress < 100 && job.TimePrinting == 0 {
 		timeSpent = "Warming up..."
 	}
 
 	this.timeLabelWithImage.Label.SetLabel(timeSpent)
 	this.timeLeftLabelWithImage.Label.SetLabel(timeLeft)
-
-	logger.TraceLeave("PrintStatusPanel.updateInfoBox()")
+	if timeLeft != "" {
+		this.timeLeftLabelWithImage.Show()
+	} else {
+		this.timeLeftLabelWithImage.Hide()
+	}
 }
 
-func (this *printStatusPanel) updateProgress(job *dataModels.JobResponse) {
-	logger.TraceEnter("PrintStatusPanel.updateProgress()")
-	logger.Debugf("PrintStatusPanel.updateProgress() - job.State is: '%s'", job.State)
+func (this *printStatusPanel) updateProgress(state domain.PrinterState) {
+	logger.Debugf("PrintStatusPanel.updateProgress() - state.Text is: '%s'", state.Text)
 
-	if job.State != "PRINTING" {
-		this.progressBar.SetText(job.State)
-		logger.TraceLeave("PrintStatusPanel.updateProgress()")
+	if state.Text == dataModels.FINISHED {
+		this.progressBar.Hide()
+		return
+	}
+	this.progressBar.Show()
+
+	if state.Text != dataModels.PRINTING {
+		this.progressBar.SetText(state.Text.String())
 		return
 	}
 
-	progresBarFraction := job.Progress / 100.0
+	progresBarFraction := state.Job.Progress / 100.0
 	this.progressBar.SetFraction(progresBarFraction)
-	this.progressBar.SetText(fmt.Sprintf("%d%%", int64(job.Progress)))
-
-	logger.TraceLeave("PrintStatusPanel.updateProgress()")
+	this.progressBar.SetText(fmt.Sprintf("%d%%", int64(state.Job.Progress)))
 }
 
-func (this *printStatusPanel) updateToolBarButtons(job *dataModels.JobResponse) {
-	logger.TraceEnter("PrintStatusPanel.updateToolBarButtons()")
-	logger.Debugf("PrintStatusPanel.updateToolBarButtons() - job.State is: '%s'", job.State)
+func (this *printStatusPanel) updateToolBarButtons(stateText dataModels.PrinterStateText) {
+	logger.Debugf("PrintStatusPanel.updateToolBarButtons() - stateText is: '%s'", stateText)
 
-	switch job.State {
-	case "PRINTING":
-		this.pauseButton.SetLabel("Pause")
-		pauseImage := utils.MustImageFromFile("pause.svg")
-		this.pauseButton.SetImage(pauseImage)
+	switch stateText {
+	case dataModels.PRINTING:
 		this.pauseButton.SetSensitive(true)
 		this.pauseButton.Show()
+
+		this.resumeButton.SetSensitive(false)
+		this.resumeButton.Hide()
 
 		this.cancelButton.SetSensitive(true)
 		this.cancelButton.Show()
@@ -307,30 +283,15 @@ func (this *printStatusPanel) updateToolBarButtons(job *dataModels.JobResponse) 
 
 		this.completedButton.SetSensitive(false)
 		this.completedButton.Hide()
-		break
 
-	case "PAUSED":
-		this.pauseButton.SetLabel("Resume")
-		pauseImage := utils.MustImageFromFile("resume.svg")
-		this.pauseButton.SetImage(pauseImage)
-		this.pauseButton.SetSensitive(true)
-		this.pauseButton.Show()
-
-		this.cancelButton.SetSensitive(true)
-		this.cancelButton.Show()
-
-		this.controlButton.SetSensitive(true)
-		this.controlButton.Show()
-
-		this.completedButton.SetSensitive(false)
-		this.completedButton.Hide()
-		break
-
-	case "STOPPED":
+	case dataModels.PAUSED:
 		this.pauseButton.SetSensitive(false)
-		this.pauseButton.Show()
+		this.pauseButton.Hide()
 
-		this.cancelButton.SetSensitive(false)
+		this.resumeButton.SetSensitive(true)
+		this.resumeButton.Show()
+
+		this.cancelButton.SetSensitive(true)
 		this.cancelButton.Show()
 
 		this.controlButton.SetSensitive(true)
@@ -338,40 +299,41 @@ func (this *printStatusPanel) updateToolBarButtons(job *dataModels.JobResponse) 
 
 		this.completedButton.SetSensitive(false)
 		this.completedButton.Hide()
-		break
-
-	case "FINISHED":
-		break
-
-	case "ERROR":
-		break
 
 	default:
-		logLevel := logger.LogLevel()
-		if logLevel == "debug" {
-			logger.Debugf("PrintStatusPanel.updateToolBarButtons() - unknown job.State: '%s'", job.State)
-			logger.Panicf("PrintStatusPanel.updateToolBarButtons() - unknown job.State: '%s'", job.State)
-		}
-	}
+		this.pauseButton.SetSensitive(false)
+		this.pauseButton.Hide()
 
-	logger.TraceLeave("PrintStatusPanel.updateToolBarButtons()")
+		this.resumeButton.SetSensitive(false)
+		this.resumeButton.Hide()
+
+		this.cancelButton.SetSensitive(false)
+		this.cancelButton.Hide()
+
+		this.controlButton.SetSensitive(false)
+		this.controlButton.Hide()
+
+		this.completedButton.Show()
+		this.completedButton.SetSensitive(true)
+	}
 }
 
 func (this *printStatusPanel) handlePauseClicked() {
-	logger.TraceEnter("PrintStatusPanel.handlePauseClicked()")
-
-	// TODO: is this needed?
-	// defer this.updateTemperature()
-
-	cmd := &octoprintApis.PauseRequest{Action: dataModels.Toggle}
+	cmd := &octoprintApis.JobPauseRequest{JobId: this.currentJobId}
 	err := cmd.Do(this.UI.Client)
 	if err != nil {
 		logger.LogError("PrintStatusPanel.handlePauseClicked()", "Do(PauseRequest)", err)
-		logger.TraceLeave("PrintStatusPanel.handlePauseClicked()")
 		return
 	}
+}
 
-	logger.TraceLeave("PrintStatusPanel.handlePauseClicked()")
+func (this *printStatusPanel) handleResumeClicked() {
+	cmd := &octoprintApis.JobResumeRequest{JobId: this.currentJobId}
+	err := cmd.Do(this.UI.Client)
+	if err != nil {
+		logger.LogError("PrintStatusPanel.handleResumeClicked()", "Do(ResumeRequest)", err)
+		return
+	}
 }
 
 func (this *printStatusPanel) handleCancelClicked() {
@@ -390,7 +352,7 @@ func (this *printStatusPanel) handleControlClicked() {
 }
 
 func (this *printStatusPanel) handleCompleteClicked() {
-	this.UI.WaitingForUserToContinue = false
+	this.UI.SetFinishedIdle()
 }
 
 func (this *printStatusPanel) confirmCancelDialogBox(
@@ -423,18 +385,15 @@ func (this *printStatusPanel) confirmCancelDialogBox(
 }
 
 func (this *printStatusPanel) cancelPrintJob() {
-	logger.TraceEnter("PrintStatusPanel.cancelPrintJob()")
-
-	err := (&octoprintApis.CancelRequest{}).Do(this.UI.Client)
+	err := (&octoprintApis.JobStopRequest{JobId: this.currentJobId}).Do(this.UI.Client)
 	if err == nil {
 		this.pauseButton.SetSensitive(false)
+		this.resumeButton.SetSensitive(false)
 		this.cancelButton.SetSensitive(false)
 		this.controlButton.SetSensitive(false)
 	} else {
 		logger.LogError("PrintStatusPanel.cancelPrintJob()", "Do(CancelRequest)", err)
 	}
-
-	logger.TraceLeave("PrintStatusPanel.cancelPrintJob()")
 }
 
 func formattedDuration(duration time.Duration) string {
