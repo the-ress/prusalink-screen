@@ -115,7 +115,7 @@ make build
 ls -1 build/
 ```
 
-The default build is for the BUSTER release of debian, but BULLSEYE is also possible.  To build one of these targets, you just have to specify the package during make.
+The default build is for the BULLSEYE release of debian, but BULLSEYE is also possible.  To build one of these targets, you just have to specify the package during make.
 Example for BULLSEYE:
 ```sh
 make build DEBIAN_PACKAGES=BULLSEYE

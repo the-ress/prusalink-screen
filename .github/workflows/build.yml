@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        debian_packages: [BULLSEYE, BUSTER]
+        debian_packages: [BULLSEYE]
         arch: [armhf, arm64, amd64]
 
     steps:
