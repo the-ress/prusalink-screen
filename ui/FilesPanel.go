@@ -110,6 +110,7 @@ func (this *filesPanel) doLoadFiles() {
 
 	if this.cancelThumbnailDownload != nil {
 		this.cancelThumbnailDownload()
+		this.cancelThumbnailDownload = nil
 	}
 
 	listBoxContainer := this.scrollableListBox.ListBoxContainer()
@@ -490,11 +491,13 @@ func (this *filesPanel) handleFileClick(button *gtk.Button, rowIndex int) {
 		logger.Infof("Loading file %q", fileResponse.Name)
 		if err := selectFileRequest.Do(this.UI.Client); err != nil {
 			logger.LogError("FilesPanel.handleFileClick()", "Do(SelectFileRequest)", err)
+			errorMessage := fmt.Sprintf("Failed to print the file:\n\n%s", err.Error())
+			utils.ErrorMessageDialogBox(this.UI.window, errorMessage)
 			return
 		}
 
 		this.UI.GoToPreviousPanel()
-	})()
+	})
 
 	logger.TraceLeave("FilesPanel.handleFileClick()")
 }

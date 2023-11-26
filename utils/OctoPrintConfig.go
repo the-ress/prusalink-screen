@@ -16,8 +16,9 @@ var (
 )
 
 type OctoPrintConfig struct {
-	ApiKey string
-	Host   string
+	ApiKey         string
+	Host           string
+	ExecutablePath string
 }
 
 func ReadOctoPrintConfig() *OctoPrintConfig {
@@ -73,6 +74,11 @@ func (this *OctoPrintConfig) OverrideConfigsWithEnvironmentValues() {
 	host := os.Getenv(EnvOctoPrintHost)
 	if host != "" {
 		this.Host = host
+	}
+
+	executablePath := os.Getenv(EnvExecutablePath)
+	if executablePath != "" {
+		this.ExecutablePath = executablePath
 	}
 
 	logger.TraceLeave("OctoPrintConfig.OverrideConfigsWithEnvironmentValues()")

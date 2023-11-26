@@ -147,6 +147,10 @@ button.color-none {
 	border-bottom: 8px solid #E6D300;
 }
 
+.color-warning-sign-red {
+	border-bottom: 8px solid #D22E40;
+}
+
 button.active {
 	background-color: #20303D;
 }

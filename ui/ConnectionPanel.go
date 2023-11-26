@@ -81,10 +81,11 @@ func (this *connectionPanel) initialize() {
 		gdk.INTERP_NEAREST,
 	)
 
-	this.Label = utils.MustLabel("Welcome to OctoScreen")
+	this.Label = utils.MustLabel("Welcome to PrusaLink Screen")
 	this.Label.SetHExpand(true)
-	this.Label.SetLineWrap(false)
-	this.Label.SetMaxWidthChars(60)
+	this.Label.SetHAlign(gtk.ALIGN_CENTER)
+	this.Label.SetLineWrap(true)
+	this.Label.SetMaxWidthChars(80)
 
 	main := utils.MustBox(gtk.ORIENTATION_VERTICAL, 15)
 	main.SetHExpand(true)
@@ -176,20 +177,11 @@ func (this *connectionPanel) update(state domain.PrinterState) {
 }
 
 func (this *connectionPanel) initializeConnectionState() {
-	logger.TraceEnter("ConnectionPanel.initializeConnectionState()")
-
 	this.displayButtons(false)
 
 	this.Label.SetText("Attempting to connect to OctoPrint")
-	// this.printer.GetConnectionManager().SetDisconnected()
-
-	logger.TraceLeave("ConnectionPanel.initializeConnectionState()")
 }
 
 func (this *connectionPanel) showSystem() {
-	logger.TraceEnter("ConnectionPanel.showSystem()")
-
 	this.UI.GoToPanel(GetSystemPanelInstance(this.UI))
-
-	logger.TraceLeave("ConnectionPanel.showSystem()")
 }

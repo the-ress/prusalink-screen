@@ -28,6 +28,7 @@ const (
 	EnvLogFilePath    = "OCTOSCREEN_LOG_FILE_PATH"
 	EnvResolution     = "OCTOSCREEN_RESOLUTION"
 	EnvConfigFilePath = "OCTOPRINT_CONFIG_FILE"
+	EnvExecutablePath = "PRUSALINK_EXECUTABLE_PATH"
 	EnvDisplayCursor  = "DISPLAY_CURSOR"
 )
 
@@ -116,6 +117,7 @@ func DumpEnvironmentVariables() {
 	// Optional environment variables
 	logger.Info("Optional environment variables:")
 	dumpEnvironmentVariable(EnvConfigFilePath)
+	dumpEnvironmentVariable(EnvExecutablePath)
 	dumpEnvironmentVariable(EnvLogFilePath)
 	dumpEnvironmentVariable(EnvLogLevel)
 

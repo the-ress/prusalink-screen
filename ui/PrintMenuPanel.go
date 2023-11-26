@@ -38,10 +38,10 @@ func (this *printMenuPanel) initialize() {
 	this.Grid().Attach(temperatureButton, 2, 0, 1, 1)
 
 	networkButton := utils.MustButtonImageStyle("Network", "network.svg", "color1", this.showNetwork)
-	this.Grid().Attach(networkButton, 1, 1, 1, 1)
+	this.Grid().Attach(networkButton, 3, 0, 1, 1)
 
 	systemButton := utils.MustButtonImageStyle("System", "info.svg", "color2", this.showSystem)
-	this.Grid().Attach(systemButton, 2, 1, 1, 1)
+	this.Grid().Attach(systemButton, 0, 1, 1, 1)
 }
 
 func (this *printMenuPanel) showMove() {

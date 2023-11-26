@@ -47,6 +47,8 @@ type UI struct {
 	width       int
 	height      int
 	scaleFactor int
+
+	PrusaLinkExecutable string
 }
 
 func NewUi() *UI {
@@ -80,6 +82,7 @@ func NewUi() *UI {
 		time:                       time.Now(),
 		width:                      width,
 		height:                     height,
+		PrusaLinkExecutable:        octoScreenConfig.OctoPrintConfig.ExecutablePath,
 	}
 
 	instance.initialize1()

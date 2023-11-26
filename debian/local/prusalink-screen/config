@@ -28,6 +28,8 @@ OCTOSCREEN_STYLE_PATH=/opt/prusalink-screen/styles/z-bolt/
 # config file.
 OCTOPRINT_CONFIG_FILE=/home/jo/prusa_printer_settings.ini
 
+PRUSALINK_EXECUTABLE_PATH=/home/jo/.local/bin/prusalink
+
 
 # The file path to where the log file will be saved.
 # The file path should be a fully qualified path and not only include the path

@@ -20,9 +20,13 @@ func NewSystemCommandButton(
 	callback func(),
 ) *SystemCommandButton {
 	confirmationMessage := fmt.Sprintf("%s\n\nDo you wish to proceed?", confirmation)
-	confirmCallback := utils.MustConfirmDialogBox(parentWindow, confirmationMessage, callback)
 
-	base := utils.MustButtonImageStyle(name, action+".svg", style, confirmCallback)
+	base := utils.MustButtonImageStyle(
+		name,
+		action+".svg",
+		style,
+		func() { utils.MustConfirmDialogBox(parentWindow, confirmationMessage, callback) },
+	)
 	ctx, _ := base.GetStyleContext()
 	ctx.AddClass("font-size-19")
 

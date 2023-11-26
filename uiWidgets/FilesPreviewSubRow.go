@@ -53,7 +53,7 @@ func CreatePreviewThumbnail(
 		previewImage, imageFromBufferErr := utils.ImageFromBuffer(imageBuffer)
 
 		if imageFromBufferErr != nil {
-			logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from ImageFromBuffer:", imageFromUrlErr)
+			logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from ImageFromBuffer:", imageFromBufferErr)
 			return
 		}
 		logger.Debug("FilesPreviewSubRow.createPreviewThumbnail() - no error from ImageFromBuffer, now trying to add it...")

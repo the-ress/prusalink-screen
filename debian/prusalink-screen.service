@@ -14,5 +14,5 @@ Restart=always
 WatchdogSec=40s
 
 [Install]
-WantedBy=graphical.target multi-user.target
+WantedBy=multi-user.target
 Alias=display-manager.service

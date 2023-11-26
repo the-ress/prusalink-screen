@@ -6,7 +6,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-
 // ****************************************************************************
 // Button Routines
 func CreateToolheadButtonsAndAttachToGrid(toolheadCount int, grid *gtk.Grid) []*gtk.Button {
@@ -19,7 +18,7 @@ func CreateToolheadButtonsAndAttachToGrid(toolheadCount int, grid *gtk.Grid) []*
 func CreateChangeToolheadButtonsAndAttachToGrid(toolheadCount int, grid *gtk.Grid) []*gtk.Button {
 	toolheadButtons := CreateToolheadButtons(toolheadCount)
 	for index, toolheadButton := range toolheadButtons {
-		toolheadButton.SetLabel(fmt.Sprintf("Change to Tool%d", index + 1))
+		toolheadButton.SetLabel(fmt.Sprintf("Change to Tool%d", index+1))
 	}
 
 	AttachToolheadButtonsToGrid(toolheadButtons, grid)
@@ -31,21 +30,21 @@ func CreateToolheadButtons(toolheadCount int) []*gtk.Button {
 	var toolheadButtons []*gtk.Button
 	var toolheadButton *gtk.Button
 
-	toolheadButton = CreateToolheadButton(0, toolheadCount, func() { })
+	toolheadButton = CreateToolheadButton(0, toolheadCount, func() {})
 	toolheadButtons = append(toolheadButtons, toolheadButton)
 
 	if toolheadCount >= 2 {
-		toolheadButton = CreateToolheadButton(1, toolheadCount, func() { })
+		toolheadButton = CreateToolheadButton(1, toolheadCount, func() {})
 		toolheadButtons = append(toolheadButtons, toolheadButton)
 	}
 
 	if toolheadCount >= 3 {
-		toolheadButton = CreateToolheadButton(2, toolheadCount, func() { })
+		toolheadButton = CreateToolheadButton(2, toolheadCount, func() {})
 		toolheadButtons = append(toolheadButtons, toolheadButton)
 	}
 
 	if toolheadCount >= 4 {
-		toolheadButton = CreateToolheadButton(3, toolheadCount, func() { })
+		toolheadButton = CreateToolheadButton(3, toolheadCount, func() {})
 		toolheadButtons = append(toolheadButtons, toolheadButton)
 	}
 
@@ -59,8 +58,8 @@ func CreateToolheadButton(num, toolheadCount int, clicked func()) *gtk.Button {
 	name := ""
 	imageFileName := "toolhead-typeB.svg"
 	if toolheadCount >= 2 {
-		name = fmt.Sprintf("Tool%d", num + 1)
-		imageFileName = fmt.Sprintf("toolhead-typeB-%d.svg", num + 1)
+		name = fmt.Sprintf("Tool%d", num+1)
+		imageFileName = fmt.Sprintf("toolhead-typeB-%d.svg", num+1)
 	}
 
 	return MustButtonImageStyle(name, imageFileName, "", clicked)
@@ -72,39 +71,38 @@ func AttachToolheadButtonsToGrid(toolheadButtons []*gtk.Button, grid *gtk.Grid) 
 	}
 }
 
-
-
-
-
-
 // ****************************************************************************
 // DialogBox Routines
-func MustConfirmDialogBox(parent *gtk.Window, msg string, cb func()) func() {
-	return func() {
-		win := gtk.MessageDialogNewWithMarkup(
-			parent,
-			gtk.DIALOG_MODAL,
-			gtk.MESSAGE_INFO,
-			gtk.BUTTONS_YES_NO,
-			"",
-		)
-
-		win.SetMarkup(CleanHTML(msg))
-		defer win.Destroy()
-
-		box, _ := win.GetContentArea()
-		box.SetMarginStart(15)
-		box.SetMarginEnd(15)
-		box.SetMarginTop(15)
-		box.SetMarginBottom(15)
-
-		ctx, _ := win.GetStyleContext()
-		ctx.AddClass("dialog")
-
-		if win.Run() == gtk.RESPONSE_YES {
-			cb()
-		}
+func MustConfirmDialogBox(parent *gtk.Window, msg string, cb func()) {
+	if yesNoDialogBox(parent, msg) == gtk.RESPONSE_YES {
+		// glib.IdleAdd(func() { // Hide the confirmation window before continuing
+		cb()
+		// })
 	}
+}
+
+func yesNoDialogBox(parentWindow *gtk.Window, message string) gtk.ResponseType {
+	dialog := gtk.MessageDialogNewWithMarkup(
+		parentWindow,
+		gtk.DIALOG_MODAL,
+		gtk.MESSAGE_INFO,
+		gtk.BUTTONS_YES_NO,
+		"",
+	)
+
+	dialog.SetMarkup(CleanHTML(message))
+	defer dialog.Destroy()
+
+	box, _ := dialog.GetContentArea()
+	box.SetMarginStart(15)
+	box.SetMarginEnd(15)
+	box.SetMarginTop(15)
+	box.SetMarginBottom(15)
+
+	ctx, _ := dialog.GetStyleContext()
+	ctx.AddClass("dialog")
+
+	return dialog.Run()
 }
 
 func InfoMessageDialogBox(parentWindow *gtk.Window, message string) {
@@ -146,7 +144,6 @@ func messageDialogBox(parentWindow *gtk.Window, messageType gtk.MessageType, mes
 	dialogBox.Run()
 }
 
-
 // func hotendTemperatureIsTooLow(temperatureData octoprint.TemperatureData, action string, parentWindow *gtk.Window) bool {
 // 	targetTemperature := temperatureData.Target
 // 	Logger.Infof("ui_utils.HotendTemperatureIsTooLow() - targetTemperature is %.2f", targetTemperature)
@@ -160,7 +157,6 @@ func messageDialogBox(parentWindow *gtk.Window, messageType gtk.MessageType, mes
 
 // 	return false
 // }
-
 
 func EmptyTheContainer(container *gtk.Container) {
 	children := container.GetChildren()

@@ -1,7 +1,9 @@
 package ui
 
 import (
+	"context"
 	"fmt"
+
 	// "math"
 	// "os"
 	// "strconv"
@@ -24,17 +26,20 @@ type printStatusPanel struct {
 	CommonPanel
 
 	// Tools
-	tool0Button *uiWidgets.ToolPrintingButton
-	tool1Button *uiWidgets.ToolPrintingButton
-	tool2Button *uiWidgets.ToolPrintingButton
-	tool3Button *uiWidgets.ToolPrintingButton
-	tool4Button *uiWidgets.ToolPrintingButton
-	bedButton   *uiWidgets.ToolPrintingButton
+	nozzleButton *uiWidgets.ToolPrintingButton
+	bedButton    *uiWidgets.ToolPrintingButton
 
 	// Statistics/Info
 	fileLabelWithImage     *utils.LabelWithImage
 	timeLabelWithImage     *utils.LabelWithImage
 	timeLeftLabelWithImage *utils.LabelWithImage
+
+	// Thumbnail
+	thumbnailPath           string
+	thumbnailBox            *gtk.Box
+	thumbnailDisplayed      bool
+	cancelThumbnailDownload context.CancelFunc
+
 	// layerLabelWithImage	*utils.LabelWithImage
 	// The info for the current / total layers is not available
 	// See https://community.octoprint.org/t/layer-number-and-total-layers-from-api/8005/4
@@ -73,16 +78,29 @@ func (this *printStatusPanel) initialize() {
 	defer this.Initialize()
 
 	this.createToolButtons()
+	this.createThumbnailBox()
 	this.Grid().Attach(this.createInfoBox(), 2, 0, 2, 1)
 	this.Grid().Attach(this.createProgressBar(), 2, 1, 2, 1)
 	this.createToolBarButtons()
 }
 
 func (this *printStatusPanel) createToolButtons() {
-	this.tool0Button = uiWidgets.CreateToolPrintingButton(0)
+	this.nozzleButton = uiWidgets.CreateToolPrintingButton(0)
 	this.bedButton = uiWidgets.CreateToolPrintingButton(-1)
-	this.Grid().Attach(this.tool0Button, 0, 0, 2, 1)
+	this.Grid().Attach(this.nozzleButton, 0, 0, 2, 1)
 	this.Grid().Attach(this.bedButton, 0, 1, 2, 1)
+}
+
+func (this *printStatusPanel) createThumbnailBox() {
+	this.thumbnailBox = uiWidgets.CreateVerticalLayoutBox()
+
+	this.thumbnailBox.SetMarginTop(this.Scaled(10))
+	this.thumbnailBox.SetMarginBottom(this.Scaled(10))
+	this.thumbnailBox.SetMarginStart(this.Scaled(10))
+	this.thumbnailBox.SetMarginEnd(this.Scaled(10))
+
+	this.thumbnailBox.SetVisible(false)
+	this.Grid().Attach(this.thumbnailBox, 0, 0, 2, 2)
 }
 
 func (this *printStatusPanel) createInfoBox() *gtk.Box {
@@ -184,8 +202,13 @@ func (this *printStatusPanel) update(state domain.PrinterState) {
 	logger.Debugf("PrintStatusPanel.update() - state.Text is %s", state.Text)
 
 	this.updateInfoBox(state)
+	this.updateThumbnail(state)
 	this.updateProgress(state)
 	this.updateToolBarButtons(state.Text)
+
+	this.thumbnailBox.SetVisible(this.thumbnailDisplayed)
+	this.nozzleButton.SetVisible(!this.thumbnailDisplayed)
+	this.bedButton.SetVisible(!this.thumbnailDisplayed)
 }
 
 func (this *printStatusPanel) consumeStateUpdates(ch chan domain.PrinterState) {
@@ -199,7 +222,7 @@ func (this *printStatusPanel) consumeStateUpdates(ch chan domain.PrinterState) {
 }
 
 func (this *printStatusPanel) updateToolTemperature(temperature dataModels.TemperatureData) {
-	this.tool0Button.SetLabel(utils.GetTemperatureDataString(temperature.Nozzle))
+	this.nozzleButton.SetLabel(utils.GetTemperatureDataString(temperature.Nozzle))
 	this.bedButton.SetLabel(utils.GetTemperatureDataString(temperature.Bed))
 }
 
@@ -243,6 +266,93 @@ func (this *printStatusPanel) updateInfoBox(state domain.PrinterState) {
 	} else {
 		this.timeLeftLabelWithImage.Hide()
 	}
+}
+
+func (this *printStatusPanel) updateThumbnail(state domain.PrinterState) {
+	job := state.Job
+
+	if this.thumbnailPath == job.File.Refs.Thumbnail {
+		return // No change
+	}
+
+	if this.cancelThumbnailDownload != nil {
+		this.cancelThumbnailDownload()
+		this.cancelThumbnailDownload = nil
+	}
+
+	this.thumbnailPath = job.File.Refs.Thumbnail
+
+	ctx, cancel := context.WithCancel(context.Background())
+	this.cancelThumbnailDownload = cancel
+	go this.downloadThumbnail(ctx, this.thumbnailPath)
+}
+
+func (this *printStatusPanel) downloadThumbnail(
+	ctx context.Context,
+	thumbnailPath string,
+) {
+	logger.Debugf("PrintStatusPanel.downloadThumbnail() - thumbnailPath is %s", thumbnailPath)
+
+	if thumbnailPath == "" {
+		glib.IdleAddPriority(glib.PRIORITY_LOW, func() {
+			this.displayThumbnail(nil)
+		})
+	}
+
+	imageBuffer, imageFromUrlErr := (&octoprintApis.ThumbnailRequest{Path: thumbnailPath}).Do(this.UI.Client)
+	if imageFromUrlErr != nil {
+		logger.Error("PrintStatusPanel.downloadThumbnail() - error from ThumbnailRequest:", imageFromUrlErr)
+		glib.IdleAddPriority(glib.PRIORITY_LOW, func() {
+			this.displayThumbnail(nil)
+		})
+		return
+	}
+
+	glib.IdleAddPriority(glib.PRIORITY_LOW, func() {
+		select {
+		case <-ctx.Done():
+			return // Abort
+		default:
+		}
+
+		this.displayThumbnail(imageBuffer)
+	})
+
+}
+
+func (this *printStatusPanel) displayThumbnail(imageBuffer []byte) {
+	utils.EmptyTheContainer(&this.thumbnailBox.Container)
+
+	if imageBuffer == nil {
+		this.thumbnailBox.SetVisible(false)
+		this.nozzleButton.SetVisible(true)
+		this.bedButton.SetVisible(true)
+		this.thumbnailDisplayed = false
+		return
+	}
+
+	previewImage, err :=
+		utils.ImageFromBufferAtSize(imageBuffer, this.thumbnailBox.GetAllocatedWidth(), this.thumbnailBox.GetAllocatedHeight())
+
+	if err != nil {
+		logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from ImageFromBuffer:", err)
+		this.thumbnailBox.SetVisible(false)
+		this.nozzleButton.SetVisible(true)
+		this.bedButton.SetVisible(true)
+		this.thumbnailDisplayed = false
+		return
+	}
+
+	previewImage.SetHExpand(true)
+	previewImage.SetVExpand(true)
+
+	this.thumbnailBox.Add(previewImage)
+	this.thumbnailBox.ShowAll()
+
+	this.thumbnailBox.SetVisible(true)
+	this.nozzleButton.SetVisible(false)
+	this.bedButton.SetVisible(false)
+	this.thumbnailDisplayed = true
 }
 
 func (this *printStatusPanel) updateProgress(state domain.PrinterState) {
@@ -337,14 +447,13 @@ func (this *printStatusPanel) handleResumeClicked() {
 }
 
 func (this *printStatusPanel) handleCancelClicked() {
-	userResponse := this.confirmCancelDialogBox(
+	utils.MustConfirmDialogBox(
 		this.UI.window,
 		"Are you sure you want to cancel the current print?",
+		func() {
+			this.cancelPrintJob()
+		},
 	)
-
-	if userResponse == gtk.RESPONSE_YES {
-		this.cancelPrintJob()
-	}
 }
 
 func (this *printStatusPanel) handleControlClicked() {
@@ -353,35 +462,6 @@ func (this *printStatusPanel) handleControlClicked() {
 
 func (this *printStatusPanel) handleCompleteClicked() {
 	this.UI.SetFinishedIdle()
-}
-
-func (this *printStatusPanel) confirmCancelDialogBox(
-	parentWindow *gtk.Window,
-	message string,
-) gtk.ResponseType {
-	dialogBox := gtk.MessageDialogNewWithMarkup(
-		parentWindow,
-		gtk.DIALOG_MODAL,
-		gtk.MESSAGE_INFO,
-		gtk.BUTTONS_YES_NO,
-		"",
-	)
-
-	dialogBox.SetMarkup(utils.CleanHTML(message))
-	defer dialogBox.Destroy()
-
-	box, _ := dialogBox.GetContentArea()
-	box.SetMarginStart(15)
-	box.SetMarginEnd(15)
-	box.SetMarginTop(15)
-	box.SetMarginBottom(15)
-
-	ctx, _ := dialogBox.GetStyleContext()
-	ctx.AddClass("dialog")
-
-	userResponse := dialogBox.Run()
-
-	return userResponse
 }
 
 func (this *printStatusPanel) cancelPrintJob() {
@@ -403,7 +483,8 @@ func formattedDuration(duration time.Duration) string {
 	minutes := duration / time.Minute
 	duration -= minutes * time.Minute
 
-	seconds := duration / time.Second
+	return fmt.Sprintf("%02d:%02d", hours, minutes)
 
-	return fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
+	// seconds := duration / time.Second
+	// return fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
 }

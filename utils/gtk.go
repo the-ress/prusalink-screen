@@ -287,23 +287,82 @@ func MustImageFromFile(imageFileName string) *gtk.Image {
 }
 
 func ImageFromBuffer(buffer []byte) (*gtk.Image, error) {
-	pixbufLoader, newPixbufLoaderErr := gdk.PixbufLoaderNew()
-	if newPixbufLoaderErr != nil {
-		return nil, newPixbufLoaderErr
+	pixbufLoader, err := gdk.PixbufLoaderNew()
+	if err != nil {
+		return nil, err
 	}
 	defer pixbufLoader.Close()
 
-	writeLength, writeErr := pixbufLoader.Write(buffer)
-	if writeErr != nil {
-		return nil, writeErr
+	writeLength, err := pixbufLoader.Write(buffer)
+	if err != nil {
+		return nil, err
 	} else if writeLength < 1 {
 		return nil, errors.New("bytes written was zero")
 	}
 
-	pixbuf, _ := pixbufLoader.GetPixbuf()
-	image, imageNewFromPixbufErr := gtk.ImageNewFromPixbuf(pixbuf)
+	pixbuf, err := pixbufLoader.GetPixbuf()
+	if err != nil {
+		return nil, err
+	}
 
-	return image, imageNewFromPixbufErr
+	image, err := gtk.ImageNewFromPixbuf(pixbuf)
+
+	return image, err
+}
+
+func ImageFromBufferAtSize(buffer []byte, width int, height int) (*gtk.Image, error) {
+	pixbufLoader, err := gdk.PixbufLoaderNew()
+	if err != nil {
+		return nil, err
+	}
+	defer pixbufLoader.Close()
+
+	writeLength, err := pixbufLoader.Write(buffer)
+	if err != nil {
+		return nil, err
+	} else if writeLength < 1 {
+		return nil, errors.New("bytes written was zero")
+	}
+
+	pixbuf, err := pixbufLoader.GetPixbuf()
+	if err != nil {
+		return nil, err
+	}
+
+	scaledWidth, scaledHeight := GetScaledSize(
+		float64(pixbuf.GetWidth()),
+		float64(pixbuf.GetHeight()),
+		float64(width),
+		float64(height),
+	)
+
+	pixbuf, err = pixbuf.ScaleSimple(int(scaledWidth), int(scaledHeight), gdk.INTERP_BILINEAR)
+	if err != nil {
+		return nil, err
+	}
+	image, err := gtk.ImageNewFromPixbuf(pixbuf)
+
+	return image, err
+}
+
+func GetScaledSize(originalWidth, originalHeight, destWidth, destHeight float64) (float64, float64) {
+	if originalWidth == 0 || originalHeight == 0 {
+		return originalWidth, originalHeight
+	}
+
+	widthRatio := destWidth / originalWidth
+	heightRatio := destHeight / originalHeight
+
+	if heightRatio < widthRatio {
+		width := originalWidth * heightRatio
+		height := originalHeight * heightRatio
+		return width, height
+	} else {
+		width := originalWidth * widthRatio
+		height := originalHeight * widthRatio
+		return width, height
+	}
+
 }
 
 // MustCSSProviderFromFile returns a new gtk.CssProvider for a given css file, if error panics.
