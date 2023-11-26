@@ -18,11 +18,16 @@ DOCKER_IMAGE_BUILD = prusalink-screen-build
 
 DEBIAN_PACKAGES = BULLSEYE
 ARCH = armhf
+# ARCH = arm64
 # ARCH = amd64
 
 BULLSEYE_NAME := bullseye
 BULLSEYE_IMAGE := golang:1.21-bullseye
 BULLSEYE_GO_TAGS := "gtk_3_24 glib_deprecated glib_2_66"
+
+BOOKWORM_NAME := bookworm
+BOOKWORM_IMAGE := golang:1.21-bookworm
+BOOKWORM_GO_TAGS := "gtk_3_24 glib_2_74"
 
 # Build information
 #GIT_COMMIT = $(shell git rev-parse HEAD | cut -c1-7)
