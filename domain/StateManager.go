@@ -2,7 +2,6 @@ package domain
 
 import (
 	"sync"
-	"time"
 
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/octoprintApis"
@@ -20,10 +19,19 @@ type StateManager struct {
 
 type PrinterState struct {
 	IsConnectedToPrusaLink bool
-	IsConnectedToPrinter   bool
-	Text                   dataModels.PrinterStateText
-	Temperature            dataModels.TemperatureData
-	Job                    *dataModels.JobResponse
+	PrusaLinkErrorMessage  string
+
+	IsConnectedToPrinter bool
+	PrinterErrorMessage  string
+
+	PrusaConnectStatus struct {
+		OK      bool
+		Message string
+	}
+
+	Text        dataModels.PrinterStateText
+	Temperature dataModels.TemperatureData
+	Job         *dataModels.JobResponse
 }
 
 type subscriberRecord struct {
@@ -95,70 +103,61 @@ func (this *StateManager) setState(newState PrinterState) {
 }
 
 func (this *StateManager) detectState() PrinterState {
-	// If OctoScreen is connected to PrusaLink,
-	// and PrusaLink is connected to the printer,
-	// don't bother checking again.
-	// if !this.IsConnected() {
-	// Continue on if OctoScreen isn't connected...
+	// logger.Debug("StateManager.detectState() - about to call ConnectionRequest.Do()")
+	// t1 := time.Now()
+	// connectionResponse, err := (&octoprintApis.ConnectionRequest{}).Do(this.client)
+	// t2 := time.Now()
+	// logger.Debug("StateManager.detectState() - finished calling ConnectionRequest.Do()")
+	// logger.Debugf("time elapsed: %q", t2.Sub(t1))
 
-	logger.Debug("StateManager.detectState() - about to call ConnectionRequest.Do()")
-	t1 := time.Now()
-	connectionResponse, err := (&octoprintApis.ConnectionRequest{}).Do(this.client)
-	t2 := time.Now()
-	logger.Debug("StateManager.detectState() - finished calling ConnectionRequest.Do()")
-	logger.Debugf("time elapsed: %q", t2.Sub(t1))
-
+	statusResponse, err := (&octoprintApis.StatusRequest{}).Do(this.client)
 	if err != nil {
-		logger.LogError("StateManager.detectState()", "ConnectionRequest.Do()", err)
-		logger.Debug("StateManager.detectState() - Connection state: IsConnectedToPrusaLink is now false")
+		logger.LogError("StateManager.detectState()", "Do(StatusRequest)", err)
 		return PrinterState{
 			IsConnectedToPrusaLink: false,
-			IsConnectedToPrinter:   false,
+			PrusaLinkErrorMessage:  err.Error(),
 		}
 	}
 
-	printerConnectionState := connectionResponse.Current.State
-	if printerConnectionState.IsError() {
+	if statusResponse == nil {
+		logger.Error("StateManager.detectState() - statusResponse is nil")
+		return PrinterState{
+			IsConnectedToPrusaLink: false,
+			PrusaLinkErrorMessage:  "Response is empty",
+		}
+	}
+
+	if !statusResponse.Printer.StatusPrinter.OK {
+		logger.Errorf("StateManager.detectState() - printer is not OK: %s", statusResponse.Printer.StatusPrinter.Message)
 		logger.Debug("StateManager.detectState() - Connection state: IsConnectedToPrinter is now false")
 		return PrinterState{
 			IsConnectedToPrusaLink: true,
 			IsConnectedToPrinter:   false,
-		}
-	}
-
-	fullStateResponse, err := (&octoprintApis.FullStateRequest{}).Do(this.client)
-	if err != nil {
-		logger.LogError("StateManager.detectState()", "Do(FullStateRequest)", err)
-		return PrinterState{
-			IsConnectedToPrusaLink: false,
-			IsConnectedToPrinter:   false,
-		}
-	}
-
-	if fullStateResponse == nil {
-		logger.Error("StateManager.detectState() - fullStateResponse is nil")
-		return PrinterState{
-			IsConnectedToPrusaLink: false,
-			IsConnectedToPrinter:   false,
+			PrinterErrorMessage:    statusResponse.Printer.StatusPrinter.Message,
 		}
 	}
 
 	temperature := dataModels.TemperatureData{
 		Nozzle: dataModels.ToolTemperatureData{
-			Actual: fullStateResponse.Printer.TempNozzle,
-			Target: fullStateResponse.Printer.TargetNozzle,
+			Actual: statusResponse.Printer.TempNozzle,
+			Target: statusResponse.Printer.TargetNozzle,
 		},
 		Bed: dataModels.ToolTemperatureData{
-			Actual: fullStateResponse.Printer.TempBed,
-			Target: fullStateResponse.Printer.TargetBed,
+			Actual: statusResponse.Printer.TempBed,
+			Target: statusResponse.Printer.TargetBed,
 		},
 	}
 
 	state := PrinterState{
 		IsConnectedToPrusaLink: true,
 		IsConnectedToPrinter:   true,
-		Text:                   fullStateResponse.Printer.State,
-		Temperature:            temperature,
+
+		Text:        statusResponse.Printer.State,
+		Temperature: temperature,
+		PrusaConnectStatus: struct {
+			OK      bool
+			Message string
+		}(statusResponse.Printer.StatusConnect),
 	}
 
 	jobResponse, err := (&octoprintApis.JobRequest{}).Do(this.client)

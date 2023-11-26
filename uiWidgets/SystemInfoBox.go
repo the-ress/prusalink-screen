@@ -4,8 +4,6 @@ import (
 	// "fmt"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
 
 	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
@@ -13,14 +11,14 @@ import (
 
 type SystemInfoBox struct {
 	*gtk.Box
+
+	titleLabel *gtk.Label
+	textLabel  *gtk.Label
 }
 
-func CreateSystemInfoBox(
-	client *octoprintApis.Client,
+func NewSystemInfoBox(
 	image *gtk.Image,
-	str1 string,
-	str2 string,
-	str3 string,
+	title string,
 ) *SystemInfoBox {
 	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	base.SetHExpand(true)
@@ -32,28 +30,24 @@ func CreateSystemInfoBox(
 	ctx.AddClass("margin-top-5")
 	base.Add(image)
 
-	label1 := utils.MustLabel(str1)
-	ctx, _ = label1.GetStyleContext()
+	titleLabel := utils.MustLabel(title)
+	ctx, _ = titleLabel.GetStyleContext()
 	ctx.AddClass("margin-top-10")
 	ctx.AddClass("font-size-18")
-	base.Add(label1)
+	base.Add(titleLabel)
 
-	label2 := utils.MustLabel(str2)
-	ctx, _ = label2.GetStyleContext()
+	textLabel := utils.MustLabel("")
+	ctx, _ = textLabel.GetStyleContext()
 	ctx.AddClass("font-size-18")
-	base.Add(label2)
+	base.Add(textLabel)
 
-	logLevel := logger.LogLevel()
-	if logLevel == "debug" {
-		label3 := utils.MustLabel(str3)
-		ctx, _ = label3.GetStyleContext()
-		ctx.AddClass("font-size-16")
-		base.Add(label3)
+	return &SystemInfoBox{
+		Box:        base,
+		titleLabel: titleLabel,
+		textLabel:  textLabel,
 	}
+}
 
-	instance := &SystemInfoBox{
-		Box: base,
-	}
-
-	return instance
+func (this *SystemInfoBox) SetText(text string) {
+	this.textLabel.SetMarkup(text)
 }

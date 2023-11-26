@@ -38,17 +38,17 @@ func GetDisplayNameForTool(toolName string) string {
 
 func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
 
-	fullStateRespone, err := (&octoprintApis.FullStateRequest{}).Do(client)
+	statusResponse, err := (&octoprintApis.StatusRequest{}).Do(client)
 
 	if err != nil {
-		logger.LogError("tools.GetToolTarget()", "Do(StateRequest)", err)
+		logger.LogError("tools.GetToolTarget()", "Do(StatusRequest)", err)
 		return -1, err
 	}
 
 	if tool == "bed" {
-		return fullStateRespone.Printer.TargetBed, nil
+		return statusResponse.Printer.TargetBed, nil
 	} else {
-		return fullStateRespone.Printer.TargetNozzle, nil
+		return statusResponse.Printer.TargetNozzle, nil
 	}
 }
 
@@ -67,9 +67,9 @@ func SetToolTarget(client *octoprintApis.Client, tool string, target float64) er
 }
 
 func GetNozzleTemperatureData(client *octoprintApis.Client) (*dataModels.ToolTemperatureData, error) {
-	temperatureDataResponse, err := (&octoprintApis.FullStateRequest{}).Do(client)
+	temperatureDataResponse, err := (&octoprintApis.StatusRequest{}).Do(client)
 	if err != nil {
-		logger.LogError("tools.GetCurrentTemperatureData()", "Do(FullStateRequest)", err)
+		logger.LogError("tools.GetCurrentTemperatureData()", "Do(StatusRequest)", err)
 		return nil, err
 	}
 

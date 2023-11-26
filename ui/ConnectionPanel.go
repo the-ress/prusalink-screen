@@ -8,6 +8,8 @@ import (
 	// "sync"
 	// "time"
 
+	"fmt"
+
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
@@ -142,6 +144,9 @@ func (this *connectionPanel) update(state domain.PrinterState) {
 	var msg string
 	if !state.IsConnectedToPrusaLink {
 		msg = "Attempting to connect to PrusaLink"
+		if state.PrusaLinkErrorMessage != "" {
+			msg = fmt.Sprintf("%s\n%s", msg, state.PrusaLinkErrorMessage)
+		}
 		// if connectionManager.ConnectAttempts >= utils.MAX_CONNECTION_ATTEMPTS {
 		// 	msg = fmt.Sprintf("Unable to connect to PrusaLink")
 		// 	this.displayButtons(true)
@@ -152,6 +157,9 @@ func (this *connectionPanel) update(state domain.PrinterState) {
 		// }
 	} else if !state.IsConnectedToPrinter {
 		msg = "Attempting to connect to the printer"
+		if state.PrinterErrorMessage != "" {
+			msg = fmt.Sprintf("%s\n%s", msg, state.PrinterErrorMessage)
+		}
 		// if connectionManager.ConnectAttempts >= utils.MAX_CONNECTION_ATTEMPTS {
 		// 	msg = fmt.Sprintf("Unable to connect to the printer")
 		// 	this.displayButtons(true)

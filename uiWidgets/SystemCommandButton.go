@@ -1,0 +1,34 @@
+package uiWidgets
+
+import (
+	"fmt"
+
+	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/utils"
+)
+
+type SystemCommandButton struct {
+	*gtk.Button
+}
+
+func NewSystemCommandButton(
+	parentWindow *gtk.Window,
+	name string,
+	action string,
+	style string,
+	confirmation string,
+	callback func(),
+) *SystemCommandButton {
+	confirmationMessage := fmt.Sprintf("%s\n\nDo you wish to proceed?", confirmation)
+	confirmCallback := utils.MustConfirmDialogBox(parentWindow, confirmationMessage, callback)
+
+	base := utils.MustButtonImageStyle(name, action+".svg", style, confirmCallback)
+	ctx, _ := base.GetStyleContext()
+	ctx.AddClass("font-size-19")
+
+	instance := &SystemCommandButton{
+		Button: base,
+	}
+
+	return instance
+}

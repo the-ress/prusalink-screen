@@ -9,11 +9,11 @@ import (
 
 const URIPrinter = "/api/printer"
 
-// FullStateRequest retrieves the current state of the printer.
-type FullStateRequest struct{}
+// StatusRequest retrieves the current state of the printer.
+type StatusRequest struct{}
 
 // Do sends an API request and returns the API response.
-func (cmd *FullStateRequest) Do(c *Client) (*dataModels.FullStateResponse, error) {
+func (cmd *StatusRequest) Do(c *Client) (*dataModels.StatusResponse, error) {
 	uri := "/api/v1/status"
 
 	bytes, err := c.doJsonRequest("GET", uri, nil, PrintErrors, true)
@@ -21,7 +21,7 @@ func (cmd *FullStateRequest) Do(c *Client) (*dataModels.FullStateResponse, error
 		return nil, err
 	}
 
-	response := &dataModels.FullStateResponse{}
+	response := &dataModels.StatusResponse{}
 	if err := json.Unmarshal(bytes, response); err != nil {
 		return nil, err
 	}

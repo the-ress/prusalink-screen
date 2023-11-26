@@ -1,12 +1,12 @@
 package dataModels
 
-// FullStateResponse contains informantion about the current state of the printer.
-type FullStateResponse struct {
-	Printer StatusPrinter `json:"printer"`
+// StatusResponse contains informantion about the current state of the printer.
+type StatusResponse struct {
+	Printer StatusResponsePrinter `json:"printer"`
 }
 
 // Telemetry info about printer, all values except state are optional
-type StatusPrinter struct {
+type StatusResponsePrinter struct {
 	// IDLE, BUSY, PRINTING, PAUSED, FINISHED, STOPPED, ERROR, ATTTENTION, READY
 	State PrinterStateText `json:"state"`
 
@@ -35,12 +35,12 @@ type StatusPrinter struct {
 	FanPrint int `json:"fan_print"`
 
 	StatusPrinter struct {
-		Ok      bool   `json:"ok"`
+		OK      bool   `json:"ok"`
 		Message string `json:"message"`
 	} `json:"status_printer"`
 
 	StatusConnect struct {
-		Ok      bool   `json:"ok"`
+		OK      bool   `json:"ok"`
 		Message string `json:"message"`
 	} `json:"status_connect"`
 }
