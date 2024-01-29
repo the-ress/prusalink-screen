@@ -14,7 +14,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 
 	// "github.com/the-ress/prusalink-screen/ui"
 	"github.com/the-ress/prusalink-screen/utils"
@@ -23,7 +23,7 @@ import (
 type HttpRequestTestWindow struct {
 	Window         *gtk.Window
 	Label          *gtk.Label
-	Client         *octoprintApis.Client
+	Client         *prusaLinkApis.Client
 	BackgroundTask *utils.BackgroundTask
 	UpdateCount    int
 }
@@ -39,7 +39,7 @@ func CreateHttpRequestTestWindow(
 	instance := &HttpRequestTestWindow{
 		Window:         nil,
 		Label:          nil,
-		Client:         octoprintApis.NewClient(endpoint, key),
+		Client:         prusaLinkApis.NewClient(endpoint, key),
 		BackgroundTask: nil,
 		UpdateCount:    0,
 	}
@@ -109,7 +109,7 @@ func (this *HttpRequestTestWindow) verifyConnection() {
 
 	this.sdNotify(daemon.SdNotifyWatchdog)
 
-	connectionResponse, err := (&octoprintApis.ConnectionRequest{}).Do(this.Client)
+	connectionResponse, err := (&prusaLinkApis.ConnectionRequest{}).Do(this.Client)
 	if err != nil {
 		logger.LogError("verifyConnection()", "ConnectionRequest.Do()", err)
 	} else {

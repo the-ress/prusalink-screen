@@ -2,9 +2,9 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 
-	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
@@ -12,7 +12,7 @@ type FilamentExtrudeButton struct {
 	*gtk.Button
 
 	parentWindow              *gtk.Window
-	client                    *octoprintApis.Client
+	client                    *prusaLinkApis.Client
 	amountToExtrudeStepButton *AmountToExtrudeStepButton
 	flowRateStepButton        *FlowRateStepButton // The flow rate step button is optional.
 	isForward                 bool
@@ -20,7 +20,7 @@ type FilamentExtrudeButton struct {
 
 func CreateFilamentExtrudeButton(
 	parentWindow *gtk.Window,
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	amountToExtrudeStepButton *AmountToExtrudeStepButton,
 	flowRateStepButton *FlowRateStepButton, // The flow rate step button is optional.
 	isForward bool,

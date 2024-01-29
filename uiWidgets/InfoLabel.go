@@ -6,7 +6,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 

@@ -4,12 +4,12 @@ import (
 	"sync"
 
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 )
 
 type StateManager struct {
-	client *octoprintApis.Client
+	client *prusaLinkApis.Client
 	state  PrinterState
 
 	subscribers     []*subscriberRecord
@@ -38,7 +38,7 @@ type subscriberRecord struct {
 	ch chan PrinterState
 }
 
-func NewStateManager(client *octoprintApis.Client) *StateManager {
+func NewStateManager(client *prusaLinkApis.Client) *StateManager {
 	return &StateManager{
 		client: client,
 		state: PrinterState{
@@ -105,12 +105,12 @@ func (this *StateManager) setState(newState PrinterState) {
 func (this *StateManager) detectState() PrinterState {
 	// logger.Debug("StateManager.detectState() - about to call ConnectionRequest.Do()")
 	// t1 := time.Now()
-	// connectionResponse, err := (&octoprintApis.ConnectionRequest{}).Do(this.client)
+	// connectionResponse, err := (&prusaLinkApis.ConnectionRequest{}).Do(this.client)
 	// t2 := time.Now()
 	// logger.Debug("StateManager.detectState() - finished calling ConnectionRequest.Do()")
 	// logger.Debugf("time elapsed: %q", t2.Sub(t1))
 
-	statusResponse, err := (&octoprintApis.StatusRequest{}).Do(this.client)
+	statusResponse, err := (&prusaLinkApis.StatusRequest{}).Do(this.client)
 	if err != nil {
 		logger.LogError("StateManager.detectState()", "Do(StatusRequest)", err)
 		return PrinterState{
@@ -160,7 +160,7 @@ func (this *StateManager) detectState() PrinterState {
 		}(statusResponse.Printer.StatusConnect),
 	}
 
-	jobResponse, err := (&octoprintApis.JobRequest{}).Do(this.client)
+	jobResponse, err := (&prusaLinkApis.JobRequest{}).Do(this.client)
 	if err != nil {
 		logger.LogError("StateManager.detectState()", "Do(JobRequest)", err)
 	}

@@ -3,9 +3,9 @@ package ui
 import (
 	// "github.com/the-ress/prusalink-screen/interfaces"
 
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 
-	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
 	// "github.com/the-ress/prusalink-screen/utils"
 )

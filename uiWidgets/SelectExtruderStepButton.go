@@ -5,13 +5,13 @@ import (
 	// "strconv"
 	// "strings"
 
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
 func CreateSelectExtruderStepButton(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	includeBed bool,
 	colorVariation int,
 	clicked func(),

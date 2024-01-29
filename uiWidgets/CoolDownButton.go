@@ -3,21 +3,21 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 
-	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type CoolDownButton struct {
 	*gtk.Button
 
-	client   *octoprintApis.Client
+	client   *prusaLinkApis.Client
 	callback func()
 }
 
 func CreateCoolDownButton(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	callback func(),
 ) *CoolDownButton {
 	base := utils.MustButtonImageUsingFilePath("All Off", "cool-down.svg", nil)
@@ -41,10 +41,10 @@ func (this *CoolDownButton) handleClicked() {
 }
 
 func TurnAllHeatersOff(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 ) {
 	// Set the bed's temp.
-	bedTargetRequest := &octoprintApis.BedTargetRequest{
+	bedTargetRequest := &prusaLinkApis.BedTargetRequest{
 		Target: 0.0,
 	}
 	err := bedTargetRequest.Do(client)
@@ -54,7 +54,7 @@ func TurnAllHeatersOff(
 	}
 
 	// Set the temp of hotend.
-	var toolTargetRequest = &octoprintApis.ToolTargetRequest{
+	var toolTargetRequest = &prusaLinkApis.ToolTargetRequest{
 		Targets: map[string]float64{
 			"tool0": 0.0,
 		},

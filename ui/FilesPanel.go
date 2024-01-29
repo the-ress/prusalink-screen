@@ -14,8 +14,8 @@ import (
 
 	// "github.com/the-ress/prusalink-screen/interfaces"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -153,12 +153,12 @@ func (this *filesPanel) doLoadFiles() {
 }
 
 func (this *filesPanel) sdIsReady() bool {
-	err := (&octoprintApis.SdRefreshRequest{}).Do(this.UI.Client)
+	err := (&prusaLinkApis.SdRefreshRequest{}).Do(this.UI.Client)
 	if err != nil {
 		return false
 	}
 
-	sdState, err := (&octoprintApis.SdStateRequest{}).Do(this.UI.Client)
+	sdState, err := (&prusaLinkApis.SdStateRequest{}).Do(this.UI.Client)
 	if err == nil && sdState.IsReady {
 		return true
 	} else {
@@ -201,7 +201,7 @@ func (this *filesPanel) getSortedFiles() []*dataModels.FileResponse {
 	logger.Infof("Loading list of files from: %s", string(current))
 
 	if current == dataModels.SDCard {
-		sdRefreshRequest := &octoprintApis.SdRefreshRequest{}
+		sdRefreshRequest := &prusaLinkApis.SdRefreshRequest{}
 		err := sdRefreshRequest.Do(this.UI.Client)
 		if err != nil {
 			logger.LogError("getSortedFiles()", "sdRefreshRequest.Do()", err)
@@ -214,7 +214,7 @@ func (this *filesPanel) getSortedFiles() []*dataModels.FileResponse {
 		}
 	}
 
-	filesRequest := &octoprintApis.FilesRequest{
+	filesRequest := &prusaLinkApis.FilesRequest{
 		Location:  current,
 		Recursive: false,
 	}
@@ -480,7 +480,7 @@ func (this *filesPanel) handleFileClick(button *gtk.Button, rowIndex int) {
 	}
 
 	utils.MustConfirmDialogBox(this.UI.window, message, func() {
-		selectFileRequest := &octoprintApis.SelectFileRequest{}
+		selectFileRequest := &prusaLinkApis.SelectFileRequest{}
 
 		// Set the location to "local" or "sdcard"
 		selectFileRequest.Location = this.locationHistory.CurrentLocation()

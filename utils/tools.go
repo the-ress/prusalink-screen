@@ -7,8 +7,8 @@ import (
 
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 )
 
 func GetDisplayNameForTool(toolName string) string {
@@ -36,9 +36,9 @@ func GetDisplayNameForTool(toolName string) string {
 	return displayName
 }
 
-func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
+func GetToolTarget(client *prusaLinkApis.Client, tool string) (float64, error) {
 
-	statusResponse, err := (&octoprintApis.StatusRequest{}).Do(client)
+	statusResponse, err := (&prusaLinkApis.StatusRequest{}).Do(client)
 
 	if err != nil {
 		logger.LogError("tools.GetToolTarget()", "Do(StatusRequest)", err)
@@ -52,22 +52,22 @@ func GetToolTarget(client *octoprintApis.Client, tool string) (float64, error) {
 	}
 }
 
-func SetToolTarget(client *octoprintApis.Client, tool string, target float64) error {
+func SetToolTarget(client *prusaLinkApis.Client, tool string, target float64) error {
 	logger.TraceEnter("Tools.SetToolTarget()")
 
 	if tool == "bed" {
-		cmd := &octoprintApis.BedTargetRequest{Target: target}
+		cmd := &prusaLinkApis.BedTargetRequest{Target: target}
 		logger.TraceLeave("Tools.SetToolTarget()")
 		return cmd.Do(client)
 	}
 
-	cmd := &octoprintApis.ToolTargetRequest{Targets: map[string]float64{tool: target}}
+	cmd := &prusaLinkApis.ToolTargetRequest{Targets: map[string]float64{tool: target}}
 	logger.TraceLeave("Tools.SetToolTarget()")
 	return cmd.Do(client)
 }
 
-func GetNozzleTemperatureData(client *octoprintApis.Client) (*dataModels.ToolTemperatureData, error) {
-	temperatureDataResponse, err := (&octoprintApis.StatusRequest{}).Do(client)
+func GetNozzleTemperatureData(client *prusaLinkApis.Client) (*dataModels.ToolTemperatureData, error) {
+	temperatureDataResponse, err := (&prusaLinkApis.StatusRequest{}).Do(client)
 	if err != nil {
 		logger.LogError("tools.GetCurrentTemperatureData()", "Do(StatusRequest)", err)
 		return nil, err
@@ -84,7 +84,7 @@ func GetNozzleTemperatureData(client *octoprintApis.Client) (*dataModels.ToolTem
 	}, nil
 }
 
-func CheckIfHotendTemperatureIsTooLow(client *octoprintApis.Client, action string, parentWindow *gtk.Window) bool {
+func CheckIfHotendTemperatureIsTooLow(client *prusaLinkApis.Client, action string, parentWindow *gtk.Window) bool {
 	logger.TraceEnter("Tools.CheckIfHotendTemperatureIsTooLow()")
 
 	temperatureData, err := GetNozzleTemperatureData(client)

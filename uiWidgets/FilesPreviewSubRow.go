@@ -7,9 +7,9 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
@@ -25,7 +25,7 @@ func CreatePreviewThumbnail(
 	ctx context.Context,
 	previewSubRow *gtk.Box,
 	fileResponse *dataModels.FileResponse,
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	fileSystemImageWidth int,
 	fileSystemImageHeight int,
 ) {
@@ -35,7 +35,7 @@ func CreatePreviewThumbnail(
 
 	logger.Debugf("FilesPreviewSubRow.createPreviewThumbnail() - fileResponse.Refs.Thumbnail is %s", fileResponse.Refs.Thumbnail)
 
-	imageBuffer, imageFromUrlErr := (&octoprintApis.ThumbnailRequest{Path: fileResponse.Refs.Thumbnail}).Do(client)
+	imageBuffer, imageFromUrlErr := (&prusaLinkApis.ThumbnailRequest{Path: fileResponse.Refs.Thumbnail}).Do(client)
 	if imageFromUrlErr != nil {
 		logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from ThumbnailRequest:", imageFromUrlErr)
 		return

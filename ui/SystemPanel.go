@@ -9,7 +9,7 @@ import (
 	"os/exec"
 
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -179,7 +179,7 @@ func (this *systemPanel) refreshData() {
 	state := this.UI.Printer.GetState()
 	if state.IsConnectedToPrusaLink {
 		// Only call if we're connected to PrusaLink
-		versionResponse, err := (&octoprintApis.VersionRequest{}).Do(this.UI.Client)
+		versionResponse, err := (&prusaLinkApis.VersionRequest{}).Do(this.UI.Client)
 		if err != nil {
 			logger.LogError("SystemPanel", "VersionRequest.Do()", err)
 		} else if versionResponse != nil {

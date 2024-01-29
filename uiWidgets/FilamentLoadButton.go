@@ -3,10 +3,10 @@ package uiWidgets
 // import (
 // 	// "fmt"
 
-// 	"github.com/the-ress/prusalink-screen/octoprintApis"
+// 	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 // 	"github.com/gotk3/gotk3/gtk"
 
-// 	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+// 	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 // 	"github.com/the-ress/prusalink-screen/utils"
 // )
 
@@ -14,7 +14,7 @@ package uiWidgets
 // 	*gtk.Button
 
 // 	parentWindow             *gtk.Window
-// 	client                   *octoprintApis.Client
+// 	client                   *prusaLinkApis.Client
 // 	flowRateStepButton       *FlowRateStepButton // The flow rate step button is optional.
 // 	selectExtruderStepButton *SelectToolStepButton
 // 	isForward                bool
@@ -23,7 +23,7 @@ package uiWidgets
 
 // func CreateFilamentLoadButton(
 // 	parentWindow *gtk.Window,
-// 	client *octoprintApis.Client,
+// 	client *prusaLinkApis.Client,
 // 	flowRateStepButton *FlowRateStepButton, // The flow rate step button is optional.
 // 	selectExtruderStepButton *SelectToolStepButton,
 // 	isForward bool,

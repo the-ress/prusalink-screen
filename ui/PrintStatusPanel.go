@@ -16,8 +16,8 @@ import (
 
 	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -299,7 +299,7 @@ func (this *printStatusPanel) downloadThumbnail(
 		})
 	}
 
-	imageBuffer, imageFromUrlErr := (&octoprintApis.ThumbnailRequest{Path: thumbnailPath}).Do(this.UI.Client)
+	imageBuffer, imageFromUrlErr := (&prusaLinkApis.ThumbnailRequest{Path: thumbnailPath}).Do(this.UI.Client)
 	if imageFromUrlErr != nil {
 		logger.Error("PrintStatusPanel.downloadThumbnail() - error from ThumbnailRequest:", imageFromUrlErr)
 		glib.IdleAddPriority(glib.PRIORITY_LOW, func() {
@@ -429,7 +429,7 @@ func (this *printStatusPanel) updateToolBarButtons(stateText dataModels.PrinterS
 }
 
 func (this *printStatusPanel) handlePauseClicked() {
-	cmd := &octoprintApis.JobPauseRequest{JobId: this.currentJobId}
+	cmd := &prusaLinkApis.JobPauseRequest{JobId: this.currentJobId}
 	err := cmd.Do(this.UI.Client)
 	if err != nil {
 		logger.LogError("PrintStatusPanel.handlePauseClicked()", "Do(PauseRequest)", err)
@@ -438,7 +438,7 @@ func (this *printStatusPanel) handlePauseClicked() {
 }
 
 func (this *printStatusPanel) handleResumeClicked() {
-	cmd := &octoprintApis.JobResumeRequest{JobId: this.currentJobId}
+	cmd := &prusaLinkApis.JobResumeRequest{JobId: this.currentJobId}
 	err := cmd.Do(this.UI.Client)
 	if err != nil {
 		logger.LogError("PrintStatusPanel.handleResumeClicked()", "Do(ResumeRequest)", err)
@@ -465,7 +465,7 @@ func (this *printStatusPanel) handleCompleteClicked() {
 }
 
 func (this *printStatusPanel) cancelPrintJob() {
-	err := (&octoprintApis.JobStopRequest{JobId: this.currentJobId}).Do(this.UI.Client)
+	err := (&prusaLinkApis.JobStopRequest{JobId: this.currentJobId}).Do(this.UI.Client)
 	if err == nil {
 		this.pauseButton.SetSensitive(false)
 		this.resumeButton.SetSensitive(false)

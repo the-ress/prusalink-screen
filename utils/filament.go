@@ -5,12 +5,12 @@ import (
 
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 )
 
 func Extrude(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	isForward bool,
 	parentWindow *gtk.Window,
 	flowRatePercentage int,
@@ -41,10 +41,10 @@ func Extrude(
 }
 
 func SetFlowRate(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	flowRatePercentage int,
 ) error {
-	cmd := &octoprintApis.ToolFlowRateRequest{}
+	cmd := &prusaLinkApis.ToolFlowRateRequest{}
 	cmd.Factor = flowRatePercentage
 
 	logger.Infof("filament.SetFlowRate() - changing flow rate to %d%%", cmd.Factor)
@@ -57,11 +57,11 @@ func SetFlowRate(
 }
 
 func SendExtrudeRrequest(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	isForward bool,
 	length int,
 ) error {
-	cmd := &octoprintApis.ToolExtrudeRequest{}
+	cmd := &prusaLinkApis.ToolExtrudeRequest{}
 	if isForward {
 		cmd.Amount = length
 	} else {

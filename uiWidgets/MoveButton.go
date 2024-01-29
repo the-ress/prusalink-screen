@@ -3,21 +3,21 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 )
 
 type MoveButton struct {
 	*gtk.Button
 
-	client                 *octoprintApis.Client
+	client                 *prusaLinkApis.Client
 	amountToMoveStepButton *AmountToMoveStepButton
 	axis                   dataModels.Axis
 	direction              float64
 }
 
 func CreateMoveButton(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	amountToMoveStepButton *AmountToMoveStepButton,
 	label string,
 	image string,
@@ -42,7 +42,7 @@ func CreateMoveButton(
 
 func (this *MoveButton) handlePressed() {
 	distance := this.amountToMoveStepButton.Value() * this.direction
-	cmd := &octoprintApis.PrintHeadJogRequest{}
+	cmd := &prusaLinkApis.PrintHeadJogRequest{}
 	switch this.axis {
 	case dataModels.XAxis:
 		cmd.X = distance

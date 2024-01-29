@@ -11,18 +11,18 @@ import (
 	"time"
 
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type PrinterService struct {
-	client       *octoprintApis.Client
+	client       *prusaLinkApis.Client
 	stateManager *StateManager
 
 	backgroundTask *utils.BackgroundTask
 }
 
-func NewPrinterService(client *octoprintApis.Client) *PrinterService {
+func NewPrinterService(client *prusaLinkApis.Client) *PrinterService {
 	instance := &PrinterService{
 		client:       client,
 		stateManager: NewStateManager(client),
@@ -61,7 +61,7 @@ func (this *PrinterService) GetStateUpdates() chan PrinterState {
 }
 
 func (this *PrinterService) SetHotendTemperature(target float64) error {
-	cmd := &octoprintApis.ToolTargetRequest{
+	cmd := &prusaLinkApis.ToolTargetRequest{
 		Targets: map[string]float64{"tool0": target},
 	}
 	err := cmd.Do(this.client)
@@ -74,7 +74,7 @@ func (this *PrinterService) SetHotendTemperature(target float64) error {
 }
 
 func (this *PrinterService) SetBedTemperature(target float64) error {
-	cmd := &octoprintApis.BedTargetRequest{Target: target}
+	cmd := &prusaLinkApis.BedTargetRequest{Target: target}
 	err := cmd.Do(this.client)
 
 	if err == nil {

@@ -18,8 +18,8 @@ import (
 	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/interfaces"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -28,7 +28,7 @@ type UI struct {
 	sync.Mutex
 
 	PanelHistory    *stack.Stack
-	Client          *octoprintApis.Client
+	Client          *prusaLinkApis.Client
 	Printer         *domain.PrinterService
 	ConnectionState dataModels.ConnectionState
 	MenuStructure   []dataModels.MenuItem
@@ -69,7 +69,7 @@ func NewUi() *UI {
 		panic("the window's height was not specified")
 	}
 
-	client := octoprintApis.NewClient(endpoint, key)
+	client := prusaLinkApis.NewClient(endpoint, key)
 	instance := &UI{
 		PanelHistory:               stack.New(),
 		Client:                     client,

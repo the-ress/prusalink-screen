@@ -3,23 +3,23 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 
-	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type TemperatureIncreaseButton struct {
 	*gtk.Button
 
-	client                      *octoprintApis.Client
+	client                      *prusaLinkApis.Client
 	temperatureAmountStepButton *TemperatureAmountStepButton
 	selectHotendStepButton      *SelectToolStepButton
 	isIncrease                  bool
 }
 
 func CreateTemperatureIncreaseButton(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	temperatureAmountStepButton *TemperatureAmountStepButton,
 	selectHotendStepButton *SelectToolStepButton,
 	isIncrease bool,

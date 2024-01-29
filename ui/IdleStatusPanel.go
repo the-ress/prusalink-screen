@@ -8,11 +8,11 @@ import (
 	// "sync"
 	// "time"
 
-	// "github.com/the-ress/prusalink-screen/octoprintApis"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/the-ress/prusalink-screen/domain"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
 	"github.com/the-ress/prusalink-screen/utils"
 )
@@ -20,8 +20,8 @@ import (
 type idleStatusPanel struct {
 	CommonPanel
 
-	tool0Button *uiWidgets.ToolButton
-	bedButton   *uiWidgets.ToolButton
+	nozzleButton *uiWidgets.ToolButton
+	bedButton    *uiWidgets.ToolButton
 }
 
 var idleStatusPanelInstance *idleStatusPanel
@@ -83,14 +83,14 @@ func (this *idleStatusPanel) showFiles() {
 func (this *idleStatusPanel) showTools() {
 	logger.TraceEnter("IdleStatusPanel.showTools()")
 
-	this.tool0Button = uiWidgets.CreateToolButton(0, this.UI.Printer)
+	this.nozzleButton = uiWidgets.CreateToolButton(0, this.UI.Printer)
 	this.bedButton = uiWidgets.CreateToolButton(-1, this.UI.Printer)
 
 	toolGrid := utils.MustGrid()
 	toolGrid.SetRowHomogeneous(true)
 	toolGrid.SetColumnHomogeneous(true)
 	this.Grid().Attach(toolGrid, 0, 0, 2, 3)
-	toolGrid.Attach(this.tool0Button, 0, 0, 2, 1)
+	toolGrid.Attach(this.nozzleButton, 0, 0, 2, 1)
 	toolGrid.Attach(this.bedButton, 0, 1, 2, 1)
 
 	logger.TraceLeave("IdleStatusPanel.showTools()")
@@ -111,6 +111,6 @@ func (this *idleStatusPanel) consumeStateUpdates(ch chan domain.PrinterState) {
 }
 
 func (this *idleStatusPanel) updateTemperature(temperature dataModels.TemperatureData) {
-	this.tool0Button.SetTemperatures(temperature.Nozzle)
+	this.nozzleButton.SetTemperatures(temperature.Nozzle)
 	this.bedButton.SetTemperatures(temperature.Bed)
 }

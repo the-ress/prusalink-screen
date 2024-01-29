@@ -1,18 +1,18 @@
 package uiWidgets
 
 import (
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	// "github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	// "github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type FlowRateStepButton struct {
 	*StepButton
-	client *octoprintApis.Client
+	client *prusaLinkApis.Client
 }
 
 func CreateFlowRateStepButton(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 	colorVariation int,
 	clicked func(),
 ) *FlowRateStepButton {

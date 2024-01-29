@@ -3,19 +3,19 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/logger"
-	"github.com/the-ress/prusalink-screen/octoprintApis"
-	"github.com/the-ress/prusalink-screen/octoprintApis/dataModels"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type HomeAllButton struct {
 	*gtk.Button
 
-	client *octoprintApis.Client
+	client *prusaLinkApis.Client
 }
 
 func CreateHomeAllButton(
-	client *octoprintApis.Client,
+	client *prusaLinkApis.Client,
 ) *HomeAllButton {
 	base := utils.MustButtonImageStyle("Home All", "home.svg", "", nil)
 
@@ -37,7 +37,7 @@ func (this *HomeAllButton) handleClicked() {
 		dataModels.YAxis,
 		dataModels.ZAxis,
 	}
-	cmd := &octoprintApis.PrintHeadHomeRequest{Axes: axes}
+	cmd := &prusaLinkApis.PrintHeadHomeRequest{Axes: axes}
 	err := cmd.Do(this.client)
 	if err != nil {
 		logger.LogError("HomeAllButton.handleClicked()", "Do(PrintHeadHomeRequest)", err)
