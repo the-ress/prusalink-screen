@@ -30,6 +30,8 @@ OCTOPRINT_CONFIG_FILE=/home/jo/prusa_printer_settings.ini
 
 PRUSALINK_EXECUTABLE_PATH=/home/jo/.local/bin/prusalink
 
+PRUSALINK_USER=jo
+
 
 # The file path to where the log file will be saved.
 # The file path should be a fully qualified path and not only include the path
@@ -44,7 +46,7 @@ OCTOSCREEN_LOG_FILE_PATH=
 
 # Controls the level of logging.
 # Accepted values are (with increasing levels): debug, info, warn, and error.
-OCTOSCREEN_LOG_LEVEL=Error
+OCTOSCREEN_LOG_LEVEL=error
 
 
 # Resolution of the application, and should be configured to the resolution of your

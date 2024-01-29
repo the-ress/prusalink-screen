@@ -15,4 +15,3 @@ WatchdogSec=40s
 
 [Install]
 WantedBy=multi-user.target
-Alias=display-manager.service

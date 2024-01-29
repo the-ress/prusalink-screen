@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 
+	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
 
@@ -140,6 +141,41 @@ func messageDialogBox(parentWindow *gtk.Window, messageType gtk.MessageType, mes
 
 	ctx, _ := dialogBox.GetStyleContext()
 	ctx.AddClass("message")
+
+	dialogBox.Run()
+}
+
+func RunWithWaitingBox(
+	parentWindow *gtk.Window,
+	message string,
+	callback func(),
+) {
+	dialogBox := gtk.MessageDialogNewWithMarkup(
+		parentWindow,
+		gtk.DIALOG_MODAL,
+		gtk.MESSAGE_INFO,
+		gtk.BUTTONS_NONE,
+		"",
+	)
+
+	dialogBox.SetMarkup(CleanHTML(message))
+	defer dialogBox.Destroy()
+
+	box, _ := dialogBox.GetContentArea()
+	box.SetMarginStart(25)
+	box.SetMarginEnd(25)
+	box.SetMarginTop(20)
+	box.SetMarginBottom(10)
+
+	ctx, _ := dialogBox.GetStyleContext()
+	ctx.AddClass("message")
+
+	go func() {
+		callback()
+		glib.IdleAdd(func() {
+			dialogBox.Close()
+		})
+	}()
 
 	dialogBox.Run()
 }

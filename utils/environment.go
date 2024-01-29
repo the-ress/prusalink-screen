@@ -24,12 +24,13 @@ const (
 
 // Optional (but good to have) environment variables
 const (
-	EnvLogLevel       = "OCTOSCREEN_LOG_LEVEL"
-	EnvLogFilePath    = "OCTOSCREEN_LOG_FILE_PATH"
-	EnvResolution     = "OCTOSCREEN_RESOLUTION"
-	EnvConfigFilePath = "OCTOPRINT_CONFIG_FILE"
-	EnvExecutablePath = "PRUSALINK_EXECUTABLE_PATH"
-	EnvDisplayCursor  = "DISPLAY_CURSOR"
+	EnvLogLevel                = "OCTOSCREEN_LOG_LEVEL"
+	EnvLogFilePath             = "OCTOSCREEN_LOG_FILE_PATH"
+	EnvResolution              = "OCTOSCREEN_RESOLUTION"
+	EnvConfigFilePath          = "OCTOPRINT_CONFIG_FILE"
+	EnvPrusaLinkExecutablePath = "PRUSALINK_EXECUTABLE_PATH"
+	EnvPrusaLinkUser           = "PRUSALINK_USER"
+	EnvDisplayCursor           = "DISPLAY_CURSOR"
 )
 
 func RequiredEnvironmentVariablesAreSet(apiKey string) bool {
@@ -117,7 +118,8 @@ func DumpEnvironmentVariables() {
 	// Optional environment variables
 	logger.Info("Optional environment variables:")
 	dumpEnvironmentVariable(EnvConfigFilePath)
-	dumpEnvironmentVariable(EnvExecutablePath)
+	dumpEnvironmentVariable(EnvPrusaLinkExecutablePath)
+	dumpEnvironmentVariable(EnvPrusaLinkUser)
 	dumpEnvironmentVariable(EnvLogFilePath)
 	dumpEnvironmentVariable(EnvLogLevel)
 
