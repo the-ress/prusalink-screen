@@ -67,7 +67,7 @@ $(DEBIAN_PACKAGES):
 		make build-internal
 
 build-internal: prepare-internal
-	#go build --tags ${GO_TAGS} -v -o /build/bin/${BINARY_NAME} main.go
+	#go build --tags ${GO_TAGS} -v -o /build/bin/${BINARY_NAME} cmd/prusalink-screen/screen.go
 	cd $(WORKDIR); \
 	GOCACHE=/gocache debuild --prepend-path=/usr/local/go/bin/ --preserve-env -us -uc -a${TARGET_ARCH} \
 	&& cp ../*.deb /build/;

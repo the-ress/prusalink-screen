@@ -4,7 +4,7 @@ SHELL := /bin/bash
 
 export DH_VERBOSE := 1
 export DH_GOPKG := github.com/the-ress/prusalink-screen
-export DH_GOLANG_BUILDPKG := github.com/the-ress/prusalink-screen
+export DH_GOLANG_BUILDPKG := github.com/the-ress/prusalink-screen/cmd/prusalink-screen
 export DH_GOLANG_INSTALL_ALL := 1
 
 export GOPROXY := https://proxy.golang.org
@@ -35,8 +35,8 @@ override_dh_auto_build:
 	dh_auto_build -O--buildsystem=golang -- \
 		--tags "$(GO_TAGS)" \
 		-ldflags "\
-			-X $(DH_GOPKG)/ui.Version=$(VERSION) \
-			-X $(DH_GOPKG)/ui.Build=$(BUILD_DATE)\
+			-X $(DH_GOPKG)/pkg/common.AppVersion=$(VERSION) \
+			-X $(DH_GOPKG)/pkg/common.BuildDate=$(BUILD_DATE)\
 		"
 	if [[ $(_DH_GOLANG_WITH_CROSSBUILD_SUPPORT) != 1 ]]; then \
 		if [[ "$(DEB_BUILD_ARCH)" != "$(DEB_HOST_ARCH)" ]]; then \
