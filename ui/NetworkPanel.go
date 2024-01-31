@@ -198,7 +198,7 @@ func (this *networkPanel) addNetwork(box *gtk.Box, ssid string) {
 		this.UI.GoToPanel(GetConnectToNetworkPanelInstance(this.UI, ssid))
 	}
 
-	image := utils.MustImageFromFileWithSize("network.svg", this.Scaled(25), this.Scaled(25))
+	image := utils.MustImageFromFileWithSize(this.UI.Config, "network.svg", this.Scaled(25), this.Scaled(25))
 	button := utils.MustButton(image, clicked)
 
 	name := utils.MustButtonText(utils.StrEllipsisLen(ssid, 18), clicked)
@@ -230,7 +230,7 @@ func (this *networkPanel) createActionBar() gtk.IWidget {
 	layout.SetHExpand(true)
 
 	// NOTE: If a message is logged that the image (SVG) can't be loaded, try installing librsvg.
-	backImage := utils.MustImageFromFileWithSize("back.svg", this.Scaled(40), this.Scaled(40))
+	backImage := utils.MustImageFromFileWithSize(this.UI.Config, "back.svg", this.Scaled(40), this.Scaled(40))
 	backButton := utils.MustButton(backImage, func() {
 		this.UI.GoToPreviousPanel()
 	})

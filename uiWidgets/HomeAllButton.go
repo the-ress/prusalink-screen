@@ -16,8 +16,9 @@ type HomeAllButton struct {
 
 func CreateHomeAllButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 ) *HomeAllButton {
-	base := utils.MustButtonImageStyle("Home All", "home.svg", "", nil)
+	base := utils.MustButtonImageStyle(config, "Home All", "home.svg", "", nil)
 
 	instance := &HomeAllButton{
 		Button: base,

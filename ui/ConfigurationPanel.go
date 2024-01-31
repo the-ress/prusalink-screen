@@ -1,7 +1,6 @@
 package ui
 
 import (
-	// "github.com/the-ress/prusalink-screen/interfaces"
 	"github.com/the-ress/prusalink-screen/utils"
 )
 
@@ -29,6 +28,7 @@ func (this *configurationPanel) initialize() {
 	defer this.Initialize()
 
 	networkButton := utils.MustButtonImageStyle(
+		this.UI.Config,
 		"Network",
 		"network.svg",
 		"color3",
@@ -37,6 +37,7 @@ func (this *configurationPanel) initialize() {
 	this.Grid().Attach(networkButton, 2, 0, 1, 1)
 
 	systemButton := utils.MustButtonImageStyle(
+		this.UI.Config,
 		"System",
 		"info.svg",
 		"color4",

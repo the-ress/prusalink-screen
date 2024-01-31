@@ -47,12 +47,13 @@ type ToolButton struct {
 func CreateToolButton(
 	index int,
 	printer *domain.PrinterService,
+	config *utils.ScreenConfig,
 ) *ToolButton {
 	imageFileName := ToolImageFileName(index)
 	toolName := ToolName(index)
 
 	instance := &ToolButton{
-		Button:  utils.MustButtonImageUsingFilePath("", imageFileName, nil),
+		Button:  utils.MustButtonImageUsingFilePath(config, "", imageFileName, nil),
 		tool:    toolName,
 		printer: printer,
 	}

@@ -5,19 +5,17 @@ import (
 	"io"
 	standardLog "log"
 	"os"
-	// "path"
-	// "runtime"
 	"strings"
 	"sync"
-	// "time"
 
 	"github.com/sirupsen/logrus"
+	"github.com/the-ress/prusalink-screen/common"
 )
-
 
 var _mutex *sync.RWMutex = nil
 var _indentLevel int = -1
 var _indentation string = ""
+
 const INDENTATION_TOKEN = "    "
 const INDENTATION_TOKEN_LENGTH = 4
 
@@ -26,9 +24,8 @@ var _logrusEntry *logrus.Entry
 var _logLevel logrus.Level
 var _strLogLevel string
 
-
 func init() {
-	_mutex = &sync.RWMutex {}
+	_mutex = &sync.RWMutex{}
 
 	_indentLevel = 0
 	_indentation = ""
@@ -39,7 +36,7 @@ func init() {
 	//
 	// TODO: ...(maybe?) it would be nice it this could be made generic,
 	// but this is getting set in init().
-	var logFilePath = os.Getenv("OCTOSCREEN_LOG_FILE_PATH")
+	var logFilePath = os.Getenv(common.EnvLogFilePath)
 	//
 
 	if logFilePath == "" {
@@ -81,7 +78,6 @@ func writeIndentation(indentation string) {
 	_mutex.Unlock()
 }
 
-
 func SetLogLevel(newLevel logrus.Level) {
 	_logLevel = newLevel
 	_strLogLevel = strings.ToLower(_logLevel.String())
@@ -94,7 +90,6 @@ func LogLevel() string {
 	// Returns a lower case string.
 	return _strLogLevel
 }
-
 
 func TraceEnter(functionName string) {
 	message := fmt.Sprintf("%sentering %s", readIndentation(), functionName)
@@ -115,7 +110,6 @@ func TraceLeave(functionName string) {
 	_logrusEntry.Debug(message)
 }
 
-
 func LogError(currentFunctionName, functionCalledName string, err error) {
 	if err != nil {
 		_logrusEntry.Errorf("%s%s - %s returned an error: %q", readIndentation(), currentFunctionName, functionCalledName, err)
@@ -132,49 +126,44 @@ func LogFatalError(currentFunctionName, functionCalledName string, err error) {
 	}
 }
 
-
 func Debug(args ...interface{}) {
 	_logrusEntry.Debug(readIndentation() + fmt.Sprint(args...))
 }
 
 func Debugf(format string, args ...interface{}) {
-	_logrusEntry.Debugf(readIndentation() + format, args...)
+	_logrusEntry.Debugf(readIndentation()+format, args...)
 }
-
 
 func Info(args ...interface{}) {
 	_logrusEntry.Info(readIndentation() + fmt.Sprint(args...))
 }
 
 func Infof(format string, args ...interface{}) {
-	_logrusEntry.Infof(readIndentation() + format, args...)
+	_logrusEntry.Infof(readIndentation()+format, args...)
 }
-
 
 func Warn(args ...interface{}) {
 	_logrusEntry.Warn(readIndentation() + fmt.Sprint(args...))
 }
 
 func Warnf(format string, args ...interface{}) {
-	_logrusEntry.Warnf(readIndentation() + format, args...)
+	_logrusEntry.Warnf(readIndentation()+format, args...)
 }
-
 
 func Error(args ...interface{}) {
 	_logrusEntry.Error(readIndentation() + fmt.Sprint(args...))
 }
 
 func Errorf(format string, args ...interface{}) {
-	_logrusEntry.Errorf(readIndentation() + format, args...)
+	_logrusEntry.Errorf(readIndentation()+format, args...)
 }
-
 
 func Fatal(args ...interface{}) {
 	_logrusEntry.Fatal(readIndentation() + fmt.Sprint(args...))
 }
 
 func Fatalf(format string, args ...interface{}) {
-	_logrusEntry.Fatalf(readIndentation() + format, args...)
+	_logrusEntry.Fatalf(readIndentation()+format, args...)
 }
 
 func Panic(args ...interface{}) {
@@ -182,5 +171,5 @@ func Panic(args ...interface{}) {
 }
 
 func Panicf(format string, args ...interface{}) {
-	_logrusEntry.Panicf(readIndentation() + format, args...)
+	_logrusEntry.Panicf(readIndentation()+format, args...)
 }

@@ -92,7 +92,7 @@ func (this *CommonPanel) Initialize() {
 		this.AddButton(box)
 	}
 
-	this.backButton = utils.MustButtonImageUsingFilePath("Back", "back.svg", this.UI.GoToPreviousPanel)
+	this.backButton = utils.MustButtonImageUsingFilePath(this.UI.Config, "Back", "back.svg", this.UI.GoToPreviousPanel)
 	if this.includeBackButton {
 		this.AddButton(this.backButton)
 	}
@@ -152,7 +152,7 @@ func (this *CommonPanel) arrangeMenuItems(
 		if panel != nil {
 			color := fmt.Sprintf("color%d", (i%4)+1)
 			icon := fmt.Sprintf("%s.svg", item.Icon)
-			button := utils.MustButtonImageStyle(item.Name, icon, color, func() {
+			button := utils.MustButtonImageStyle(this.UI.Config, item.Name, icon, color, func() {
 				this.UI.GoToPanel(panel)
 			})
 			grid.Attach(button, (i % cols), i/cols, 1, 1)

@@ -12,6 +12,7 @@ import (
 
 func CreateSelectHotendStepButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	includeBed bool,
 	colorVariation int,
 	clicked func(),
@@ -32,6 +33,7 @@ func CreateSelectHotendStepButton(
 	}
 
 	base := CreateStepButton(
+		config,
 		colorVariation,
 		clicked,
 		steps...,

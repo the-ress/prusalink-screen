@@ -10,12 +10,13 @@ import (
 )
 
 func MustPressedButton(
+	config *utils.ScreenConfig,
 	label string,
 	imageFileName string,
 	pressed func(),
 	speed time.Duration,
 ) *gtk.Button {
-	image := utils.MustImageFromFile(imageFileName)
+	image := utils.MustImageFromFile(config, imageFileName)
 	isReleased := make(chan bool)
 	var mutex sync.Mutex
 

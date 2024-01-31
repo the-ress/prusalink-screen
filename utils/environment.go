@@ -4,41 +4,19 @@ import (
 	"fmt"
 	"os"
 
-	//"strings"
-
+	"github.com/the-ress/prusalink-screen/common"
 	"github.com/the-ress/prusalink-screen/logger"
 )
-
-// OctoScreenVersion is set during compilation.
-var OctoScreenVersion = "0.0.1"
 
 const MISSING_ENV_TOKEN = ">>MISSING<<"
 const INVALID_ENV_TOKEN = "!!!INVALID!!!"
 
-// Required environment variables
-const (
-	EnvStylePath       = "OCTOSCREEN_STYLE_PATH"
-	EnvOctoPrintHost   = "OCTOPRINT_HOST"
-	EnvOctoPrintApiKey = "OCTOPRINT_APIKEY"
-)
-
-// Optional (but good to have) environment variables
-const (
-	EnvLogLevel                = "OCTOSCREEN_LOG_LEVEL"
-	EnvLogFilePath             = "OCTOSCREEN_LOG_FILE_PATH"
-	EnvResolution              = "OCTOSCREEN_RESOLUTION"
-	EnvConfigFilePath          = "OCTOPRINT_CONFIG_FILE"
-	EnvPrusaLinkExecutablePath = "PRUSALINK_EXECUTABLE_PATH"
-	EnvPrusaLinkUser           = "PRUSALINK_USER"
-	EnvDisplayCursor           = "DISPLAY_CURSOR"
-)
-
 func RequiredEnvironmentVariablesAreSet(apiKey string) bool {
-	if !environmentVariableIsSet(EnvStylePath) {
+	if !environmentVariableIsSet(common.EnvStylePath) {
 		return false
 	}
 
-	if !environmentVariableIsSet(EnvOctoPrintHost) {
+	if !environmentVariableIsSet(common.EnvPrusaLinkHost) {
 		return false
 	}
 
@@ -65,12 +43,12 @@ func environmentVariableIsSet(environmentVariable string) bool {
 }
 
 func NameOfMissingRequiredEnvironmentVariable(apiKey string) string {
-	if !environmentVariableIsSet(EnvStylePath) {
-		return EnvStylePath
+	if !environmentVariableIsSet(common.EnvStylePath) {
+		return common.EnvStylePath
 	}
 
-	if !environmentVariableIsSet(EnvOctoPrintHost) {
-		return EnvOctoPrintHost
+	if !environmentVariableIsSet(common.EnvPrusaLinkHost) {
+		return common.EnvPrusaLinkHost
 	}
 
 	// Similar comment as to the one that's in RequiredEnvironmentVariablesAreSet()...
@@ -81,7 +59,7 @@ func NameOfMissingRequiredEnvironmentVariable(apiKey string) string {
 	// 	return EnvOctoPrintApiKey
 	// }
 	if apiKey == "" {
-		return EnvOctoPrintApiKey
+		return common.EnvPrusaLinkApiKey
 	}
 
 	return "UNKNOWN"
@@ -89,7 +67,7 @@ func NameOfMissingRequiredEnvironmentVariable(apiKey string) string {
 
 func DumpSystemInformation() {
 	logger.Info("System Information...")
-	logger.Infof("OctoScreen version: %q", OctoScreenVersion)
+	logger.Infof("PrusaLink Screen version: %q", common.AppVersion)
 	// More system stats to come...
 	logger.Info("")
 }
@@ -99,7 +77,7 @@ func DumpEnvironmentVariables() {
 
 	// Required environment variables
 	logger.Info("Required environment variables:")
-	dumpEnvironmentVariable(EnvOctoPrintHost)
+	dumpEnvironmentVariable(common.EnvPrusaLinkHost)
 
 	// TODO: revisit this!
 	// 1. remove OCTOPRINT_APIKEY from option settings
@@ -110,24 +88,24 @@ func DumpEnvironmentVariables() {
 	// 6. dump api key (obfuscated though)
 	// 7. update docs
 	// 8. make sure what's dumped to the log is correct, for both when present and when missing.
-	dumpObfuscatedEnvironmentVariable(EnvOctoPrintApiKey)
+	dumpObfuscatedEnvironmentVariable(common.EnvPrusaLinkApiKey)
 
-	dumpEnvironmentVariable(EnvStylePath)
+	dumpEnvironmentVariable(common.EnvStylePath)
 	logger.Info("")
 
 	// Optional environment variables
 	logger.Info("Optional environment variables:")
-	dumpEnvironmentVariable(EnvConfigFilePath)
-	dumpEnvironmentVariable(EnvPrusaLinkExecutablePath)
-	dumpEnvironmentVariable(EnvPrusaLinkUser)
-	dumpEnvironmentVariable(EnvLogFilePath)
-	dumpEnvironmentVariable(EnvLogLevel)
+	dumpEnvironmentVariable(common.EnvConfigFilePath)
+	dumpEnvironmentVariable(common.EnvPrusaLinkExecutablePath)
+	dumpEnvironmentVariable(common.EnvPrusaLinkUser)
+	dumpEnvironmentVariable(common.EnvLogFilePath)
+	dumpEnvironmentVariable(common.EnvLogLevel)
 
-	dumpEnvironmentVariable(EnvResolution)
+	dumpEnvironmentVariable(common.EnvResolution)
 	// EnvResolution is optional.  If not set, the window size will
 	// default to the values defined in globalVars.go.
 
-	dumpEnvironmentVariable(EnvDisplayCursor)
+	dumpEnvironmentVariable(common.EnvDisplayCursor)
 	logger.Info("")
 }
 

@@ -9,12 +9,13 @@ type PrusaLinkInfoBox struct {
 }
 
 func NewPrusaLinkInfoBox(
+	config *utils.ScreenConfig,
 	logoWidth int,
 ) *PrusaLinkInfoBox {
 	logoHeight := int(float64(logoWidth) * 1.25)
 
 	base := NewSystemInfoBox(
-		utils.MustImageFromFileWithSize("logos/logo-octoprint.png", logoWidth, logoHeight),
+		utils.MustImageFromFileWithSize(config, "logos/logo-octoprint.png", logoWidth, logoHeight),
 		"PrusaLink",
 	)
 

@@ -3,16 +3,11 @@ package ui
 import (
 	"context"
 	"fmt"
-
-	// "os"
 	"sort"
 	"strings"
 	"time"
 
-	// "github.com/dustin/go-humanize"
 	"github.com/gotk3/gotk3/gtk"
-
-	// "github.com/the-ress/prusalink-screen/interfaces"
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
@@ -52,7 +47,7 @@ func GetFilesPanelInstance(
 		instance := &filesPanel{
 			CommonPanel:     CreateCommonPanel("FilesPanel", ui),
 			locationHistory: locationHistory,
-			pixbufCache:     utils.CreatePixbufCache(),
+			pixbufCache:     utils.CreatePixbufCache(ui.Config),
 		}
 
 		instance.initializeUi()
@@ -76,6 +71,7 @@ func (this *filesPanel) CreateListBox() {
 
 func (this *filesPanel) CreateFooter() {
 	this.actionFooter = uiWidgets.CreateActionFooter(
+		this.UI.Config,
 		this.Scaled(40),
 		this.Scaled(40),
 
@@ -275,9 +271,9 @@ func (this *filesPanel) addRootLocation(location dataModels.Location) {
 func (this *filesPanel) createRootLocationButton(location dataModels.Location) *gtk.Button {
 	var itemImage *gtk.Image
 	if location == dataModels.Local {
-		itemImage = utils.MustImageFromFileWithSize("logos/octoprint-tentacle.svg", this.Scaled(35), this.Scaled(35))
+		itemImage = utils.MustImageFromFileWithSize(this.UI.Config, "logos/octoprint-tentacle.svg", this.Scaled(35), this.Scaled(35))
 	} else {
-		itemImage = utils.MustImageFromFileWithSize("sd.svg", this.Scaled(35), this.Scaled(35))
+		itemImage = utils.MustImageFromFileWithSize(this.UI.Config, "sd.svg", this.Scaled(35), this.Scaled(35))
 	}
 
 	topBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
@@ -402,6 +398,7 @@ func (this *filesPanel) downloadThumbnails(
 		if row.previewSubRow != nil {
 			uiWidgets.CreatePreviewThumbnail(
 				ctx,
+				this.UI.Config,
 				row.previewSubRow,
 				row.model,
 				this.UI.Client,

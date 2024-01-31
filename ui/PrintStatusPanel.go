@@ -85,8 +85,8 @@ func (this *printStatusPanel) initialize() {
 }
 
 func (this *printStatusPanel) createToolButtons() {
-	this.nozzleButton = uiWidgets.CreateToolPrintingButton(0)
-	this.bedButton = uiWidgets.CreateToolPrintingButton(-1)
+	this.nozzleButton = uiWidgets.CreateToolPrintingButton(this.UI.Config, 0)
+	this.bedButton = uiWidgets.CreateToolPrintingButton(this.UI.Config, -1)
 	this.Grid().Attach(this.nozzleButton, 0, 0, 2, 1)
 	this.Grid().Attach(this.bedButton, 0, 1, 2, 1)
 }
@@ -104,21 +104,21 @@ func (this *printStatusPanel) createThumbnailBox() {
 }
 
 func (this *printStatusPanel) createInfoBox() *gtk.Box {
-	this.fileLabelWithImage = utils.MustLabelWithImage("file-gcode.svg", "")
+	this.fileLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "file-gcode.svg", "")
 	ctx, _ := this.fileLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 	this.fileLabelWithImage.Label.SetEllipsize(pango.ELLIPSIZE_END)
 	this.fileLabelWithImage.Label.SetMarginEnd(this.Scaled(20))
 
-	this.timeLabelWithImage = utils.MustLabelWithImage("time.svg", "Print time:")
+	this.timeLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time:")
 	ctx, _ = this.timeLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 
-	this.timeLeftLabelWithImage = utils.MustLabelWithImage("time.svg", "Print time left:")
+	this.timeLeftLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time left:")
 	ctx, _ = this.timeLeftLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 
-	// this.layerLabelWithImage = utils.MustLabelWithImage("time.svg", "")
+	// this.layerLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "time.svg", "")
 	// ctx, _ = this.layerLabelWithImage.GetStyleContext()
 	// ctx.AddClass("printing-status-label")
 
@@ -151,6 +151,7 @@ func (this *printStatusPanel) createProgressBar() *gtk.ProgressBar {
 
 func (this *printStatusPanel) createToolBarButtons() {
 	this.pauseButton = utils.MustButtonImageUsingFilePath(
+		this.UI.Config,
 		"Pause",
 		"pause.svg",
 		this.handlePauseClicked,
@@ -158,6 +159,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	this.Grid().Attach(this.pauseButton, 1, 2, 1, 1)
 
 	this.resumeButton = utils.MustButtonImageUsingFilePath(
+		this.UI.Config,
 		"Resume",
 		"resume.svg",
 		this.handleResumeClicked,
@@ -165,6 +167,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	this.Grid().Attach(this.resumeButton, 1, 2, 1, 1)
 
 	this.cancelButton = utils.MustButtonImageStyle(
+		this.UI.Config,
 		"Cancel",
 		"stop.svg",
 		"color-warning-sign-yellow",
@@ -173,6 +176,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	this.Grid().Attach(this.cancelButton, 2, 2, 1, 1)
 
 	this.controlButton = utils.MustButtonImageStyle(
+		this.UI.Config,
 		"Control",
 		"printing-control.svg",
 		"color3",
@@ -181,6 +185,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	this.Grid().Attach(this.controlButton, 3, 2, 1, 1)
 
 	this.completedButton = utils.MustButtonImageStyle(
+		this.UI.Config,
 		"Done",
 		"complete.svg",
 		"color3",

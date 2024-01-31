@@ -18,9 +18,10 @@ type CoolDownButton struct {
 
 func CreateCoolDownButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	callback func(),
 ) *CoolDownButton {
-	base := utils.MustButtonImageUsingFilePath("All Off", "cool-down.svg", nil)
+	base := utils.MustButtonImageUsingFilePath(config, "All Off", "cool-down.svg", nil)
 
 	instance := &CoolDownButton{
 		Button:   base,

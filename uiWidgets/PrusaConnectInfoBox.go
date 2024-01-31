@@ -8,9 +8,9 @@ type PrusaConnectInfoBox struct {
 	*SystemInfoBox
 }
 
-func NewPrusaConnectInfoBox() *PrusaConnectInfoBox {
+func NewPrusaConnectInfoBox(config *utils.ScreenConfig) *PrusaConnectInfoBox {
 	base := NewSystemInfoBox(
-		utils.MustImageFromFile("logos/puzzle-piece.png"),
+		utils.MustImageFromFile(config, "logos/puzzle-piece.png"),
 		"PrusaConnect",
 	)
 

@@ -64,7 +64,7 @@ func (this *idleStatusPanel) initialize() {
 	this.Grid().Attach(menuGrid, 2, 0, 2, 2)
 	this.arrangeMenuItems(menuGrid, menuItems, 2)
 
-	printButton := utils.MustButtonImageStyle("Print", "print.svg", "color2", this.showFiles)
+	printButton := utils.MustButtonImageStyle(this.UI.Config, "Print", "print.svg", "color2", this.showFiles)
 	this.Grid().Attach(printButton, 2, 2, 2, 1)
 
 	this.showTools()
@@ -83,8 +83,8 @@ func (this *idleStatusPanel) showFiles() {
 func (this *idleStatusPanel) showTools() {
 	logger.TraceEnter("IdleStatusPanel.showTools()")
 
-	this.nozzleButton = uiWidgets.CreateToolButton(0, this.UI.Printer)
-	this.bedButton = uiWidgets.CreateToolButton(-1, this.UI.Printer)
+	this.nozzleButton = uiWidgets.CreateToolButton(0, this.UI.Printer, this.UI.Config)
+	this.bedButton = uiWidgets.CreateToolButton(-1, this.UI.Printer, this.UI.Config)
 
 	toolGrid := utils.MustGrid()
 	toolGrid.SetRowHomogeneous(true)

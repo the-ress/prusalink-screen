@@ -27,6 +27,7 @@ import (
 type UI struct {
 	sync.Mutex
 
+	Config          *utils.ScreenConfig
 	PanelHistory    *stack.Stack
 	Client          *prusaLinkApis.Client
 	Printer         *domain.PrinterService
@@ -47,19 +48,15 @@ type UI struct {
 	width       int
 	height      int
 	scaleFactor int
-
-	PrusaLinkExecutable string
-	PrusaLinkUser       string
 }
 
-func NewUi() *UI {
+func NewUi(config *utils.ScreenConfig) *UI {
 	logger.TraceEnter("ui.NewUi()")
 
-	octoScreenConfig := utils.GetOctoScreenConfigInstance()
-	endpoint := octoScreenConfig.OctoPrintConfig.Host
-	key := octoScreenConfig.OctoPrintConfig.ApiKey
-	width := octoScreenConfig.Width
-	height := octoScreenConfig.Height
+	endpoint := config.PrusaLinkHost
+	key := config.PrusaLinkApiKey
+	width := config.WindowSize.Width
+	height := config.WindowSize.Height
 
 	if width == 0 {
 		panic("the window's width was not specified")
@@ -73,6 +70,7 @@ func NewUi() *UI {
 	instance := &UI{
 		PanelHistory:               stack.New(),
 		Client:                     client,
+		Config:                     config,
 		Printer:                    domain.NewPrinterService(client),
 		NotificationsBox:           uiWidgets.NewNotificationsBox(),
 		OctoPrintPluginIsAvailable: false,
@@ -83,8 +81,6 @@ func NewUi() *UI {
 		time:                       time.Now(),
 		width:                      width,
 		height:                     height,
-		PrusaLinkExecutable:        octoScreenConfig.OctoPrintConfig.ExecutablePath,
-		PrusaLinkUser:              octoScreenConfig.OctoPrintConfig.User,
 	}
 
 	instance.initialize1()
@@ -231,7 +227,7 @@ func (this *UI) initialize2() {
 func (this *UI) loadStyle() {
 	logger.TraceEnter("ui.loadStyle()")
 
-	cssProvider := utils.MustCssProviderFromFile(utils.CssFileName)
+	cssProvider := utils.MustCssProviderFromFile(this.Config, utils.CssFileName)
 
 	screenDefault, err := gdk.ScreenGetDefault()
 	if err != nil {

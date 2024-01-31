@@ -25,7 +25,7 @@ func CreateSplashPanel(ui *UI) *SplashPanel {
 func (this *SplashPanel) initialize() {
 	logger.TraceEnter("SplashPanel.initialize()")
 
-	logo := utils.MustImageFromFile("logos/logo.png")
+	logo := utils.MustImageFromFile(this.UI.Config, "logos/logo.png")
 	this.Label = utils.MustLabel("...")
 	this.Label.SetHExpand(true)
 	this.Label.SetLineWrap(true)
@@ -58,18 +58,18 @@ func (this *SplashPanel) createActionBar() gtk.IWidget {
 	actionBar := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBar.SetHAlign(gtk.ALIGN_END)
 
-	this.RetryButton = utils.MustButtonImageStyle("Retry", "refresh.svg", "color2", this.releaseFromHold)
+	this.RetryButton = utils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color2", this.releaseFromHold)
 	this.RetryButton.SetProperty("width-request", this.Scaled(100))
 	this.RetryButton.SetProperty("visible", true)
 	actionBar.Add(this.RetryButton)
 	ctx, _ := this.RetryButton.GetStyleContext()
 	ctx.AddClass("hidden")
 
-	systemButton := utils.MustButtonImageStyle("System", "info.svg", "color3", this.showSystem)
+	systemButton := utils.MustButtonImageStyle(this.UI.Config, "System", "info.svg", "color3", this.showSystem)
 	systemButton.SetProperty("width-request", this.Scaled(100))
 	actionBar.Add(systemButton)
 
-	networkButton := utils.MustButtonImageStyle("Network", "network.svg", "color4", this.showNetwork)
+	networkButton := utils.MustButtonImageStyle(this.UI.Config, "Network", "network.svg", "color4", this.showNetwork)
 	networkButton.SetProperty("width-request", this.Scaled(100))
 	actionBar.Add(networkButton)
 

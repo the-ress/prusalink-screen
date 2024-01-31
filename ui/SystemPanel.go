@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os/exec"
 
+	"github.com/the-ress/prusalink-screen/common"
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/uiWidgets"
@@ -55,21 +56,22 @@ func (this *systemPanel) initialize() {
 
 	// First row
 	logoWidth := this.Scaled(52)
-	this.prusaLinkInfoBox = uiWidgets.NewPrusaLinkInfoBox(logoWidth)
+	this.prusaLinkInfoBox = uiWidgets.NewPrusaLinkInfoBox(this.UI.Config, logoWidth)
 	this.Grid().Attach(this.prusaLinkInfoBox, 0, 0, 1, 1)
 
-	this.printerFirmwareInfoBox = uiWidgets.NewPrinterFirmwareInfoBox(logoWidth)
+	this.printerFirmwareInfoBox = uiWidgets.NewPrinterFirmwareInfoBox(this.UI.Config, logoWidth)
 	this.Grid().Attach(this.printerFirmwareInfoBox, 1, 0, 1, 1)
 
-	this.prusaConnectInfoBox = uiWidgets.NewPrusaConnectInfoBox()
+	this.prusaConnectInfoBox = uiWidgets.NewPrusaConnectInfoBox(this.UI.Config)
 	this.Grid().Attach(this.prusaConnectInfoBox, 2, 0, 1, 1)
 
-	this.prusaLinkScreenInfoBox = uiWidgets.NewPrusaLinkScreenInfoBox(utils.OctoScreenVersion)
+	this.prusaLinkScreenInfoBox = uiWidgets.NewPrusaLinkScreenInfoBox(this.UI.Config, common.AppVersion)
 	this.Grid().Attach(this.prusaLinkScreenInfoBox, 3, 0, 1, 1)
 
 	// Second row
 	this.shutdownSystemButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
+		this.UI.Config,
 		"Shutdown System",
 		"shutdown",
 		"color-warning-sign-red",
@@ -94,6 +96,7 @@ func (this *systemPanel) initialize() {
 
 	this.rebootSystemButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
+		this.UI.Config,
 		"Reboot System",
 		"reboot",
 		"color-warning-sign-red",
@@ -118,6 +121,7 @@ func (this *systemPanel) initialize() {
 
 	this.restartPrusaLinkButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
+		this.UI.Config,
 		"Restart PrusaLink",
 		"restart",
 		"color-warning-sign-yellow-dark",
@@ -125,11 +129,11 @@ func (this *systemPanel) initialize() {
 		func() {
 			logger.Info("Restarting PrusaLink")
 
-			command := fmt.Sprintf("%s -i restart", this.UI.PrusaLinkExecutable)
+			command := fmt.Sprintf("%s -i restart", this.UI.Config.PrusaLinkExecutablePath)
 
 			var err error = nil
 			utils.RunWithWaitingBox(this.UI.window, "Restarting PrusaLink...", func() {
-				err = exec.Command("su", this.UI.PrusaLinkUser, "-c", command).Run()
+				err = exec.Command("su", this.UI.Config.PrusaLinkUser, "-c", command).Run()
 			})
 
 			if err != nil {
@@ -144,6 +148,7 @@ func (this *systemPanel) initialize() {
 
 	this.restartPrusaLinkScreenButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
+		this.UI.Config,
 		"Restart Screen",
 		"restart",
 		"color-warning-sign-yellow-dark",
@@ -167,7 +172,7 @@ func (this *systemPanel) initialize() {
 	this.Grid().Attach(this.restartPrusaLinkScreenButton, 3, 1, 1, 1)
 
 	// Third row
-	this.systemInformationInfoBox = uiWidgets.CreateSystemInformationInfoBox(this.UI.window, this.UI.scaleFactor)
+	this.systemInformationInfoBox = uiWidgets.CreateSystemInformationInfoBox(this.UI.window, this.UI.Config, this.UI.scaleFactor)
 	this.Grid().Attach(this.systemInformationInfoBox, 1, 1, 2, 1)
 }
 

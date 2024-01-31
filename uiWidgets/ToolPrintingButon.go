@@ -10,11 +10,12 @@ type ToolPrintingButton struct {
 }
 
 func CreateToolPrintingButton(
+	config *utils.ScreenConfig,
 	index int,
 ) *ToolPrintingButton {
 	imageFileName := ToolImageFileName(index)
 	instance := &ToolPrintingButton{
-		Button: utils.MustButtonImageUsingFilePath("", imageFileName, nil),
+		Button: utils.MustButtonImageUsingFilePath(config, "", imageFileName, nil),
 	}
 
 	ctx, _ := instance.GetStyleContext()

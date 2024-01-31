@@ -9,10 +9,11 @@ type PrusaLinkScreenInfoBox struct {
 }
 
 func NewPrusaLinkScreenInfoBox(
+	config *utils.ScreenConfig,
 	version string,
 ) *PrusaLinkScreenInfoBox {
 	base := NewSystemInfoBox(
-		utils.MustImageFromFile("logos/octoscreen-isometric-90%.png"),
+		utils.MustImageFromFile(config, "logos/octoscreen-isometric-90%.png"),
 		"PrusaLink Screen",
 	)
 

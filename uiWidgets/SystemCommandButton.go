@@ -13,6 +13,7 @@ type SystemCommandButton struct {
 
 func NewSystemCommandButton(
 	parentWindow *gtk.Window,
+	config *utils.ScreenConfig,
 	name string,
 	action string,
 	style string,
@@ -22,6 +23,7 @@ func NewSystemCommandButton(
 	confirmationMessage := fmt.Sprintf("%s\n\nDo you wish to proceed?", confirmation)
 
 	base := utils.MustButtonImageStyle(
+		config,
 		name,
 		action+".svg",
 		style,

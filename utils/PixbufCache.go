@@ -10,7 +10,8 @@ import (
 type PixbufCache struct {
 	sync.Mutex
 
-	cache map[pixbufCacheKey]*gdk.Pixbuf
+	cache  map[pixbufCacheKey]*gdk.Pixbuf
+	config *ScreenConfig
 }
 
 type pixbufCacheKey struct {
@@ -19,9 +20,10 @@ type pixbufCacheKey struct {
 	height        int
 }
 
-func CreatePixbufCache() *PixbufCache {
+func CreatePixbufCache(config *ScreenConfig) *PixbufCache {
 	thisInstance := &PixbufCache{
-		cache: map[pixbufCacheKey]*gdk.Pixbuf{},
+		cache:  map[pixbufCacheKey]*gdk.Pixbuf{},
+		config: config,
 	}
 
 	return thisInstance
@@ -42,7 +44,7 @@ func (this *PixbufCache) getPixbuf(imageFileName string, width, height int) *gdk
 		return pixbuf
 	}
 
-	pixbuf = MustPixbufFromFileWithSize(imageFileName, width, height)
+	pixbuf = MustPixbufFromFileWithSize(this.config, imageFileName, width, height)
 	this.cache[key] = pixbuf
 
 	return pixbuf

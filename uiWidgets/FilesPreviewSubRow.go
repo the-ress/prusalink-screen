@@ -23,6 +23,7 @@ func CreateFilesPreviewSubRow(
 
 func CreatePreviewThumbnail(
 	ctx context.Context,
+	config *utils.ScreenConfig,
 	previewSubRow *gtk.Box,
 	fileResponse *dataModels.FileResponse,
 	client *prusaLinkApis.Client,
@@ -63,7 +64,7 @@ func CreatePreviewThumbnail(
 		// Initially was setting the horizontal alignment with CSS, but different resolutions
 		// (eg 800x480 vs 480x320) didn't align correctly, so I added a blank SVG to offset
 		// the preview thumbnail image.
-		spacerImage := utils.MustImageFromFileWithSize("blank.svg", fileSystemImageWidth, fileSystemImageHeight)
+		spacerImage := utils.MustImageFromFileWithSize(config, "blank.svg", fileSystemImageWidth, fileSystemImageHeight)
 		bottomBox.Add(spacerImage)
 
 		// Still need some CSS for the bottom margin.

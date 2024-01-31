@@ -19,6 +19,7 @@ type TemperatureStatusBox struct {
 
 func CreateTemperatureStatusBox(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 ) *TemperatureStatusBox {
 	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 
@@ -30,10 +31,10 @@ func CreateTemperatureStatusBox(
 	instance.SetVAlign(gtk.ALIGN_CENTER)
 	instance.SetHAlign(gtk.ALIGN_CENTER)
 
-	instance.nozzleLabel = utils.MustLabelWithImage(utils.GetNozzleFileName(), "")
+	instance.nozzleLabel = utils.MustLabelWithImage(config, utils.GetNozzleFileName(), "")
 	instance.Add(instance.nozzleLabel)
 
-	instance.bedLabel = utils.MustLabelWithImage("bed.svg", "")
+	instance.bedLabel = utils.MustLabelWithImage(config, "bed.svg", "")
 	instance.Add(instance.bedLabel)
 
 	return instance

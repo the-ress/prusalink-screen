@@ -20,15 +20,16 @@ type TemperatureIncreaseButton struct {
 
 func CreateTemperatureIncreaseButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	temperatureAmountStepButton *TemperatureAmountStepButton,
 	selectHotendStepButton *SelectToolStepButton,
 	isIncrease bool,
 ) *TemperatureIncreaseButton {
 	var base *gtk.Button
 	if isIncrease {
-		base = utils.MustButtonImageStyle("Increase", "increase.svg", "", nil)
+		base = utils.MustButtonImageStyle(config, "Increase", "increase.svg", "", nil)
 	} else {
-		base = utils.MustButtonImageStyle("Decrease", "decrease.svg", "", nil)
+		base = utils.MustButtonImageStyle(config, "Decrease", "decrease.svg", "", nil)
 	}
 
 	instance := &TemperatureIncreaseButton{

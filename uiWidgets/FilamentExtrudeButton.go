@@ -21,15 +21,16 @@ type FilamentExtrudeButton struct {
 func CreateFilamentExtrudeButton(
 	parentWindow *gtk.Window,
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	amountToExtrudeStepButton *AmountToExtrudeStepButton,
 	flowRateStepButton *FlowRateStepButton, // The flow rate step button is optional.
 	isForward bool,
 ) *FilamentExtrudeButton {
 	var base *gtk.Button
 	if isForward {
-		base = utils.MustButtonImageStyle("Extrude", "extruder-extrude.svg", "", nil)
+		base = utils.MustButtonImageStyle(config, "Extrude", "extruder-extrude.svg", "", nil)
 	} else {
-		base = utils.MustButtonImageStyle("Retract", "extruder-retract.svg", "", nil)
+		base = utils.MustButtonImageStyle(config, "Retract", "extruder-retract.svg", "", nil)
 	}
 
 	instance := &FilamentExtrudeButton{

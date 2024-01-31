@@ -12,6 +12,7 @@ import (
 
 func CreateSelectExtruderStepButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	includeBed bool,
 	colorVariation int,
 	clicked func(),
@@ -32,6 +33,7 @@ func CreateSelectExtruderStepButton(
 	}
 
 	base := CreateStepButton(
+		config,
 		colorVariation,
 		clicked,
 		steps...,

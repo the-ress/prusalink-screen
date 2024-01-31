@@ -35,16 +35,16 @@ func (this *movePanel) initialize() {
 	defer this.Initialize()
 
 	// Create the step button first, since it is needed by some of the other controls.
-	this.amountToMoveStepButton = uiWidgets.CreateAmountToMoveStepButton(1, nil)
+	this.amountToMoveStepButton = uiWidgets.CreateAmountToMoveStepButton(this.UI.Config, 1, nil)
 
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X-", "move-x-.svg", dataModels.XAxis, -1), 0, 1, 1, 1)
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X+", "move-x+.svg", dataModels.XAxis, 1), 2, 1, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "X-", "move-x-.svg", dataModels.XAxis, -1), 0, 1, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "X+", "move-x+.svg", dataModels.XAxis, 1), 2, 1, 1, 1)
 
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y+", "move-y+.svg", dataModels.YAxis, 1), 1, 0, 1, 1)
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y-", "move-y-.svg", dataModels.YAxis, -1), 1, 2, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Y+", "move-y+.svg", dataModels.YAxis, 1), 1, 0, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Y-", "move-y-.svg", dataModels.YAxis, -1), 1, 2, 1, 1)
 
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z+", "move-z+.svg", dataModels.ZAxis, 1), 3, 0, 1, 1)
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z-", "move-z-.svg", dataModels.ZAxis, -1), 3, 1, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Z+", "move-z+.svg", dataModels.ZAxis, 1), 3, 0, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Z-", "move-z-.svg", dataModels.ZAxis, -1), 3, 1, 1, 1)
 
 	this.Grid().Attach(this.amountToMoveStepButton, 1, 1, 1, 1)
 }

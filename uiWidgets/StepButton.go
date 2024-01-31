@@ -24,9 +24,12 @@ type StepButton struct {
 	Steps            []Step
 	CurrentStepIndex int
 	clicked          func()
+
+	config *utils.ScreenConfig
 }
 
 func CreateStepButton(
+	config *utils.ScreenConfig,
 	colorVariation int,
 	clicked func(),
 	steps ...Step,
@@ -37,7 +40,7 @@ func CreateStepButton(
 		panic("StepButton.CreateStepButton() - steps is empty")
 	}
 
-	base := utils.MustButtonImageUsingFilePath(steps[0].Label, steps[0].ImageFileName, nil)
+	base := utils.MustButtonImageUsingFilePath(config, steps[0].Label, steps[0].ImageFileName, nil)
 	if stepCount > 1 {
 		ctx, _ := base.GetStyleContext()
 		colorClass := fmt.Sprintf("color-dash-%d", colorVariation)
@@ -49,11 +52,12 @@ func CreateStepButton(
 		Steps:            steps,
 		CurrentStepIndex: -1,
 		clicked:          clicked,
+		config:           config,
 	}
 
 	if stepCount > 0 {
 		for i := 0; i < stepCount; i++ {
-			instance.Steps[i].Image = utils.MustImageFromFile(instance.Steps[i].ImageFileName)
+			instance.Steps[i].Image = utils.MustImageFromFile(config, instance.Steps[i].ImageFileName)
 		}
 
 		instance.CurrentStepIndex = 0
@@ -81,7 +85,7 @@ func (this *StepButton) AddStep(step Step) {
 
 	this.Steps = append(this.Steps, step)
 	index := len(this.Steps) - 1
-	this.Steps[index].Image = utils.MustImageFromFile(this.Steps[index].ImageFileName)
+	this.Steps[index].Image = utils.MustImageFromFile(this.config, this.Steps[index].ImageFileName)
 }
 
 func (this *StepButton) handleClick() {

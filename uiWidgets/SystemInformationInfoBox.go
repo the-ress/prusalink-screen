@@ -16,6 +16,7 @@ type SystemInformationInfoBox struct {
 	*gtk.Box
 
 	parentWindow  *gtk.Window
+	config        *utils.ScreenConfig
 	logLevel      string
 	uiScaleFactor int
 	memoryLabel   *gtk.Label
@@ -28,6 +29,7 @@ type SystemInformationInfoBox struct {
 
 func CreateSystemInformationInfoBox(
 	parentWindow *gtk.Window,
+	config *utils.ScreenConfig,
 	uiScaleFactor int,
 ) *SystemInformationInfoBox {
 	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
@@ -42,6 +44,7 @@ func CreateSystemInformationInfoBox(
 	instance := &SystemInformationInfoBox{
 		Box:           base,
 		parentWindow:  parentWindow,
+		config:        config,
 		logLevel:      logger.LogLevel(),
 		uiScaleFactor: uiScaleFactor,
 		memoryLabel:   createStyledLabel(),
@@ -107,16 +110,13 @@ func (this *SystemInformationInfoBox) refreshLoadAverageLabel() {
 */
 
 func (this *SystemInformationInfoBox) refreshOctoScreenResolutionLabel() {
-	octoScreenConfig := utils.GetOctoScreenConfigInstance()
-	resolution := octoScreenConfig.Resolution
-	if resolution == "" {
-		resolution = ">>MISSING<<"
-	}
-	octoScreenResolutionString := fmt.Sprintf(
-		"OCTOSCREEN_RESOLUTION configuration setting: %s",
-		resolution,
-	)
-	this.octoScreenResolutionLabel.SetText(octoScreenResolutionString)
+	windowSize := this.config.WindowSize
+
+	this.octoScreenResolutionLabel.SetText(fmt.Sprintf(
+		"Window size: %dx%d",
+		windowSize.Width,
+		windowSize.Height,
+	))
 }
 
 func (this *SystemInformationInfoBox) refreshAllocatedResolutionLabel() {

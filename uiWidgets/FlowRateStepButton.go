@@ -13,10 +13,12 @@ type FlowRateStepButton struct {
 
 func CreateFlowRateStepButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	colorVariation int,
 	clicked func(),
 ) *FlowRateStepButton {
 	base := CreateStepButton(
+		config,
 		colorVariation,
 		clicked,
 		Step{"Normal (100%)", "speed-normal.svg", nil, 100},

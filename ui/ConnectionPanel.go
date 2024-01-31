@@ -60,7 +60,7 @@ func (this *connectionPanel) initialize() {
 	logger.TraceEnter("ConnectionPanel.initialize()")
 
 	_, windowHeight := this.UI.window.GetSize()
-	unscaledLogo := utils.MustImageFromFile("logos/octoscreen-logo.svg")
+	unscaledLogo := utils.MustImageFromFile(this.UI.Config, "logos/octoscreen-logo.svg")
 	pixbuf := unscaledLogo.GetPixbuf()
 	width := pixbuf.GetWidth()
 	height := pixbuf.GetHeight()
@@ -73,7 +73,7 @@ func (this *connectionPanel) initialize() {
 	displayWidth := int(originalLogoWidth * scaleFactor)
 	displayHeight = int(originalLogoHeight * scaleFactor)
 
-	this.Logo = utils.MustImageFromFileWithSize("logos/octoscreen-logo.svg", displayWidth, displayHeight)
+	this.Logo = utils.MustImageFromFileWithSize(this.UI.Config, "logos/octoscreen-logo.svg", displayWidth, displayHeight)
 
 	pixbuf.ScaleSimple(
 		this.UI.scaleFactor*width,
@@ -112,7 +112,7 @@ func (this *connectionPanel) createActionBar() {
 	this.ActionBar = utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	this.ActionBar.SetHAlign(gtk.ALIGN_END)
 
-	this.RetryButton = utils.MustButtonImageStyle("Retry", "refresh.svg", "color-none", this.initializeConnectionState)
+	this.RetryButton = utils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color-none", this.initializeConnectionState)
 	this.RetryButton.SetProperty("width-request", this.Scaled(100))
 
 	this.ActionBar.Add(this.RetryButton)

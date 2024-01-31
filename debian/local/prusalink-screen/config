@@ -1,60 +1,44 @@
-# Required Configuration Settings
-
-# The URL to the OctoPrint server.
-# Example: http://octopi.local or http://localhost:5000.
+# The URL to the PrusaLink server (required)
+# Example: http://localhost or http://prusamk3.local.
 # Note: the protocol (http:// or https://) is required.
-# If the setting for OCTOPRINT_HOST does not contain the protocol,
-# an error will be displayed when OctoScreen starts.
-OCTOPRINT_HOST=http://localhost
+PRUSALINK_HOST=http://localhost
 
+# PrusaLink Screen expects an API key to be supplied. The API key can
+# either be set in PrusaLink config file (see PRUSALINK_CONFIG_FILE below),
+# or here (as PRUSALINK_APIKEY).
+# PRUSALINK_APIKEY=
 
-# OctoScreen expects an API key to be supplied. The API key can
-# either be set in OctoScreen's config file, or in OctoPrint's config
-# file (OCTOPRINT_CONFIG_FILE below)
-OCTOPRINT_APIKEY=
+# Location of the application theme (required)
+PRUSALINK_SCREEN_STYLE_PATH=/opt/prusalink-screen/styles/z-bolt/
 
+# The location of PrusaLink config file (optional)
+# If empty, PRUSALINK_APIKEY needs to be defined (see above).
+PRUSALINK_CONFIG_FILE=/home/jo/prusa_printer_settings.ini
 
-# Location of the application theme
-OCTOSCREEN_STYLE_PATH=/opt/prusalink-screen/styles/z-bolt/
-
-
-
-# Optional Configuration Settings
-
-# The location of OctoPrint's config.yaml file.
-# If empty, the file path used will be the pi home folder of the current user.
-# The OCTOPRINT_APIKEY is required, and if it isn't defined in OctoScreen's
-# config file (see OCTOPRINT_APIKEY above), it needs to be defined in OctoPrint's
-# config file.
-OCTOPRINT_CONFIG_FILE=/home/jo/prusa_printer_settings.ini
-
+# The location of PrusaLink executable (optional)
+# Used when restarting PrusaLink from the System screen.
 PRUSALINK_EXECUTABLE_PATH=/home/jo/.local/bin/prusalink
 
+# The linux user PrusaLink is running as (optional)
+# Used when restarting PrusaLink from the System screen.
 PRUSALINK_USER=jo
 
-
-# The file path to where the log file will be saved.
+# The file path to where the log file will be saved (optional)
 # The file path should be a fully qualified path and not only include the path
 # to the log file, but the name of the log file as well
 # (eg /home/pi/logs/logfile.txt).
 # The log file is appended to and is never automatically truncated, and
 # will grow over time.  If you turn log file logging on (by specifying a path),
 # be sure to turn it off (by setting the value to "").
-OCTOSCREEN_LOG_FILE_PATH=
-#OCTOSCREEN_LOG_FILE_PATH=/home/pi/logs/logfile.txt
+#PRUSALINK_SCREEN_LOG_FILE_PATH=/home/jo/prusalink-screen.log
 
-
-# Controls the level of logging.
+# Controls the level of logging (optional)
 # Accepted values are (with increasing levels): debug, info, warn, and error.
-OCTOSCREEN_LOG_LEVEL=error
+PRUSALINK_SCREEN_LOG_LEVEL=error
 
 
-# Resolution of the application, and should be configured to the resolution of your
-# screen, for example 800x480.
-OCTOSCREEN_RESOLUTION=800x480
-# OCTOSCREEN_RESOLUTION is optional and defaults to 800x480 if missing
-# (defined in globalVars.go)
-
+# Overrides resolution of the application (optional; defaults to the primary screen size)
+# PRUSALINK_SCREEN_RESOLUTION=800x480
 
 # To display the cursor, uncomment the following line and set to true.
 #DISPLAY_CURSOR=true

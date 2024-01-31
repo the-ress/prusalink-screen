@@ -14,6 +14,7 @@ type ActionFooter struct {
 }
 
 func CreateActionFooter(
+	config *utils.ScreenConfig,
 	buttonWidth int,
 	buttonHeight int,
 	refreshClicked func(),
@@ -31,21 +32,21 @@ func CreateActionFooter(
 	instance.SetMarginBottom(5)
 	instance.SetMarginEnd(5)
 
-	instance.refreshButton = instance.createRefreshButton(buttonWidth, buttonHeight, refreshClicked)
+	instance.refreshButton = instance.createRefreshButton(config, buttonWidth, buttonHeight, refreshClicked)
 	instance.Add(instance.refreshButton)
 
-	instance.backButton = instance.createBackButton(buttonWidth, buttonHeight, backClicked)
+	instance.backButton = instance.createBackButton(config, buttonWidth, buttonHeight, backClicked)
 	instance.Add(instance.backButton)
 
 	return instance
 }
 
-func (this *ActionFooter) createRefreshButton(buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
-	image := utils.MustImageFromFileWithSize("refresh.svg", buttonWidth, buttonHeight)
+func (this *ActionFooter) createRefreshButton(config *utils.ScreenConfig, buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
+	image := utils.MustImageFromFileWithSize(config, "refresh.svg", buttonWidth, buttonHeight)
 	return utils.MustButton(image, clicked)
 }
 
-func (this *ActionFooter) createBackButton(buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
-	image := utils.MustImageFromFileWithSize("back.svg", buttonWidth, buttonHeight)
+func (this *ActionFooter) createBackButton(config *utils.ScreenConfig, buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
+	image := utils.MustImageFromFileWithSize(config, "back.svg", buttonWidth, buttonHeight)
 	return utils.MustButton(image, clicked)
 }

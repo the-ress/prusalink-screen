@@ -80,7 +80,7 @@ func (this *connectToNetworkPanel) createTopBar() *gtk.Box {
 	topBar.Add(this.SSIDLabel)
 	topBar.Add(this.pass)
 
-	image := utils.MustImageFromFileWithSize("backspace.svg", this.Scaled(40), this.Scaled(40))
+	image := utils.MustImageFromFileWithSize(this.UI.Config, "backspace.svg", this.Scaled(40), this.Scaled(40))
 	backspaceButton := utils.MustButton(image, func() {
 		if this.cursorPosition == 0 {
 			return
@@ -96,7 +96,7 @@ func (this *connectToNetworkPanel) createTopBar() *gtk.Box {
 }
 
 func (this *connectToNetworkPanel) createActionBar() *gtk.Box {
-	image := utils.MustImageFromFileWithSize("back.svg", this.Scaled(40), this.Scaled(40))
+	image := utils.MustImageFromFileWithSize(this.UI.Config, "back.svg", this.Scaled(40), this.Scaled(40))
 	backspaceButton := utils.MustButton(image, func() {
 		this.UI.GoToPreviousPanel()
 	})

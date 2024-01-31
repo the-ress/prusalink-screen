@@ -37,7 +37,7 @@ func (this *temperaturePresetsPanel) initialize() {
 }
 
 func (this *temperaturePresetsPanel) createAllOffButton() {
-	allOffButton := uiWidgets.CreateCoolDownButton(this.UI.Client, this.UI.GoToPreviousPanel)
+	allOffButton := uiWidgets.CreateCoolDownButton(this.UI.Client, this.UI.Config, this.UI.GoToPreviousPanel)
 	this.AddButton(allOffButton)
 }
 
@@ -104,6 +104,7 @@ func (this *temperaturePresetsPanel) createTemperaturePresetButtons() {
 		if count < maxSlots {
 			temperaturePresetButton := uiWidgets.CreateTemperaturePresetButton(
 				this.UI.Printer,
+				this.UI.Config,
 				"heat-up.svg",
 				temperaturePreset,
 				this.UI.GoToPreviousPanel,

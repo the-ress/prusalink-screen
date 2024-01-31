@@ -5,6 +5,7 @@ import (
 	"github.com/the-ress/prusalink-screen/logger"
 	"github.com/the-ress/prusalink-screen/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/utils"
 )
 
 type MoveButton struct {
@@ -18,6 +19,7 @@ type MoveButton struct {
 
 func CreateMoveButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	amountToMoveStepButton *AmountToMoveStepButton,
 	label string,
 	image string,
@@ -33,7 +35,7 @@ func CreateMoveButton(
 		axis:                   axis,
 		direction:              direction,
 	}
-	base := MustPressedButton(label, image, instance.handlePressed, 200)
+	base := MustPressedButton(config, label, image, instance.handlePressed, 200)
 	// ... and then set the button
 	instance.Button = base
 

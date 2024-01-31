@@ -9,12 +9,13 @@ type PrinterFirmwareInfoBox struct {
 }
 
 func NewPrinterFirmwareInfoBox(
+	config *utils.ScreenConfig,
 	logoWidth int,
 ) *PrinterFirmwareInfoBox {
 	logoHeight := int(float64(logoWidth) * 1.25)
 
 	base := NewSystemInfoBox(
-		utils.MustImageFromFileWithSize("logos/logo-octoprint.png", logoWidth, logoHeight),
+		utils.MustImageFromFileWithSize(config, "logos/logo-octoprint.png", logoWidth, logoHeight),
 		"Firmware",
 	)
 

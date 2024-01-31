@@ -17,11 +17,12 @@ type HomeButton struct {
 
 func CreateHomeButton(
 	client *prusaLinkApis.Client,
+	config *utils.ScreenConfig,
 	buttonLabel string,
 	imageFileName string,
 	axes ...dataModels.Axis,
 ) *HomeButton {
-	base := utils.MustButtonImageStyle(buttonLabel, imageFileName, "", nil)
+	base := utils.MustButtonImageStyle(config, buttonLabel, imageFileName, "", nil)
 
 	instance := &HomeButton{
 		Button: base,

@@ -52,13 +52,14 @@ func (this *filamentPanel) initialize() {
 	defer this.Initialize()
 
 	// Create the step buttons first, since they are needed by some of the other controls.
-	this.flowRateStepButton = uiWidgets.CreateFlowRateStepButton(this.UI.Client, 1, nil)
-	this.amountToExtrudeStepButton = uiWidgets.CreateAmountToExtrudeStepButton(2, nil)
+	this.flowRateStepButton = uiWidgets.CreateFlowRateStepButton(this.UI.Client, this.UI.Config, 1, nil)
+	this.amountToExtrudeStepButton = uiWidgets.CreateAmountToExtrudeStepButton(this.UI.Config, 2, nil)
 
 	// First row
 	this.filamentExtrudeButton = uiWidgets.CreateFilamentExtrudeButton(
 		this.UI.window,
 		this.UI.Client,
+		this.UI.Config,
 		this.amountToExtrudeStepButton,
 		this.flowRateStepButton,
 		true,
@@ -72,6 +73,7 @@ func (this *filamentPanel) initialize() {
 	this.filamentRetractButton = uiWidgets.CreateFilamentExtrudeButton(
 		this.UI.window,
 		this.UI.Client,
+		this.UI.Config,
 		this.amountToExtrudeStepButton,
 		this.flowRateStepButton,
 		false,
@@ -89,7 +91,7 @@ func (this *filamentPanel) initialize() {
 	// )
 	// this.Grid().Attach(this.filamentLoadButton, 0, 1, 1, 1)
 
-	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client)
+	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client, this.UI.Config)
 	this.Grid().Attach(this.temperatureStatusBox, 1, 1, 2, 1)
 
 	// this.filamentUnloadButton = uiWidgets.CreateFilamentLoadButton(
@@ -121,6 +123,6 @@ func (this *filamentPanel) showTemperaturePanel() {
 }
 
 func (this *filamentPanel) addTemperatureButton() {
-	this.temperatureButton = utils.MustButtonImageStyle("Temperature", "heat-up.svg", "color1", this.showTemperaturePanel)
+	this.temperatureButton = utils.MustButtonImageStyle(this.UI.Config, "Temperature", "heat-up.svg", "color1", this.showTemperaturePanel)
 	this.Grid().Attach(this.temperatureButton, 0, 2, 1, 1)
 }
