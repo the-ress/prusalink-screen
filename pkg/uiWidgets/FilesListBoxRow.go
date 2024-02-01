@@ -1,15 +1,9 @@
 package uiWidgets
 
 import (
-	// "fmt"
-
 	"github.com/gotk3/gotk3/gtk"
-
-	// "github.com/the-ress/prusalink-screen/pkg/logger"
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
-	// "github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type FilesListBoxRow struct {
@@ -26,7 +20,7 @@ func CreateFilesListBoxRow(
 	printerImageHeight int,
 	rowIndex int,
 	rowClickHandler func(button *gtk.Button, index int),
-	pixbufCache *utils.PixbufCache,
+	pixbufCache *uiUtils.PixbufCache,
 ) (*FilesListBoxRow, *gtk.Box) {
 	const ROW_PADDING = 0
 	base := CreateClickableListBoxRow(rowIndex, ROW_PADDING, rowClickHandler)

@@ -5,10 +5,11 @@ import (
 	"sync"
 
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 func ToolImageFileName(
@@ -47,13 +48,13 @@ type ToolButton struct {
 func CreateToolButton(
 	index int,
 	printer *domain.PrinterService,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 ) *ToolButton {
 	imageFileName := ToolImageFileName(index)
 	toolName := ToolName(index)
 
 	instance := &ToolButton{
-		Button:  utils.MustButtonImageUsingFilePath(config, "", imageFileName, nil),
+		Button:  uiUtils.MustButtonImageUsingFilePath(config, "", imageFileName, nil),
 		tool:    toolName,
 		printer: printer,
 	}
@@ -75,7 +76,7 @@ func (this *ToolButton) UpdateStatus(heating bool) {
 }
 
 func (this *ToolButton) SetTemperatures(temperatureData dataModels.ToolTemperatureData) {
-	text := utils.GetTemperatureDataString(temperatureData)
+	text := uiUtils.GetTemperatureDataString(temperatureData)
 	this.SetLabel(text)
 	this.UpdateStatus(temperatureData.Target > 0)
 }

@@ -1,9 +1,5 @@
 package common
 
-// AppVersion and BuildDate are set during compilation
-var AppVersion = "N/A"
-var BuildDate = "N/A"
-
 // Required environment variables
 const (
 	EnvStylePath       = "PRUSALINK_SCREEN_STYLE_PATH"

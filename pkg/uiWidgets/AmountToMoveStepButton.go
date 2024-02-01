@@ -1,13 +1,13 @@
 package uiWidgets
 
-import "github.com/the-ress/prusalink-screen/pkg/utils"
+import "github.com/the-ress/prusalink-screen/pkg/config"
 
 type AmountToMoveStepButton struct {
 	*StepButton
 }
 
 func CreateAmountToMoveStepButton(
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	colorVariation int,
 	clicked func(),
 ) *AmountToMoveStepButton {

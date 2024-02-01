@@ -1,9 +1,10 @@
 package uiWidgets
 
 import (
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type FlowRateStepButton struct {
@@ -13,7 +14,7 @@ type FlowRateStepButton struct {
 
 func CreateFlowRateStepButton(
 	client *prusaLinkApis.Client,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	colorVariation int,
 	clicked func(),
 ) *FlowRateStepButton {
@@ -39,5 +40,5 @@ func (this *FlowRateStepButton) Value() int {
 }
 
 func (this *FlowRateStepButton) SendChangeFlowRate() error {
-	return utils.SetFlowRate(this.client, this.Value())
+	return uiUtils.SetFlowRate(this.client, this.Value())
 }

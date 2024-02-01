@@ -3,7 +3,8 @@ package uiWidgets
 import (
 	"github.com/gotk3/gotk3/gtk"
 
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/config"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type ActionFooter struct {
@@ -14,13 +15,13 @@ type ActionFooter struct {
 }
 
 func CreateActionFooter(
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	buttonWidth int,
 	buttonHeight int,
 	refreshClicked func(),
 	backClicked func(),
 ) *ActionFooter {
-	base := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	base := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 
 	instance := &ActionFooter{
 		Box: *base,
@@ -41,12 +42,12 @@ func CreateActionFooter(
 	return instance
 }
 
-func (this *ActionFooter) createRefreshButton(config *utils.ScreenConfig, buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
-	image := utils.MustImageFromFileWithSize(config, "refresh.svg", buttonWidth, buttonHeight)
-	return utils.MustButton(image, clicked)
+func (this *ActionFooter) createRefreshButton(config *config.ScreenConfig, buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
+	image := uiUtils.MustImageFromFileWithSize(config, "refresh.svg", buttonWidth, buttonHeight)
+	return uiUtils.MustButton(image, clicked)
 }
 
-func (this *ActionFooter) createBackButton(config *utils.ScreenConfig, buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
-	image := utils.MustImageFromFileWithSize(config, "back.svg", buttonWidth, buttonHeight)
-	return utils.MustButton(image, clicked)
+func (this *ActionFooter) createBackButton(config *config.ScreenConfig, buttonWidth int, buttonHeight int, clicked func()) *gtk.Button {
+	image := uiUtils.MustImageFromFileWithSize(config, "back.svg", buttonWidth, buttonHeight)
+	return uiUtils.MustButton(image, clicked)
 }

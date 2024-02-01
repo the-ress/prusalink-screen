@@ -4,7 +4,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 
 	"github.com/the-ress/prusalink-screen/pkg/logger"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type SplashPanel struct {
@@ -25,14 +25,14 @@ func CreateSplashPanel(ui *UI) *SplashPanel {
 func (this *SplashPanel) initialize() {
 	logger.TraceEnter("SplashPanel.initialize()")
 
-	logo := utils.MustImageFromFile(this.UI.Config, "logos/logo.png")
-	this.Label = utils.MustLabel("...")
+	logo := uiUtils.MustImageFromFile(this.UI.Config, "logos/logo.png")
+	this.Label = uiUtils.MustLabel("...")
 	this.Label.SetHExpand(true)
 	this.Label.SetLineWrap(true)
 	this.Label.SetMaxWidthChars(30)
 	this.Label.SetText("Initializing printer...")
 
-	main := utils.MustBox(gtk.ORIENTATION_VERTICAL, 15)
+	main := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 15)
 	main.SetVAlign(gtk.ALIGN_END)
 
 	// main.SetVExpand(true)
@@ -43,7 +43,7 @@ func (this *SplashPanel) initialize() {
 	main.Add(logo)
 	main.Add(this.Label)
 
-	box := utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
+	box := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	box.Add(main)
 	box.Add(this.createActionBar())
 
@@ -55,21 +55,21 @@ func (this *SplashPanel) initialize() {
 func (this *SplashPanel) createActionBar() gtk.IWidget {
 	logger.TraceEnter("SplashPanel.createActionBar()")
 
-	actionBar := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	actionBar := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBar.SetHAlign(gtk.ALIGN_END)
 
-	this.RetryButton = utils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color2", this.releaseFromHold)
+	this.RetryButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color2", this.releaseFromHold)
 	this.RetryButton.SetProperty("width-request", this.Scaled(100))
 	this.RetryButton.SetProperty("visible", true)
 	actionBar.Add(this.RetryButton)
 	ctx, _ := this.RetryButton.GetStyleContext()
 	ctx.AddClass("hidden")
 
-	systemButton := utils.MustButtonImageStyle(this.UI.Config, "System", "info.svg", "color3", this.showSystem)
+	systemButton := uiUtils.MustButtonImageStyle(this.UI.Config, "System", "info.svg", "color3", this.showSystem)
 	systemButton.SetProperty("width-request", this.Scaled(100))
 	actionBar.Add(systemButton)
 
-	networkButton := utils.MustButtonImageStyle(this.UI.Config, "Network", "network.svg", "color4", this.showNetwork)
+	networkButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Network", "network.svg", "color4", this.showNetwork)
 	networkButton.SetProperty("width-request", this.Scaled(100))
 	actionBar.Add(networkButton)
 

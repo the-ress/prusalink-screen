@@ -1,7 +1,8 @@
 package uiWidgets
 
 import (
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/config"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type PrusaLinkScreenInfoBox struct {
@@ -9,11 +10,11 @@ type PrusaLinkScreenInfoBox struct {
 }
 
 func NewPrusaLinkScreenInfoBox(
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	version string,
 ) *PrusaLinkScreenInfoBox {
 	base := NewSystemInfoBox(
-		utils.MustImageFromFile(config, "logos/octoscreen-isometric-90%.png"),
+		uiUtils.MustImageFromFile(config, "logos/octoscreen-isometric-90%.png"),
 		"PrusaLink Screen",
 	)
 

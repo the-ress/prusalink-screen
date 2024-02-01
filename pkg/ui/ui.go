@@ -15,19 +15,21 @@ import (
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 
+	"github.com/the-ress/prusalink-screen/pkg/common"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
 	"github.com/the-ress/prusalink-screen/pkg/interfaces"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type UI struct {
 	sync.Mutex
 
-	Config          *utils.ScreenConfig
+	Config          *config.ScreenConfig
 	PanelHistory    *stack.Stack
 	Client          *prusaLinkApis.Client
 	Printer         *domain.PrinterService
@@ -50,7 +52,7 @@ type UI struct {
 	scaleFactor int
 }
 
-func NewUi(config *utils.ScreenConfig) *UI {
+func NewUi(config *config.ScreenConfig) *UI {
 	logger.TraceEnter("ui.NewUi()")
 
 	endpoint := config.PrusaLinkHost
@@ -77,7 +79,7 @@ func NewUi(config *utils.ScreenConfig) *UI {
 		MenuStructure:              nil,
 		UiState:                    Uninitialized,
 		finishedIdle:               false,
-		window:                     utils.MustWindow(gtk.WINDOW_TOPLEVEL),
+		window:                     uiUtils.MustWindow(gtk.WINDOW_TOPLEVEL),
 		time:                       time.Now(),
 		width:                      width,
 		height:                     height,
@@ -206,7 +208,7 @@ func (this *UI) initialize2() {
 	defer this.window.ShowAll()
 	this.loadStyle()
 
-	this.window.SetTitle(utils.WindowName)
+	this.window.SetTitle(common.WindowName)
 	this.window.SetDefaultSize(this.width, this.height)
 	this.window.SetResizable(false)
 
@@ -215,10 +217,10 @@ func (this *UI) initialize2() {
 		gtk.MainQuit()
 	})
 
-	overlay := utils.MustOverlay()
+	overlay := uiUtils.MustOverlay()
 	this.window.Add(overlay)
 
-	this.grid = utils.MustGrid()
+	this.grid = uiUtils.MustGrid()
 	overlay.Add(this.grid)
 
 	logger.TraceLeave("ui.initialize2()")
@@ -227,7 +229,7 @@ func (this *UI) initialize2() {
 func (this *UI) loadStyle() {
 	logger.TraceEnter("ui.loadStyle()")
 
-	cssProvider := utils.MustCssProviderFromFile(this.Config, utils.CssFileName)
+	cssProvider := uiUtils.MustCssProviderFromFile(this.Config, common.CssFileName)
 
 	screenDefault, err := gdk.ScreenGetDefault()
 	if err != nil {

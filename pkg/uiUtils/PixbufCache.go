@@ -1,17 +1,18 @@
-package utils
+package uiUtils
 
 import (
 	"sync"
 
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 )
 
 type PixbufCache struct {
 	sync.Mutex
 
 	cache  map[pixbufCacheKey]*gdk.Pixbuf
-	config *ScreenConfig
+	config *config.ScreenConfig
 }
 
 type pixbufCacheKey struct {
@@ -20,7 +21,7 @@ type pixbufCacheKey struct {
 	height        int
 }
 
-func CreatePixbufCache(config *ScreenConfig) *PixbufCache {
+func CreatePixbufCache(config *config.ScreenConfig) *PixbufCache {
 	thisInstance := &PixbufCache{
 		cache:  map[pixbufCacheKey]*gdk.Pixbuf{},
 		config: config,

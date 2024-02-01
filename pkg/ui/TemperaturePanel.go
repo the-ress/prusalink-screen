@@ -6,8 +6,8 @@ import (
 
 	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type temperaturePanel struct {
@@ -82,7 +82,7 @@ func (this *temperaturePanel) initialize() {
 	this.Grid().Attach(this.temperatureStatusBox, 1, 1, 2, 1)
 
 	// Third row
-	this.presetsButton = utils.MustButtonImageStyle(this.UI.Config, "Presets", "heat-up.svg", "color2", this.showTemperaturePresetsPanel)
+	this.presetsButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Presets", "heat-up.svg", "color2", this.showTemperaturePresetsPanel)
 	this.Grid().Attach(this.presetsButton, 0, 2, 1, 1)
 }
 

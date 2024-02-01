@@ -11,8 +11,8 @@ import (
 	"github.com/the-ress/prusalink-screen/pkg/common"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type systemPanel struct {
@@ -80,14 +80,14 @@ func (this *systemPanel) initialize() {
 			logger.Info("Shutting down system")
 
 			var err error = nil
-			utils.RunWithWaitingBox(this.UI.window, "Shutting down...", func() {
+			uiUtils.RunWithWaitingBox(this.UI.window, "Shutting down...", func() {
 				err = exec.Command("systemctl", "poweroff").Run()
 			})
 
 			if err != nil {
 				logger.LogError("SystemCommandButton callback", "exec.Command", err)
 				errorMessage := fmt.Sprintf("Command failed:\n\n%s", err.Error())
-				utils.ErrorMessageDialogBox(this.UI.window, errorMessage)
+				uiUtils.ErrorMessageDialogBox(this.UI.window, errorMessage)
 				return
 			}
 		},
@@ -105,14 +105,14 @@ func (this *systemPanel) initialize() {
 			logger.Info("Rebooting system")
 
 			var err error = nil
-			utils.RunWithWaitingBox(this.UI.window, "Rebooting...", func() {
+			uiUtils.RunWithWaitingBox(this.UI.window, "Rebooting...", func() {
 				err = exec.Command("systemctl", "reboot").Run()
 			})
 
 			if err != nil {
 				logger.LogError("SystemCommandButton callback", "exec.Command", err)
 				errorMessage := fmt.Sprintf("Command failed:\n\n%s", err.Error())
-				utils.ErrorMessageDialogBox(this.UI.window, errorMessage)
+				uiUtils.ErrorMessageDialogBox(this.UI.window, errorMessage)
 				return
 			}
 		},
@@ -132,14 +132,14 @@ func (this *systemPanel) initialize() {
 			command := fmt.Sprintf("%s -i restart", this.UI.Config.PrusaLinkExecutablePath)
 
 			var err error = nil
-			utils.RunWithWaitingBox(this.UI.window, "Restarting PrusaLink...", func() {
+			uiUtils.RunWithWaitingBox(this.UI.window, "Restarting PrusaLink...", func() {
 				err = exec.Command("su", this.UI.Config.PrusaLinkUser, "-c", command).Run()
 			})
 
 			if err != nil {
 				logger.LogError("SystemCommandButton callback", "exec.Command", err)
 				errorMessage := fmt.Sprintf("Command failed:\n\n%s", err.Error())
-				utils.ErrorMessageDialogBox(this.UI.window, errorMessage)
+				uiUtils.ErrorMessageDialogBox(this.UI.window, errorMessage)
 				return
 			}
 		},
@@ -157,13 +157,13 @@ func (this *systemPanel) initialize() {
 			logger.Info("Restarting PrusaLink Screen")
 
 			var err error = nil
-			utils.RunWithWaitingBox(this.UI.window, "Restarting PrusaLink Screen...", func() {
+			uiUtils.RunWithWaitingBox(this.UI.window, "Restarting PrusaLink Screen...", func() {
 				err = exec.Command("systemctl", "restart", "prusalink-screen").Run()
 			})
 
 			if err != nil {
 				errorMessage := fmt.Sprintf("Command failed:\n\n%s", err.Error())
-				utils.ErrorMessageDialogBox(this.UI.window, errorMessage)
+				uiUtils.ErrorMessageDialogBox(this.UI.window, errorMessage)
 				logger.LogError("SystemCommandButton callback", "Do(SystemExecuteCommandRequest)", err)
 				return
 			}

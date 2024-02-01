@@ -10,8 +10,8 @@ import (
 
 	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type filamentPanel struct {
@@ -123,6 +123,6 @@ func (this *filamentPanel) showTemperaturePanel() {
 }
 
 func (this *filamentPanel) addTemperatureButton() {
-	this.temperatureButton = utils.MustButtonImageStyle(this.UI.Config, "Temperature", "heat-up.svg", "color1", this.showTemperaturePanel)
+	this.temperatureButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Temperature", "heat-up.svg", "color1", this.showTemperaturePanel)
 	this.Grid().Attach(this.temperatureButton, 0, 2, 1, 1)
 }

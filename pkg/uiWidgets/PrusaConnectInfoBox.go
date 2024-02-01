@@ -1,16 +1,17 @@
 package uiWidgets
 
 import (
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/config"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type PrusaConnectInfoBox struct {
 	*SystemInfoBox
 }
 
-func NewPrusaConnectInfoBox(config *utils.ScreenConfig) *PrusaConnectInfoBox {
+func NewPrusaConnectInfoBox(config *config.ScreenConfig) *PrusaConnectInfoBox {
 	base := NewSystemInfoBox(
-		utils.MustImageFromFile(config, "logos/puzzle-piece.png"),
+		uiUtils.MustImageFromFile(config, "logos/puzzle-piece.png"),
 		"PrusaConnect",
 	)
 

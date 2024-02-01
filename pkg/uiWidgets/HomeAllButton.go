@@ -2,10 +2,11 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type HomeAllButton struct {
@@ -16,9 +17,9 @@ type HomeAllButton struct {
 
 func CreateHomeAllButton(
 	client *prusaLinkApis.Client,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 ) *HomeAllButton {
-	base := utils.MustButtonImageStyle(config, "Home All", "home.svg", "", nil)
+	base := uiUtils.MustButtonImageStyle(config, "Home All", "home.svg", "", nil)
 
 	instance := &HomeAllButton{
 		Button: base,

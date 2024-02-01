@@ -2,8 +2,7 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type ListBoxRow struct {
@@ -78,7 +77,7 @@ func createListBoxRow(
 }
 
 func createContentsBox(padding int) *gtk.Box {
-	contentsBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
+	contentsBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
 	contentsBox.SetMarginTop(padding)
 	contentsBox.SetMarginBottom(padding)
 	contentsBox.SetMarginStart(padding)

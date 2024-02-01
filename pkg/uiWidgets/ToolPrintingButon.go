@@ -2,7 +2,8 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/config"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type ToolPrintingButton struct {
@@ -10,12 +11,12 @@ type ToolPrintingButton struct {
 }
 
 func CreateToolPrintingButton(
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	index int,
 ) *ToolPrintingButton {
 	imageFileName := ToolImageFileName(index)
 	instance := &ToolPrintingButton{
-		Button: utils.MustButtonImageUsingFilePath(config, "", imageFileName, nil),
+		Button: uiUtils.MustButtonImageUsingFilePath(config, "", imageFileName, nil),
 	}
 
 	ctx, _ := instance.GetStyleContext()

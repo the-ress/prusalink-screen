@@ -31,9 +31,9 @@ package uiWidgets
 // ) *FilamentLoadButton {
 // 	var base *gtk.Button
 // 	if isForward {
-// 		base = utils.MustButtonImageStyle("Load", "filament-spool-load.svg", "", nil)
+// 		base = uiUtils.MustButtonImageStyle("Load", "filament-spool-load.svg", "", nil)
 // 	} else {
-// 		base = utils.MustButtonImageStyle("Unload", "filament-spool-unload.svg", "", nil)
+// 		base = uiUtils.MustButtonImageStyle("Unload", "filament-spool-unload.svg", "", nil)
 // 	}
 
 // 	instance := &FilamentLoadButton{

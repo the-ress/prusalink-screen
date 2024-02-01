@@ -1,4 +1,4 @@
-package utils
+package config
 
 import (
 	"errors"
@@ -10,6 +10,7 @@ import (
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/the-ress/prusalink-screen/pkg/common"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
+	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type ScreenConfig struct {
@@ -45,7 +46,7 @@ func ReadConfig() (*ScreenConfig, error) {
 	config := &ScreenConfig{
 		// Required configs
 		PrusaLinkApiKey:  apiKey,
-		PrusaLinkHost:    DefaultServerHost,
+		PrusaLinkHost:    common.DefaultServerHost,
 		CssStyleFilePath: "", // default to "" for now, but this must be set in the environment variables
 
 		// Optional configs
@@ -158,11 +159,11 @@ func readWindowSize() screenConfigWindowSize {
 		logger.Errorf("Failed to detect screen size: %q", err)
 	}
 
-	logger.Infof("Using default window size: %dx%d", DefaultWindowWidth, DefaultWindowHeight)
+	logger.Infof("Using default window size: %dx%d", common.DefaultWindowWidth, common.DefaultWindowHeight)
 
 	return screenConfigWindowSize{
-		Width:  DefaultWindowWidth,
-		Height: DefaultWindowHeight,
+		Width:  common.DefaultWindowWidth,
+		Height: common.DefaultWindowHeight,
 	}
 }
 
@@ -181,15 +182,25 @@ func parseWindowSizeString(resolutionString string) (*screenConfigWindowSize, er
 	width, err := strconv.Atoi(parts[0])
 	if err != nil {
 		return nil, fmt.Errorf("Failed to parse window width (%s): %q", parts[0], err)
-	} else if width < MinimumWindowWidth || width > MaximumWindowWidth {
-		return nil, fmt.Errorf("Window width (%d) is out of range (%d, %d)", width, MinimumWindowWidth, MaximumWindowWidth)
+	} else if width < common.MinimumWindowWidth || width > common.MaximumWindowWidth {
+		return nil, fmt.Errorf(
+			"Window width (%d) is out of range (%d, %d)",
+			width,
+			common.MinimumWindowWidth,
+			common.MaximumWindowWidth,
+		)
 	}
 
 	height, err := strconv.Atoi(parts[1])
 	if err != nil {
 		return nil, fmt.Errorf("Failed to parse window height (%s): %q", parts[1], err)
-	} else if height < MinimumWindowHeight || height > MaximumWindowHeight {
-		return nil, fmt.Errorf("Window height (%d) is out of range (%d, %d)", height, MinimumWindowHeight, MaximumWindowHeight)
+	} else if height < common.MinimumWindowHeight || height > common.MaximumWindowHeight {
+		return nil, fmt.Errorf(
+			"Window height (%d) is out of range (%d, %d)",
+			height,
+			common.MinimumWindowHeight,
+			common.MaximumWindowHeight,
+		)
 	}
 
 	return &screenConfigWindowSize{
@@ -218,7 +229,7 @@ func (this *ScreenConfig) Dump() {
 	logger.Info("Dumping config:")
 
 	// Required configs
-	logger.Infof("%-16s: %q", "PrusaLinkApiKey", GetObfuscatedValue(this.PrusaLinkApiKey))
+	logger.Infof("%-16s: %q", "PrusaLinkApiKey", utils.GetObfuscatedValue(this.PrusaLinkApiKey))
 	logger.Infof("%-16s: %q", "PrusaLinkHost", this.PrusaLinkHost)
 	logger.Infof("%-16s: %q", "PrusaLinkExecutablePath", this.PrusaLinkExecutablePath)
 	logger.Infof("%-16s: %q", "PrusaLinkUser", this.PrusaLinkUser)

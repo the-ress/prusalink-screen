@@ -2,10 +2,10 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
-
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type FilamentExtrudeButton struct {
@@ -21,16 +21,16 @@ type FilamentExtrudeButton struct {
 func CreateFilamentExtrudeButton(
 	parentWindow *gtk.Window,
 	client *prusaLinkApis.Client,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	amountToExtrudeStepButton *AmountToExtrudeStepButton,
 	flowRateStepButton *FlowRateStepButton, // The flow rate step button is optional.
 	isForward bool,
 ) *FilamentExtrudeButton {
 	var base *gtk.Button
 	if isForward {
-		base = utils.MustButtonImageStyle(config, "Extrude", "extruder-extrude.svg", "", nil)
+		base = uiUtils.MustButtonImageStyle(config, "Extrude", "extruder-extrude.svg", "", nil)
 	} else {
-		base = utils.MustButtonImageStyle(config, "Retract", "extruder-retract.svg", "", nil)
+		base = uiUtils.MustButtonImageStyle(config, "Retract", "extruder-retract.svg", "", nil)
 	}
 
 	instance := &FilamentExtrudeButton{
@@ -56,7 +56,7 @@ func (this *FilamentExtrudeButton) sendExtrudeCommand(length int) {
 		flowRatePercentage = this.flowRateStepButton.Value()
 	}
 
-	utils.Extrude(
+	uiUtils.Extrude(
 		this.client,
 		this.isForward,
 		this.parentWindow,

@@ -2,9 +2,11 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
@@ -19,13 +21,13 @@ type TemperaturePresetButton struct {
 
 func CreateTemperaturePresetButton(
 	printer *domain.PrinterService,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	imageFileName string,
 	temperaturePreset *dataModels.TemperaturePreset,
 	callback func(),
 ) *TemperaturePresetButton {
 	presetName := utils.StrEllipsisLen(temperaturePreset.Name, 10)
-	base := utils.MustButtonImageUsingFilePath(config, presetName, imageFileName, nil)
+	base := uiUtils.MustButtonImageUsingFilePath(config, presetName, imageFileName, nil)
 
 	instance := &TemperaturePresetButton{
 		Button:            base,

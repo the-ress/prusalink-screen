@@ -14,7 +14,7 @@ import (
 	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
 
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type CommonPanel struct {
@@ -63,7 +63,7 @@ func newCommonPanel(
 	// parentPanel interfaces.IPanel,
 	includeBackButton bool,
 ) CommonPanel {
-	grid := utils.MustGrid()
+	grid := uiUtils.MustGrid()
 	grid.SetRowHomogeneous(true)
 	grid.SetColumnHomogeneous(true)
 
@@ -88,11 +88,11 @@ func (this *CommonPanel) Initialize() {
 	}
 
 	for i := len(this.buttons) + 1; i < last; i++ {
-		box := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
+		box := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
 		this.AddButton(box)
 	}
 
-	this.backButton = utils.MustButtonImageUsingFilePath(this.UI.Config, "Back", "back.svg", this.UI.GoToPreviousPanel)
+	this.backButton = uiUtils.MustButtonImageUsingFilePath(this.UI.Config, "Back", "back.svg", this.UI.GoToPreviousPanel)
 	if this.includeBackButton {
 		this.AddButton(this.backButton)
 	}
@@ -152,7 +152,7 @@ func (this *CommonPanel) arrangeMenuItems(
 		if panel != nil {
 			color := fmt.Sprintf("color%d", (i%4)+1)
 			icon := fmt.Sprintf("%s.svg", item.Icon)
-			button := utils.MustButtonImageStyle(this.UI.Config, item.Name, icon, color, func() {
+			button := uiUtils.MustButtonImageStyle(this.UI.Config, item.Name, icon, color, func() {
 				this.UI.GoToPanel(panel)
 			})
 			grid.Attach(button, (i % cols), i/cols, 1, 1)

@@ -5,14 +5,15 @@ import (
 	// "strconv"
 	// "strings"
 
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 func CreateSelectHotendStepButton(
 	client *prusaLinkApis.Client,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	includeBed bool,
 	colorVariation int,
 	clicked func(),
@@ -21,7 +22,7 @@ func CreateSelectHotendStepButton(
 
 	step := Step{
 		"Hotend",
-		utils.GetHotendFileName(),
+		uiUtils.GetHotendFileName(),
 		nil,
 		"tool0",
 	}

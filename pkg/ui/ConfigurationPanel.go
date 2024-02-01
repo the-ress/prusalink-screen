@@ -1,8 +1,6 @@
 package ui
 
-import (
-	"github.com/the-ress/prusalink-screen/pkg/utils"
-)
+import "github.com/the-ress/prusalink-screen/pkg/uiUtils"
 
 type configurationPanel struct {
 	CommonPanel
@@ -27,7 +25,7 @@ func GetConfigurationPanelInstance(
 func (this *configurationPanel) initialize() {
 	defer this.Initialize()
 
-	networkButton := utils.MustButtonImageStyle(
+	networkButton := uiUtils.MustButtonImageStyle(
 		this.UI.Config,
 		"Network",
 		"network.svg",
@@ -36,7 +34,7 @@ func (this *configurationPanel) initialize() {
 	)
 	this.Grid().Attach(networkButton, 2, 0, 1, 1)
 
-	systemButton := utils.MustButtonImageStyle(
+	systemButton := uiUtils.MustButtonImageStyle(
 		this.UI.Config,
 		"System",
 		"info.svg",

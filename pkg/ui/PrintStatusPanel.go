@@ -3,10 +3,6 @@ package ui
 import (
 	"context"
 	"fmt"
-
-	// "math"
-	// "os"
-	// "strconv"
 	"strings"
 	"time"
 
@@ -18,8 +14,8 @@ import (
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type printStatusPanel struct {
@@ -30,9 +26,9 @@ type printStatusPanel struct {
 	bedButton    *uiWidgets.ToolPrintingButton
 
 	// Statistics/Info
-	fileLabelWithImage     *utils.LabelWithImage
-	timeLabelWithImage     *utils.LabelWithImage
-	timeLeftLabelWithImage *utils.LabelWithImage
+	fileLabelWithImage     *uiUtils.LabelWithImage
+	timeLabelWithImage     *uiUtils.LabelWithImage
+	timeLeftLabelWithImage *uiUtils.LabelWithImage
 
 	// Thumbnail
 	thumbnailPath           string
@@ -40,7 +36,7 @@ type printStatusPanel struct {
 	thumbnailDisplayed      bool
 	cancelThumbnailDownload context.CancelFunc
 
-	// layerLabelWithImage	*utils.LabelWithImage
+	// layerLabelWithImage	*uiUtils.LabelWithImage
 	// The info for the current / total layers is not available
 	// See https://community.octoprint.org/t/layer-number-and-total-layers-from-api/8005/4
 	// and https://docs.octoprint.org/en/master/api/datamodel.html#sec-api-datamodel-jobs-job
@@ -104,25 +100,25 @@ func (this *printStatusPanel) createThumbnailBox() {
 }
 
 func (this *printStatusPanel) createInfoBox() *gtk.Box {
-	this.fileLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "file-gcode.svg", "")
+	this.fileLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "file-gcode.svg", "")
 	ctx, _ := this.fileLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 	this.fileLabelWithImage.Label.SetEllipsize(pango.ELLIPSIZE_END)
 	this.fileLabelWithImage.Label.SetMarginEnd(this.Scaled(20))
 
-	this.timeLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time:")
+	this.timeLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time:")
 	ctx, _ = this.timeLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 
-	this.timeLeftLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time left:")
+	this.timeLeftLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time left:")
 	ctx, _ = this.timeLeftLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 
-	// this.layerLabelWithImage = utils.MustLabelWithImage(this.UI.Config, "time.svg", "")
+	// this.layerLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "time.svg", "")
 	// ctx, _ = this.layerLabelWithImage.GetStyleContext()
 	// ctx.AddClass("printing-status-label")
 
-	infoBox := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	infoBox := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 	infoBox.SetHAlign(gtk.ALIGN_START)
 	infoBox.SetHExpand(true)
 	infoBox.SetVExpand(true)
@@ -136,7 +132,7 @@ func (this *printStatusPanel) createInfoBox() *gtk.Box {
 }
 
 func (this *printStatusPanel) createProgressBar() *gtk.ProgressBar {
-	this.progressBar = utils.MustProgressBar()
+	this.progressBar = uiUtils.MustProgressBar()
 	this.progressBar.SetShowText(true)
 	this.progressBar.SetMarginTop(10)
 	this.progressBar.SetMarginEnd(this.Scaled(20))
@@ -150,7 +146,7 @@ func (this *printStatusPanel) createProgressBar() *gtk.ProgressBar {
 }
 
 func (this *printStatusPanel) createToolBarButtons() {
-	this.pauseButton = utils.MustButtonImageUsingFilePath(
+	this.pauseButton = uiUtils.MustButtonImageUsingFilePath(
 		this.UI.Config,
 		"Pause",
 		"pause.svg",
@@ -158,7 +154,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	)
 	this.Grid().Attach(this.pauseButton, 1, 2, 1, 1)
 
-	this.resumeButton = utils.MustButtonImageUsingFilePath(
+	this.resumeButton = uiUtils.MustButtonImageUsingFilePath(
 		this.UI.Config,
 		"Resume",
 		"resume.svg",
@@ -166,7 +162,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	)
 	this.Grid().Attach(this.resumeButton, 1, 2, 1, 1)
 
-	this.cancelButton = utils.MustButtonImageStyle(
+	this.cancelButton = uiUtils.MustButtonImageStyle(
 		this.UI.Config,
 		"Cancel",
 		"stop.svg",
@@ -175,7 +171,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	)
 	this.Grid().Attach(this.cancelButton, 2, 2, 1, 1)
 
-	this.controlButton = utils.MustButtonImageStyle(
+	this.controlButton = uiUtils.MustButtonImageStyle(
 		this.UI.Config,
 		"Control",
 		"printing-control.svg",
@@ -184,7 +180,7 @@ func (this *printStatusPanel) createToolBarButtons() {
 	)
 	this.Grid().Attach(this.controlButton, 3, 2, 1, 1)
 
-	this.completedButton = utils.MustButtonImageStyle(
+	this.completedButton = uiUtils.MustButtonImageStyle(
 		this.UI.Config,
 		"Done",
 		"complete.svg",
@@ -227,8 +223,8 @@ func (this *printStatusPanel) consumeStateUpdates(ch chan domain.PrinterState) {
 }
 
 func (this *printStatusPanel) updateToolTemperature(temperature dataModels.TemperatureData) {
-	this.nozzleButton.SetLabel(utils.GetTemperatureDataString(temperature.Nozzle))
-	this.bedButton.SetLabel(utils.GetTemperatureDataString(temperature.Bed))
+	this.nozzleButton.SetLabel(uiUtils.GetTemperatureDataString(temperature.Nozzle))
+	this.bedButton.SetLabel(uiUtils.GetTemperatureDataString(temperature.Bed))
 }
 
 func (this *printStatusPanel) updateInfoBox(state domain.PrinterState) {
@@ -326,7 +322,7 @@ func (this *printStatusPanel) downloadThumbnail(
 }
 
 func (this *printStatusPanel) displayThumbnail(imageBuffer []byte) {
-	utils.EmptyTheContainer(&this.thumbnailBox.Container)
+	uiUtils.EmptyTheContainer(&this.thumbnailBox.Container)
 
 	if imageBuffer == nil {
 		this.thumbnailBox.SetVisible(false)
@@ -337,7 +333,7 @@ func (this *printStatusPanel) displayThumbnail(imageBuffer []byte) {
 	}
 
 	previewImage, err :=
-		utils.ImageFromBufferAtSize(imageBuffer, this.thumbnailBox.GetAllocatedWidth(), this.thumbnailBox.GetAllocatedHeight())
+		uiUtils.ImageFromBufferAtSize(imageBuffer, this.thumbnailBox.GetAllocatedWidth(), this.thumbnailBox.GetAllocatedHeight())
 
 	if err != nil {
 		logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from ImageFromBuffer:", err)
@@ -452,7 +448,7 @@ func (this *printStatusPanel) handleResumeClicked() {
 }
 
 func (this *printStatusPanel) handleCancelClicked() {
-	utils.MustConfirmDialogBox(
+	uiUtils.MustConfirmDialogBox(
 		this.UI.window,
 		"Are you sure you want to cancel the current print?",
 		func() {

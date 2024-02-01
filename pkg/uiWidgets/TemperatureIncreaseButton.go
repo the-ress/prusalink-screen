@@ -2,11 +2,10 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
-
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type TemperatureIncreaseButton struct {
@@ -20,16 +19,16 @@ type TemperatureIncreaseButton struct {
 
 func CreateTemperatureIncreaseButton(
 	client *prusaLinkApis.Client,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	temperatureAmountStepButton *TemperatureAmountStepButton,
 	selectHotendStepButton *SelectToolStepButton,
 	isIncrease bool,
 ) *TemperatureIncreaseButton {
 	var base *gtk.Button
 	if isIncrease {
-		base = utils.MustButtonImageStyle(config, "Increase", "increase.svg", "", nil)
+		base = uiUtils.MustButtonImageStyle(config, "Increase", "increase.svg", "", nil)
 	} else {
-		base = utils.MustButtonImageStyle(config, "Decrease", "decrease.svg", "", nil)
+		base = uiUtils.MustButtonImageStyle(config, "Decrease", "decrease.svg", "", nil)
 	}
 
 	instance := &TemperatureIncreaseButton{
@@ -47,7 +46,7 @@ func CreateTemperatureIncreaseButton(
 func (this *TemperatureIncreaseButton) handleClicked() {
 	value := this.temperatureAmountStepButton.Value()
 	tool := this.selectHotendStepButton.Value()
-	target, err := utils.GetToolTarget(this.client, tool)
+	target, err := uiUtils.GetToolTarget(this.client, tool)
 	if err != nil {
 		logger.LogError("TemperatureIncreaseButton.handleClicked()", "GetToolTarget()", err)
 		return
@@ -68,7 +67,7 @@ func (this *TemperatureIncreaseButton) handleClicked() {
 
 	logger.Infof("TemperatureIncreaseButton.handleClicked() - setting target temperature for %s to %1.f°C.", tool, target)
 
-	err = utils.SetToolTarget(this.client, tool, target)
+	err = uiUtils.SetToolTarget(this.client, tool, target)
 	if err != nil {
 		logger.LogError("TemperatureIncreaseButton.handleClicked()", "GetToolTarget()", err)
 	}

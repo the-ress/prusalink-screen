@@ -16,7 +16,7 @@ import (
 
 	"github.com/the-ress/prusalink-screen/pkg/domain"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type connectionPanel struct {
@@ -60,7 +60,7 @@ func (this *connectionPanel) initialize() {
 	logger.TraceEnter("ConnectionPanel.initialize()")
 
 	_, windowHeight := this.UI.window.GetSize()
-	unscaledLogo := utils.MustImageFromFile(this.UI.Config, "logos/octoscreen-logo.svg")
+	unscaledLogo := uiUtils.MustImageFromFile(this.UI.Config, "logos/octoscreen-logo.svg")
 	pixbuf := unscaledLogo.GetPixbuf()
 	width := pixbuf.GetWidth()
 	height := pixbuf.GetHeight()
@@ -73,7 +73,7 @@ func (this *connectionPanel) initialize() {
 	displayWidth := int(originalLogoWidth * scaleFactor)
 	displayHeight = int(originalLogoHeight * scaleFactor)
 
-	this.Logo = utils.MustImageFromFileWithSize(this.UI.Config, "logos/octoscreen-logo.svg", displayWidth, displayHeight)
+	this.Logo = uiUtils.MustImageFromFileWithSize(this.UI.Config, "logos/octoscreen-logo.svg", displayWidth, displayHeight)
 
 	pixbuf.ScaleSimple(
 		this.UI.scaleFactor*width,
@@ -81,13 +81,13 @@ func (this *connectionPanel) initialize() {
 		gdk.INTERP_NEAREST,
 	)
 
-	this.Label = utils.MustLabel("Welcome to PrusaLink Screen")
+	this.Label = uiUtils.MustLabel("Welcome to PrusaLink Screen")
 	this.Label.SetHExpand(true)
 	this.Label.SetHAlign(gtk.ALIGN_CENTER)
 	this.Label.SetLineWrap(true)
 	this.Label.SetMaxWidthChars(80)
 
-	main := utils.MustBox(gtk.ORIENTATION_VERTICAL, 15)
+	main := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 15)
 	main.SetHExpand(true)
 	main.SetHAlign(gtk.ALIGN_CENTER)
 	main.SetVExpand(true)
@@ -98,7 +98,7 @@ func (this *connectionPanel) initialize() {
 
 	this.createActionBar()
 
-	box := utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
+	box := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	box.Add(main)
 	box.Add(this.ActionBar)
 	this.Grid().Add(box)
@@ -109,10 +109,10 @@ func (this *connectionPanel) initialize() {
 func (this *connectionPanel) createActionBar() {
 	logger.TraceEnter("ConnectionPanel.createActionBar()")
 
-	this.ActionBar = utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	this.ActionBar = uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	this.ActionBar.SetHAlign(gtk.ALIGN_END)
 
-	this.RetryButton = utils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color-none", this.initializeConnectionState)
+	this.RetryButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color-none", this.initializeConnectionState)
 	this.RetryButton.SetProperty("width-request", this.Scaled(100))
 
 	this.ActionBar.Add(this.RetryButton)

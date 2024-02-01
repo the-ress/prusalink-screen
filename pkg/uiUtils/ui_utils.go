@@ -1,8 +1,9 @@
-package utils
+package uiUtils
 
 import (
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 // ****************************************************************************
@@ -24,7 +25,7 @@ func yesNoDialogBox(parentWindow *gtk.Window, message string) gtk.ResponseType {
 		"",
 	)
 
-	dialog.SetMarkup(CleanHTML(message))
+	dialog.SetMarkup(utils.CleanHTML(message))
 	defer dialog.Destroy()
 
 	box, _ := dialog.GetContentArea()
@@ -63,7 +64,7 @@ func messageDialogBox(parentWindow *gtk.Window, messageType gtk.MessageType, mes
 
 	dialogBox.AddButton("Continue", gtk.RESPONSE_OK)
 
-	dialogBox.SetMarkup(CleanHTML(message))
+	dialogBox.SetMarkup(utils.CleanHTML(message))
 	defer dialogBox.Destroy()
 
 	box, _ := dialogBox.GetContentArea()
@@ -91,7 +92,7 @@ func RunWithWaitingBox(
 		"",
 	)
 
-	dialogBox.SetMarkup(CleanHTML(message))
+	dialogBox.SetMarkup(utils.CleanHTML(message))
 	defer dialogBox.Destroy()
 
 	box, _ := dialogBox.GetContentArea()

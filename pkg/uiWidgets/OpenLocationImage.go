@@ -4,14 +4,14 @@ import (
 	"fmt"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 func CreateOpenLocationImage(
 	index int,
 	buttonWidth int,
 	buttonHeight int,
-	pixbufCache *utils.PixbufCache,
+	pixbufCache *uiUtils.PixbufCache,
 ) *gtk.Image {
 	colorClass := fmt.Sprintf("color%d", (index%4)+1)
 

@@ -1,12 +1,8 @@
 package uiWidgets
 
 import (
-	// "fmt"
-
 	"github.com/gotk3/gotk3/gtk"
-
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type SystemInfoBox struct {
@@ -20,7 +16,7 @@ func NewSystemInfoBox(
 	image *gtk.Image,
 	title string,
 ) *SystemInfoBox {
-	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
+	base := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	base.SetHExpand(true)
 	base.SetHAlign(gtk.ALIGN_CENTER)
 	base.SetVExpand(true)
@@ -30,13 +26,13 @@ func NewSystemInfoBox(
 	ctx.AddClass("margin-top-5")
 	base.Add(image)
 
-	titleLabel := utils.MustLabel(title)
+	titleLabel := uiUtils.MustLabel(title)
 	ctx, _ = titleLabel.GetStyleContext()
 	ctx.AddClass("margin-top-10")
 	ctx.AddClass("font-size-18")
 	base.Add(titleLabel)
 
-	textLabel := utils.MustLabel("")
+	textLabel := uiUtils.MustLabel("")
 	ctx, _ = textLabel.GetStyleContext()
 	ctx.AddClass("font-size-18")
 	base.Add(textLabel)

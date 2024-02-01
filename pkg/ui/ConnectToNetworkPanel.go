@@ -9,6 +9,7 @@ import (
 
 	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
 	// "github.com/the-ress/prusalink-screen/pkg/uiWidgets"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
@@ -51,7 +52,7 @@ func GetConnectToNetworkPanelInstance(
 }
 
 func (this *connectToNetworkPanel) initialize() {
-	layoutBox := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	layoutBox := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 	layoutBox.SetHExpand(true)
 
 	layoutBox.Add(this.createTopBar())
@@ -72,16 +73,16 @@ func (this *connectToNetworkPanel) createTopBar() *gtk.Box {
 	this.pass.SetProperty("width-request", this.Scaled(150))
 	this.pass.SetHExpand(true)
 
-	topBar := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	topBar := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	topBar.SetHExpand(true)
 	topBar.SetMarginStart(25)
 	topBar.SetHAlign(gtk.ALIGN_START)
-	this.SSIDLabel = utils.MustLabel(fmt.Sprintf("Pass for %s: ", this.SSID))
+	this.SSIDLabel = uiUtils.MustLabel(fmt.Sprintf("Pass for %s: ", this.SSID))
 	topBar.Add(this.SSIDLabel)
 	topBar.Add(this.pass)
 
-	image := utils.MustImageFromFileWithSize(this.UI.Config, "backspace.svg", this.Scaled(40), this.Scaled(40))
-	backspaceButton := utils.MustButton(image, func() {
+	image := uiUtils.MustImageFromFileWithSize(this.UI.Config, "backspace.svg", this.Scaled(40), this.Scaled(40))
+	backspaceButton := uiUtils.MustButton(image, func() {
 		if this.cursorPosition == 0 {
 			return
 		}
@@ -96,14 +97,14 @@ func (this *connectToNetworkPanel) createTopBar() *gtk.Box {
 }
 
 func (this *connectToNetworkPanel) createActionBar() *gtk.Box {
-	image := utils.MustImageFromFileWithSize(this.UI.Config, "back.svg", this.Scaled(40), this.Scaled(40))
-	backspaceButton := utils.MustButton(image, func() {
+	image := uiUtils.MustImageFromFileWithSize(this.UI.Config, "back.svg", this.Scaled(40), this.Scaled(40))
+	backspaceButton := uiUtils.MustButton(image, func() {
 		this.UI.GoToPreviousPanel()
 	})
 
 	backspaceButton.SetHAlign(gtk.ALIGN_END)
 
-	actionBar := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	actionBar := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBar.SetHAlign(gtk.ALIGN_END)
 	actionBar.Add(this.createConnectToNetworkButton())
 	actionBar.Add(backspaceButton)
@@ -112,7 +113,7 @@ func (this *connectToNetworkPanel) createActionBar() *gtk.Box {
 }
 
 func (this *connectToNetworkPanel) createKeyboardWindow() *gtk.ScrolledWindow {
-	keysGrid := utils.MustGrid()
+	keysGrid := uiUtils.MustGrid()
 	keysGrid.SetRowHomogeneous(true)
 	keysGrid.SetColumnHomogeneous(true)
 
@@ -128,7 +129,7 @@ func (this *connectToNetworkPanel) createKeyboardWindow() *gtk.ScrolledWindow {
 			char:                  k,
 			connectToNetworkPanel: this,
 		}
-		button := utils.MustButtonText(string(k), buttonHander.clicked)
+		button := uiUtils.MustButtonText(string(k), buttonHander.clicked)
 		ctx, _ := button.GetStyleContext()
 		ctx.AddClass("keyboard")
 		button.SetProperty("height-request", this.Scaled(40))
@@ -141,7 +142,7 @@ func (this *connectToNetworkPanel) createKeyboardWindow() *gtk.ScrolledWindow {
 func (this *connectToNetworkPanel) createConnectToNetworkButton() *gtk.Button {
 	var button *gtk.Button
 
-	button = utils.MustButtonText("Connect", func() {
+	button = uiUtils.MustButtonText("Connect", func() {
 		button.SetSensitive(false)
 		time.Sleep(time.Second * 1)
 		psk, _ := this.pass.GetText()

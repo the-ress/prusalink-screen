@@ -1,20 +1,12 @@
 package ui
 
 import (
-	// "encoding/json"
-	// "fmt"
-	// "os"
-	// "strconv"
-	// "sync"
-	// "time"
-
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type idleStatusPanel struct {
@@ -58,13 +50,13 @@ func (this *idleStatusPanel) initialize() {
 
 	menuItems = this.UI.MenuStructure
 
-	menuGrid := utils.MustGrid()
+	menuGrid := uiUtils.MustGrid()
 	menuGrid.SetRowHomogeneous(true)
 	menuGrid.SetColumnHomogeneous(true)
 	this.Grid().Attach(menuGrid, 2, 0, 2, 2)
 	this.arrangeMenuItems(menuGrid, menuItems, 2)
 
-	printButton := utils.MustButtonImageStyle(this.UI.Config, "Print", "print.svg", "color2", this.showFiles)
+	printButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Print", "print.svg", "color2", this.showFiles)
 	this.Grid().Attach(printButton, 2, 2, 2, 1)
 
 	this.showTools()
@@ -86,7 +78,7 @@ func (this *idleStatusPanel) showTools() {
 	this.nozzleButton = uiWidgets.CreateToolButton(0, this.UI.Printer, this.UI.Config)
 	this.bedButton = uiWidgets.CreateToolButton(-1, this.UI.Printer, this.UI.Config)
 
-	toolGrid := utils.MustGrid()
+	toolGrid := uiUtils.MustGrid()
 	toolGrid.SetRowHomogeneous(true)
 	toolGrid.SetColumnHomogeneous(true)
 	this.Grid().Attach(toolGrid, 0, 0, 2, 3)

@@ -2,8 +2,7 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type ScrollableListBox struct {
@@ -22,7 +21,7 @@ func CreateScrollableListBox() *ScrollableListBox {
 	// ctx1, _ := instance.GetStyleContext()
 	// ctx1.AddClass("red-background")
 
-	instance.ListBox = utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
+	instance.ListBox = uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	instance.ListBox.SetVExpand(true)
 	// ctx2, _ := instance.ListBox.GetStyleContext()
 	// ctx2.AddClass("green-background")

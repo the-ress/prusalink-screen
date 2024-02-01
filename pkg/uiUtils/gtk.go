@@ -1,4 +1,4 @@
-package utils
+package uiUtils
 
 import (
 	"errors"
@@ -7,7 +7,10 @@ import (
 
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/common"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
+	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 // MustWindow returns a new gtk.Window, if error panics.
@@ -114,7 +117,7 @@ const LabelImageSize = 20
 
 // MustLabelWithImage returns a new LabelWithImage based on a gtk.Box containing
 // a gtk.Label with a gtk.Image, the image is scaled at LabelImageSize.
-func MustLabelWithImage(config *ScreenConfig, imageFileName, format string, args ...interface{}) *LabelWithImage {
+func MustLabelWithImage(config *config.ScreenConfig, imageFileName, format string, args ...interface{}) *LabelWithImage {
 	label := MustLabel(format, args...)
 	box := MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	box.Add(MustImageFromFileWithSize(config, imageFileName, LabelImageSize, LabelImageSize))
@@ -124,14 +127,14 @@ func MustLabelWithImage(config *ScreenConfig, imageFileName, format string, args
 }
 
 // MustButtonImageStyle returns a new gtk.Button with the given label, image and clicked callback, if error panics.
-func MustButtonImageStyle(config *ScreenConfig, buttonLabel, imageFileName string, style string, clicked func()) *gtk.Button {
+func MustButtonImageStyle(config *config.ScreenConfig, buttonLabel, imageFileName string, style string, clicked func()) *gtk.Button {
 	button := MustButtonImageUsingFilePath(config, buttonLabel, imageFileName, clicked)
 	ctx, _ := button.GetStyleContext()
 	ctx.AddClass(style)
 
 	return button
 }
-func MustButtonImageUsingFilePath(config *ScreenConfig, buttonLabel string, imageFileName string, clicked func()) *gtk.Button {
+func MustButtonImageUsingFilePath(config *config.ScreenConfig, buttonLabel string, imageFileName string, clicked func()) *gtk.Button {
 	image := MustImageFromFile(config, imageFileName)
 	return MustButtonImageUsingImage(buttonLabel, image, clicked)
 }
@@ -156,7 +159,7 @@ func MustButtonImageUsingImage(buttonLabel string, image *gtk.Image, clicked fun
 	return button
 }
 
-func MustToggleButton(config *ScreenConfig, label string, imageFileName string, clicked func()) *gtk.ToggleButton {
+func MustToggleButton(config *config.ScreenConfig, label string, imageFileName string, clicked func()) *gtk.ToggleButton {
 	image := MustImageFromFile(config, imageFileName)
 	button, err := gtk.ToggleButtonNewWithLabel(label)
 	if err != nil {
@@ -208,14 +211,14 @@ func MustButtonText(label string, clicked func()) *gtk.Button {
 	return button
 }
 
-func MustImageFromFileWithSize(config *ScreenConfig, imageFileName string, width, height int) *gtk.Image {
+func MustImageFromFileWithSize(config *config.ScreenConfig, imageFileName string, width, height int) *gtk.Image {
 	if imageFileName == "" {
 		logger.Error("MustImageFromFileWithSize() - imageFileName is empty")
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
 
 	imageFilePath := imagePath(config, imageFileName)
-	if !FileExists(imageFilePath) {
+	if !utils.FileExists(imageFilePath) {
 		logger.Error("MustImageFromFileWithSize() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
@@ -234,14 +237,14 @@ func MustImageFromFileWithSize(config *ScreenConfig, imageFileName string, width
 	return image
 }
 
-func MustPixbufFromFileWithSize(config *ScreenConfig, imageFileName string, width, height int) *gdk.Pixbuf {
+func MustPixbufFromFileWithSize(config *config.ScreenConfig, imageFileName string, width, height int) *gdk.Pixbuf {
 	if imageFileName == "" {
 		logger.Error("MustImageFromFileWithSize() - imageFileName is empty")
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
 
 	imageFilePath := imagePath(config, imageFileName)
-	if !FileExists(imageFilePath) {
+	if !utils.FileExists(imageFilePath) {
 		logger.Error("MustImageFromFileWithSize() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
@@ -265,14 +268,14 @@ func MustImageFromPixbuf(pixbuf *gdk.Pixbuf) *gtk.Image {
 }
 
 // MustImageFromFile returns a new gtk.Image based on the given file, if error panics.
-func MustImageFromFile(config *ScreenConfig, imageFileName string) *gtk.Image {
+func MustImageFromFile(config *config.ScreenConfig, imageFileName string) *gtk.Image {
 	if imageFileName == "" {
 		logger.Error("MustImageFromFile() - imageFileName is empty")
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
 
 	imageFilePath := imagePath(config, imageFileName)
-	if !FileExists(imageFilePath) {
+	if !utils.FileExists(imageFilePath) {
 		logger.Error("MustImageFromFile() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
@@ -366,7 +369,7 @@ func GetScaledSize(originalWidth, originalHeight, destWidth, destHeight float64)
 }
 
 // MustCSSProviderFromFile returns a new gtk.CssProvider for a given css file, if error panics.
-func MustCssProviderFromFile(config *ScreenConfig, cssFileName string) *gtk.CssProvider {
+func MustCssProviderFromFile(config *config.ScreenConfig, cssFileName string) *gtk.CssProvider {
 	cssProvider, err := gtk.CssProviderNew()
 	if err != nil {
 		logger.LogError("PANIC!!! - MustCssProviderFromFile()", "gtk.CssProviderNew()", err)
@@ -382,12 +385,12 @@ func MustCssProviderFromFile(config *ScreenConfig, cssFileName string) *gtk.CssP
 	return cssProvider
 }
 
-func cssFilePath(config *ScreenConfig, cssFileName string) string {
+func cssFilePath(config *config.ScreenConfig, cssFileName string) string {
 	return filepath.Join(config.CssStyleFilePath, cssFileName)
 }
 
-func imagePath(config *ScreenConfig, imageFileName string) string {
-	return filepath.Join(config.CssStyleFilePath, ImageFolder, imageFileName)
+func imagePath(config *config.ScreenConfig, imageFileName string) string {
+	return filepath.Join(config.CssStyleFilePath, common.ImageFolder, imageFileName)
 }
 
 // MustOverlay returns a new gtk.Overlay, if error panics.

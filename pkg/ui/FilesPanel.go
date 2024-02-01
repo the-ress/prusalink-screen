@@ -11,6 +11,7 @@ import (
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
 	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
@@ -25,7 +26,7 @@ type filesPanel struct {
 	locationHistory      utils.LocationHistory
 	currentFileResponses []*dataModels.FileResponse
 
-	pixbufCache             *utils.PixbufCache
+	pixbufCache             *uiUtils.PixbufCache
 	cancelThumbnailDownload context.CancelFunc
 }
 
@@ -47,7 +48,7 @@ func GetFilesPanelInstance(
 		instance := &filesPanel{
 			CommonPanel:     CreateCommonPanel("FilesPanel", ui),
 			locationHistory: locationHistory,
-			pixbufCache:     utils.CreatePixbufCache(ui.Config),
+			pixbufCache:     uiUtils.CreatePixbufCache(ui.Config),
 		}
 
 		instance.initializeUi()
@@ -96,7 +97,7 @@ func (this *filesPanel) doClear() {
 	logger.TraceEnter("FilesPanel.doClear()")
 
 	listBoxContainer := this.scrollableListBox.ListBoxContainer()
-	utils.EmptyTheContainer(listBoxContainer)
+	uiUtils.EmptyTheContainer(listBoxContainer)
 
 	logger.TraceLeave("FilesPanel.doClear()")
 }
@@ -110,7 +111,7 @@ func (this *filesPanel) doLoadFiles() {
 	}
 
 	listBoxContainer := this.scrollableListBox.ListBoxContainer()
-	utils.EmptyTheContainer(listBoxContainer)
+	uiUtils.EmptyTheContainer(listBoxContainer)
 
 	atRootLevel := this.displayRootLocations()
 	// If we are at the "root" level (where the option for Local (OctoPrint) and SD are displayed),
@@ -247,7 +248,7 @@ func (this *filesPanel) addMessage(message string) {
 	labelsBox := uiWidgets.CreateLabelsBox(nameLabel, nil)
 	labelsBox.SetMarginStart(10)
 
-	topBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	topBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	topBox.Add(labelsBox)
 
 	listItemBox := uiWidgets.CreateVerticalLayoutBox()
@@ -271,12 +272,12 @@ func (this *filesPanel) addRootLocation(location dataModels.Location) {
 func (this *filesPanel) createRootLocationButton(location dataModels.Location) *gtk.Button {
 	var itemImage *gtk.Image
 	if location == dataModels.Local {
-		itemImage = utils.MustImageFromFileWithSize(this.UI.Config, "logos/octoprint-tentacle.svg", this.Scaled(35), this.Scaled(35))
+		itemImage = uiUtils.MustImageFromFileWithSize(this.UI.Config, "logos/octoprint-tentacle.svg", this.Scaled(35), this.Scaled(35))
 	} else {
-		itemImage = utils.MustImageFromFileWithSize(this.UI.Config, "sd.svg", this.Scaled(35), this.Scaled(35))
+		itemImage = uiUtils.MustImageFromFileWithSize(this.UI.Config, "sd.svg", this.Scaled(35), this.Scaled(35))
 	}
 
-	topBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	topBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	topBox.Add(itemImage)
 
 	name := ""
@@ -287,7 +288,7 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 	}
 	nameLabel := uiWidgets.CreateNameLabel(name)
 
-	infoLabel := utils.MustLabel("")
+	infoLabel := uiUtils.MustLabel("")
 	infoLabel.SetHAlign(gtk.ALIGN_START)
 	infoLabel.SetMarkup("<small> </small>")
 
@@ -301,7 +302,7 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 		actionImage = uiWidgets.CreateOpenLocationImage(1, this.Scaled(40), this.Scaled(40), this.pixbufCache)
 	}
 
-	actionBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	actionBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBox.Add(actionImage)
 	topBox.Add(actionBox)
 
@@ -476,7 +477,7 @@ func (this *filesPanel) handleFileClick(button *gtk.Button, rowIndex int) {
 		message = fmt.Sprintf("Do you wish to print\n%s?", fileResponse.Name)
 	}
 
-	utils.MustConfirmDialogBox(this.UI.window, message, func() {
+	uiUtils.MustConfirmDialogBox(this.UI.window, message, func() {
 		selectFileRequest := &prusaLinkApis.SelectFileRequest{}
 
 		// Set the location to "local" or "sdcard"
@@ -489,7 +490,7 @@ func (this *filesPanel) handleFileClick(button *gtk.Button, rowIndex int) {
 		if err := selectFileRequest.Do(this.UI.Client); err != nil {
 			logger.LogError("FilesPanel.handleFileClick()", "Do(SelectFileRequest)", err)
 			errorMessage := fmt.Sprintf("Failed to print the file:\n\n%s", err.Error())
-			utils.ErrorMessageDialogBox(this.UI.window, errorMessage)
+			uiUtils.ErrorMessageDialogBox(this.UI.window, errorMessage)
 			return
 		}
 

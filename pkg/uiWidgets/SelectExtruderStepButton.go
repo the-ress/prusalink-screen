@@ -5,14 +5,15 @@ import (
 	// "strconv"
 	// "strings"
 
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 func CreateSelectExtruderStepButton(
 	client *prusaLinkApis.Client,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	includeBed bool,
 	colorVariation int,
 	clicked func(),
@@ -21,7 +22,7 @@ func CreateSelectExtruderStepButton(
 
 	step := Step{
 		"Extruder",
-		utils.GetExtruderFileName(),
+		uiUtils.GetExtruderFileName(),
 		nil,
 		"tool0",
 	}

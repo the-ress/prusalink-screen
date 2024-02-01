@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/config"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type SystemCommandButton struct {
@@ -13,7 +14,7 @@ type SystemCommandButton struct {
 
 func NewSystemCommandButton(
 	parentWindow *gtk.Window,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	name string,
 	action string,
 	style string,
@@ -22,12 +23,12 @@ func NewSystemCommandButton(
 ) *SystemCommandButton {
 	confirmationMessage := fmt.Sprintf("%s\n\nDo you wish to proceed?", confirmation)
 
-	base := utils.MustButtonImageStyle(
+	base := uiUtils.MustButtonImageStyle(
 		config,
 		name,
 		action+".svg",
 		style,
-		func() { utils.MustConfirmDialogBox(parentWindow, confirmationMessage, callback) },
+		func() { uiUtils.MustConfirmDialogBox(parentWindow, confirmationMessage, callback) },
 	)
 	ctx, _ := base.GetStyleContext()
 	ctx.AddClass("font-size-19")

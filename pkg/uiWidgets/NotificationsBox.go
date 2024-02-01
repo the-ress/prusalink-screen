@@ -8,7 +8,7 @@ import (
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/sirupsen/logrus"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type NotificationsBox struct {
@@ -16,7 +16,7 @@ type NotificationsBox struct {
 }
 
 func NewNotificationsBox() *NotificationsBox {
-	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	base := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 	base.SetVAlign(gtk.ALIGN_START)
 	base.SetHAlign(gtk.ALIGN_CENTER)
 	base.SetHExpand(true)
@@ -43,7 +43,7 @@ func (this *NotificationsBox) Show(style, msg string, duration time.Duration) {
 }
 
 func (this *NotificationsBox) newEventBox(style, msg string) *gtk.EventBox {
-	label := utils.MustLabel("")
+	label := uiUtils.MustLabel("")
 	label.SetMarkup(fmt.Sprintf("<b>%s</b>", msg))
 	label.SetLineWrap(true)
 

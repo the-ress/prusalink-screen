@@ -6,11 +6,12 @@ import (
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 func CreateFilesPreviewSubRow(
@@ -23,7 +24,7 @@ func CreateFilesPreviewSubRow(
 
 func CreatePreviewThumbnail(
 	ctx context.Context,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	previewSubRow *gtk.Box,
 	fileResponse *dataModels.FileResponse,
 	client *prusaLinkApis.Client,
@@ -51,7 +52,7 @@ func CreatePreviewThumbnail(
 		default:
 		}
 
-		previewImage, imageFromBufferErr := utils.ImageFromBuffer(imageBuffer)
+		previewImage, imageFromBufferErr := uiUtils.ImageFromBuffer(imageBuffer)
 
 		if imageFromBufferErr != nil {
 			logger.Error("FilesPreviewSubRow.createPreviewThumbnail() - error from ImageFromBuffer:", imageFromBufferErr)
@@ -59,12 +60,12 @@ func CreatePreviewThumbnail(
 		}
 		logger.Debug("FilesPreviewSubRow.createPreviewThumbnail() - no error from ImageFromBuffer, now trying to add it...")
 
-		bottomBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
+		bottomBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
 
 		// Initially was setting the horizontal alignment with CSS, but different resolutions
 		// (eg 800x480 vs 480x320) didn't align correctly, so I added a blank SVG to offset
 		// the preview thumbnail image.
-		spacerImage := utils.MustImageFromFileWithSize(config, "blank.svg", fileSystemImageWidth, fileSystemImageHeight)
+		spacerImage := uiUtils.MustImageFromFileWithSize(config, "blank.svg", fileSystemImageWidth, fileSystemImageHeight)
 		bottomBox.Add(spacerImage)
 
 		// Still need some CSS for the bottom margin.

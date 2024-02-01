@@ -7,14 +7,14 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 func CreateInfoLabel(
 	fileResponse *dataModels.FileResponse,
 	isFolder bool,
 ) *gtk.Label {
-	label := utils.MustLabel("")
+	label := uiUtils.MustLabel("")
 	label.SetHAlign(gtk.ALIGN_START)
 
 	uploadedSize := humanize.Bytes(uint64(fileResponse.Size))

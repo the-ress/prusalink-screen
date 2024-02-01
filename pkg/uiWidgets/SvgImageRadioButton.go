@@ -2,9 +2,7 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-
-	// "github.com/the-ress/prusalink-screen/pkg/logger"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type SvgImageRadioButton struct {
@@ -37,9 +35,9 @@ func CreateSvgImageRadioButton(
 ) *SvgImageRadioButton {
 	var base *gtk.Button
 	if isSelected {
-		base = utils.MustButtonImageUsingImage(caption, selectedImage, nil)
+		base = uiUtils.MustButtonImageUsingImage(caption, selectedImage, nil)
 	} else {
-		base = utils.MustButtonImageUsingImage(caption, image, nil)
+		base = uiUtils.MustButtonImageUsingImage(caption, image, nil)
 	}
 
 	styleContext, _ := base.GetStyleContext()

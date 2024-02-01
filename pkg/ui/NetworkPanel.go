@@ -13,6 +13,8 @@ import (
 
 	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
+
 	// "github.com/the-ress/prusalink-screen/pkg/uiWidgets"
 	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
@@ -77,7 +79,7 @@ func (this *networkPanel) Hide() {
 func (this *networkPanel) update() {
 	logger.TraceEnter("NetworkPanel.update()")
 
-	utils.EmptyTheContainer(&this.listBox.Container)
+	uiUtils.EmptyTheContainer(&this.listBox.Container)
 	this.setNetStatusText()
 	this.setNetworkItems()
 	this.listBox.ShowAll()
@@ -174,14 +176,14 @@ func (this *networkPanel) setNetworkListItems(wpa wpasupplicant.Conn) {
 				logger.LogError("NetworkPanel.update()", "Scan()", err)
 			}
 		} else {
-			label := utils.MustLabel("\n\nWiFi management is not available\non this hardware")
+			label := uiUtils.MustLabel("\n\nWiFi management is not available\non this hardware")
 			this.listBox.Add(label)
 		}
 	}
 }
 
 func (this *networkPanel) createNetworkListWindow() gtk.IWidget {
-	this.listBox = utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
+	this.listBox = uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	this.listBox.SetVExpand(true)
 
 	networkListWindow, _ := gtk.ScrolledWindowNew(nil, nil)
@@ -198,13 +200,13 @@ func (this *networkPanel) addNetwork(box *gtk.Box, ssid string) {
 		this.UI.GoToPanel(GetConnectToNetworkPanelInstance(this.UI, ssid))
 	}
 
-	image := utils.MustImageFromFileWithSize(this.UI.Config, "network.svg", this.Scaled(25), this.Scaled(25))
-	button := utils.MustButton(image, clicked)
+	image := uiUtils.MustImageFromFileWithSize(this.UI.Config, "network.svg", this.Scaled(25), this.Scaled(25))
+	button := uiUtils.MustButton(image, clicked)
 
-	name := utils.MustButtonText(utils.StrEllipsisLen(ssid, 18), clicked)
+	name := uiUtils.MustButtonText(utils.StrEllipsisLen(ssid, 18), clicked)
 	name.SetHExpand(true)
 
-	network := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
+	network := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 0)
 	network.SetHExpand(true)
 
 	network.Add(name)
@@ -215,7 +217,7 @@ func (this *networkPanel) addNetwork(box *gtk.Box, ssid string) {
 }
 
 func (this *networkPanel) createLeftBar() gtk.IWidget {
-	leftBar := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	leftBar := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 	leftBar.SetHExpand(true)
 
 	leftBar.Add(this.createInfoBar())
@@ -225,13 +227,13 @@ func (this *networkPanel) createLeftBar() gtk.IWidget {
 }
 
 func (this *networkPanel) createActionBar() gtk.IWidget {
-	layout := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	layout := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	layout.SetHAlign(gtk.ALIGN_END)
 	layout.SetHExpand(true)
 
 	// NOTE: If a message is logged that the image (SVG) can't be loaded, try installing librsvg.
-	backImage := utils.MustImageFromFileWithSize(this.UI.Config, "back.svg", this.Scaled(40), this.Scaled(40))
-	backButton := utils.MustButton(backImage, func() {
+	backImage := uiUtils.MustImageFromFileWithSize(this.UI.Config, "back.svg", this.Scaled(40), this.Scaled(40))
+	backButton := uiUtils.MustButton(backImage, func() {
 		this.UI.GoToPreviousPanel()
 	})
 
@@ -241,7 +243,7 @@ func (this *networkPanel) createActionBar() gtk.IWidget {
 }
 
 func (this *networkPanel) createInfoBar() gtk.IWidget {
-	infoBar := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	infoBar := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 	infoBar.SetVExpand(true)
 	infoBar.SetHExpand(true)
 	infoBar.SetVAlign(gtk.ALIGN_START)
@@ -250,17 +252,17 @@ func (this *networkPanel) createInfoBar() gtk.IWidget {
 	infoBar.SetMarginEnd(25)
 	infoBar.SetMarginStart(25)
 
-	t1 := utils.MustLabel("<b>Network Information</b>")
+	t1 := uiUtils.MustLabel("<b>Network Information</b>")
 	t1.SetHAlign(gtk.ALIGN_START)
 	t1.SetMarginTop(25)
 
 	infoBar.Add(t1)
 
-	this.netStatus = utils.MustLabel("")
+	this.netStatus = uiUtils.MustLabel("")
 	this.netStatus.SetHAlign(gtk.ALIGN_START)
 	infoBar.Add(this.netStatus)
 
-	this.wifiStatus = utils.MustLabel("")
+	this.wifiStatus = uiUtils.MustLabel("")
 	this.wifiStatus.SetHAlign(gtk.ALIGN_START)
 	this.wifiStatus.SetMarginTop(25)
 	infoBar.Add(this.wifiStatus)

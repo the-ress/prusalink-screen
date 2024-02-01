@@ -8,6 +8,7 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/sirupsen/logrus"
 
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/ui"
 	"github.com/the-ress/prusalink-screen/pkg/utils"
@@ -22,7 +23,7 @@ func main() {
 
 	initializeGtk()
 
-	config, err := utils.ReadConfig()
+	config, err := config.ReadConfig()
 	if err != nil {
 		panic(err.Error())
 	}

@@ -1,27 +1,26 @@
 package uiWidgets
 
 import (
-	// "time"
-
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type TemperatureStatusBox struct {
 	*gtk.Box
 
 	client      *prusaLinkApis.Client
-	nozzleLabel *utils.LabelWithImage
-	bedLabel    *utils.LabelWithImage
+	nozzleLabel *uiUtils.LabelWithImage
+	bedLabel    *uiUtils.LabelWithImage
 }
 
 func CreateTemperatureStatusBox(
 	client *prusaLinkApis.Client,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 ) *TemperatureStatusBox {
-	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
+	base := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 
 	instance := &TemperatureStatusBox{
 		Box:    base,
@@ -31,19 +30,19 @@ func CreateTemperatureStatusBox(
 	instance.SetVAlign(gtk.ALIGN_CENTER)
 	instance.SetHAlign(gtk.ALIGN_CENTER)
 
-	instance.nozzleLabel = utils.MustLabelWithImage(config, utils.GetNozzleFileName(), "")
+	instance.nozzleLabel = uiUtils.MustLabelWithImage(config, uiUtils.GetNozzleFileName(), "")
 	instance.Add(instance.nozzleLabel)
 
-	instance.bedLabel = utils.MustLabelWithImage(config, "bed.svg", "")
+	instance.bedLabel = uiUtils.MustLabelWithImage(config, "bed.svg", "")
 	instance.Add(instance.bedLabel)
 
 	return instance
 }
 
 func (this *TemperatureStatusBox) UpdateTemperatureData(temperatureData dataModels.TemperatureData) {
-	this.nozzleLabel.Label.SetText(utils.GetTemperatureDataString(temperatureData.Nozzle))
+	this.nozzleLabel.Label.SetText(uiUtils.GetTemperatureDataString(temperatureData.Nozzle))
 	this.nozzleLabel.ShowAll()
 
-	this.bedLabel.Label.SetText(utils.GetTemperatureDataString(temperatureData.Bed))
+	this.bedLabel.Label.SetText(uiUtils.GetTemperatureDataString(temperatureData.Bed))
 	this.bedLabel.ShowAll()
 }

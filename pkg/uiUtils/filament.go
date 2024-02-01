@@ -1,12 +1,9 @@
-package utils
+package uiUtils
 
 import (
-	// "errors"
-
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
 )
 
 func Extrude(

@@ -1,27 +1,24 @@
-package utils
+package uiUtils
 
 import (
-    "github.com/gotk3/gotk3/gdk"
+	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
 )
-
 
 func ImageNewFromSvg(svg string) (*gtk.Image, error) {
 	// pixBuff, err := gdk.PixbufNewFromDataOnly([]byte(svg))
 	pixBuff, err := PixbufNewFromDataOnly([]byte(svg))
-	if err !=  nil {
+	if err != nil {
 		return nil, err
 	}
-	
+
 	image, err := gtk.ImageNewFromPixbuf(pixBuff)
-	if err !=  nil {
+	if err != nil {
 		return nil, err
 	}
-	
+
 	return image, nil
 }
-
-
 
 // TODO: these were lifted from the latest version of GOTK3.  Update GOTK3 and then remove these.
 // PixbufNewFromDataOnly is a convenient alternative to PixbufNewFromData() and also a wrapper around gdk_pixbuf_new_from_data().

@@ -2,21 +2,20 @@ package uiWidgets
 
 import (
 	"fmt"
-	// "os"
-	// "strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/shirou/gopsutil/mem"
+	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type SystemInformationInfoBox struct {
 	*gtk.Box
 
 	parentWindow  *gtk.Window
-	config        *utils.ScreenConfig
+	config        *config.ScreenConfig
 	logLevel      string
 	uiScaleFactor int
 	memoryLabel   *gtk.Label
@@ -29,14 +28,14 @@ type SystemInformationInfoBox struct {
 
 func CreateSystemInformationInfoBox(
 	parentWindow *gtk.Window,
-	config *utils.ScreenConfig,
+	config *config.ScreenConfig,
 	uiScaleFactor int,
 ) *SystemInformationInfoBox {
-	base := utils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
+	base := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 0)
 	base.SetVExpand(true)
 	base.SetVAlign(gtk.ALIGN_CENTER)
 
-	title := utils.MustLabel("<b>System Information</b>")
+	title := uiUtils.MustLabel("<b>System Information</b>")
 	title.SetMarginBottom(5)
 	title.SetMarginTop(15)
 	base.Add(title)
@@ -70,7 +69,7 @@ func CreateSystemInformationInfoBox(
 		//instance.Add(instance.uiScaleFactorLabel)
 
 		// Uncomment the following line to force the screen to expand.
-		// instance.Add(utils.MustLabel("test"))
+		// instance.Add(uiUtils.MustLabel("test"))
 	} else {
 		instance.Add(instance.currentResolutionLabel)
 	}
@@ -79,7 +78,7 @@ func CreateSystemInformationInfoBox(
 }
 
 func createStyledLabel() *gtk.Label {
-	label := utils.MustLabelWithCssClass("", "font-size-17")
+	label := uiUtils.MustLabelWithCssClass("", "font-size-17")
 	label.SetMarginBottom(2)
 
 	return label

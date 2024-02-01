@@ -1,14 +1,9 @@
 package uiWidgets
 
 import (
-	// "fmt"
-
 	"github.com/gotk3/gotk3/gtk"
-
-	// "github.com/the-ress/prusalink-screen/pkg/logger"
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 func CreateFilesInfoAndActionSubRow(
@@ -18,9 +13,9 @@ func CreateFilesInfoAndActionSubRow(
 	fileSystemImageHeight int,
 	printerImageWidth int,
 	printerImageHeight int,
-	pixbufCache *utils.PixbufCache,
+	pixbufCache *uiUtils.PixbufCache,
 ) *gtk.Box {
-	infoAndActionRow := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	infoAndActionRow := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 
 	isFolder := fileResponse.IsFolder()
 
@@ -48,7 +43,7 @@ func CreateFilesInfoAndActionSubRow(
 		actionImage = CreatePrintImage(printerImageWidth, printerImageHeight, pixbufCache)
 	}
 
-	actionBox := utils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
+	actionBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBox.Add(actionImage)
 
 	infoAndActionRow.Add(actionBox)
