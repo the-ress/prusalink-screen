@@ -13,10 +13,10 @@ func NewPrinterFirmwareInfoBox(
 	config *config.ScreenConfig,
 	logoWidth int,
 ) *PrinterFirmwareInfoBox {
-	logoHeight := int(float64(logoWidth) * 1.25)
+	logoHeight := logoWidth
 
 	base := NewSystemInfoBox(
-		uiUtils.MustImageFromFileWithSize(config, "logos/logo-octoprint.png", logoWidth, logoHeight),
+		uiUtils.MustImageFromFileWithSize(config, "logos/prusa-printer.png", logoWidth, logoHeight),
 		"Firmware",
 	)
 

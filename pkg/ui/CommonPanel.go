@@ -151,8 +151,12 @@ func (this *CommonPanel) arrangeMenuItems(
 		panel := getPanel(this.UI, this, item)
 		if panel != nil {
 			color := fmt.Sprintf("color%d", (i%4)+1)
-			icon := fmt.Sprintf("%s.svg", item.Icon)
-			button := uiUtils.MustButtonImageStyle(this.UI.Config, item.Name, icon, color, func() {
+			imageFileName := fmt.Sprintf("%s.svg", item.Icon)
+			image, err := this.UI.ImageLoader.GetImage(uiUtils.ImageFileName(imageFileName))
+			if err != nil {
+				panic(err)
+			}
+			button := uiUtils.MustButtonImageStyle(image, item.Name, color, func() {
 				this.UI.GoToPanel(panel)
 			})
 			grid.Attach(button, (i % cols), i/cols, 1, 1)

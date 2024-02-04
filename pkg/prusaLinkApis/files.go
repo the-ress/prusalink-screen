@@ -1,5 +1,6 @@
 package prusaLinkApis
 
+const StorageApiUri = "/api/v1/storage"
 const FilesApiUri = "/api/v1/files"
 
 var (

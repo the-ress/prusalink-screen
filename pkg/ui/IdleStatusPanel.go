@@ -56,7 +56,11 @@ func (this *idleStatusPanel) initialize() {
 	this.Grid().Attach(menuGrid, 2, 0, 2, 2)
 	this.arrangeMenuItems(menuGrid, menuItems, 2)
 
-	printButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Print", "print.svg", "color2", this.showFiles)
+	printImage, err := this.UI.ImageLoader.GetImage(uiUtils.PrintSvg)
+	if err != nil {
+		panic(err)
+	}
+	printButton := uiUtils.MustButtonImageStyle(printImage, "Print", "color2", this.showFiles)
 	this.Grid().Attach(printButton, 2, 2, 2, 1)
 
 	this.showTools()

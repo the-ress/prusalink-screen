@@ -2,10 +2,8 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
 )
 
 type FilamentExtrudeButton struct {
@@ -21,16 +19,24 @@ type FilamentExtrudeButton struct {
 func CreateFilamentExtrudeButton(
 	parentWindow *gtk.Window,
 	client *prusaLinkApis.Client,
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	amountToExtrudeStepButton *AmountToExtrudeStepButton,
 	flowRateStepButton *FlowRateStepButton, // The flow rate step button is optional.
 	isForward bool,
 ) *FilamentExtrudeButton {
 	var base *gtk.Button
 	if isForward {
-		base = uiUtils.MustButtonImageStyle(config, "Extrude", "extruder-extrude.svg", "", nil)
+		image, err := imageLoader.GetImage(uiUtils.ExtruderExtrudeSvg)
+		if err != nil {
+			panic(err)
+		}
+		base = uiUtils.MustButtonImageStyle(image, "Extrude", "", nil)
 	} else {
-		base = uiUtils.MustButtonImageStyle(config, "Retract", "extruder-retract.svg", "", nil)
+		image, err := imageLoader.GetImage(uiUtils.ExtruderRetractSvg)
+		if err != nil {
+			panic(err)
+		}
+		base = uiUtils.MustButtonImageStyle(image, "Retract", "", nil)
 	}
 
 	instance := &FilamentExtrudeButton{

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
@@ -150,17 +149,18 @@ func (this *filesPanel) doLoadFiles() {
 }
 
 func (this *filesPanel) sdIsReady() bool {
-	err := (&prusaLinkApis.SdRefreshRequest{}).Do(this.UI.Client)
+	response, err := (&prusaLinkApis.StorageRequest{}).Do(this.UI.Client)
 	if err != nil {
 		return false
 	}
 
-	sdState, err := (&prusaLinkApis.SdStateRequest{}).Do(this.UI.Client)
-	if err == nil && sdState.IsReady {
-		return true
-	} else {
-		return false
+	for _, v := range response.StorageList {
+		if v.Type == "SDCARD" {
+			return v.Available
+		}
 	}
+
+	return false
 }
 
 func (this *filesPanel) goBack() {
@@ -197,19 +197,19 @@ func (this *filesPanel) getSortedFiles() []*dataModels.FileResponse {
 	current := this.locationHistory.CurrentLocation()
 	logger.Infof("Loading list of files from: %s", string(current))
 
-	if current == dataModels.SDCard {
-		sdRefreshRequest := &prusaLinkApis.SdRefreshRequest{}
-		err := sdRefreshRequest.Do(this.UI.Client)
-		if err != nil {
-			logger.LogError("getSortedFiles()", "sdRefreshRequest.Do()", err)
-			return []*dataModels.FileResponse{}
-		} else {
-			// Pause here for a second, because the preceding call to filesRequest.Do()
-			// doesn't work, and it returns a truncated list of files.  Pausing here
-			// for a second seems to resolve the issue.
-			time.Sleep(1 * time.Second)
-		}
-	}
+	// if current == dataModels.SDCard {
+	// 	sdRefreshRequest := &prusaLinkApis.SdRefreshRequest{}
+	// 	err := sdRefreshRequest.Do(this.UI.Client)
+	// 	if err != nil {
+	// 		logger.LogError("getSortedFiles()", "sdRefreshRequest.Do()", err)
+	// 		return []*dataModels.FileResponse{}
+	// 	} else {
+	// 		// Pause here for a second, because the preceding call to filesRequest.Do()
+	// 		// doesn't work, and it returns a truncated list of files.  Pausing here
+	// 		// for a second seems to resolve the issue.
+	// 		time.Sleep(1 * time.Second)
+	// 	}
+	// }
 
 	filesRequest := &prusaLinkApis.FilesRequest{
 		Location:  current,
@@ -239,8 +239,18 @@ func (this *filesPanel) getSortedFiles() []*dataModels.FileResponse {
 
 func (this *filesPanel) addRootLocations() {
 	this.addMessage("Select source location:")
-	this.addRootLocation(dataModels.Local)
-	this.addRootLocation(dataModels.SDCard)
+
+	response, err := (&prusaLinkApis.StorageRequest{}).Do(this.UI.Client)
+	if err != nil {
+		return
+	}
+
+	for i, v := range response.StorageList {
+		if !v.Available {
+			continue
+		}
+		this.addRootLocation(i, v)
+	}
 }
 
 func (this *filesPanel) addMessage(message string) {
@@ -260,8 +270,8 @@ func (this *filesPanel) addMessage(message string) {
 	this.scrollableListBox.Add(listItemFrame)
 }
 
-func (this *filesPanel) addRootLocation(location dataModels.Location) {
-	rootLocationButton := this.createRootLocationButton(location)
+func (this *filesPanel) addRootLocation(i int, location dataModels.StorageLocation) {
+	rootLocationButton := this.createRootLocationButton(i, location)
 
 	listBoxRow, _ := gtk.ListBoxRowNew()
 	listBoxRow.Add(rootLocationButton)
@@ -269,10 +279,10 @@ func (this *filesPanel) addRootLocation(location dataModels.Location) {
 	this.scrollableListBox.Add(listBoxRow)
 }
 
-func (this *filesPanel) createRootLocationButton(location dataModels.Location) *gtk.Button {
+func (this *filesPanel) createRootLocationButton(i int, location dataModels.StorageLocation) *gtk.Button {
 	var itemImage *gtk.Image
-	if location == dataModels.Local {
-		itemImage = uiUtils.MustImageFromFileWithSize(this.UI.Config, "logos/octoprint-tentacle.svg", this.Scaled(35), this.Scaled(35))
+	if location.Type == "LOCAL" {
+		itemImage = uiUtils.MustImageFromFileWithSize(this.UI.Config, "prusa-link-storage.svg", this.Scaled(35), this.Scaled(35))
 	} else {
 		itemImage = uiUtils.MustImageFromFileWithSize(this.UI.Config, "sd.svg", this.Scaled(35), this.Scaled(35))
 	}
@@ -280,12 +290,7 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 	topBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	topBox.Add(itemImage)
 
-	name := ""
-	if location == dataModels.Local {
-		name = "  OctoPrint"
-	} else {
-		name = "  SD Card"
-	}
+	name := fmt.Sprintf("  %s", location.Name)
 	nameLabel := uiWidgets.CreateNameLabel(name)
 
 	infoLabel := uiUtils.MustLabel("")
@@ -295,12 +300,7 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 	labelsBox := uiWidgets.CreateLabelsBox(nameLabel, infoLabel)
 	topBox.Add(labelsBox)
 
-	var actionImage *gtk.Image
-	if location == dataModels.Local {
-		actionImage = uiWidgets.CreateOpenLocationImage(0, this.Scaled(40), this.Scaled(40), this.pixbufCache)
-	} else {
-		actionImage = uiWidgets.CreateOpenLocationImage(1, this.Scaled(40), this.Scaled(40), this.pixbufCache)
-	}
+	actionImage := uiWidgets.CreateOpenLocationImage(i, this.Scaled(40), this.Scaled(40), this.pixbufCache)
 
 	actionBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBox.Add(actionImage)
@@ -309,7 +309,7 @@ func (this *filesPanel) createRootLocationButton(location dataModels.Location) *
 	rootLocationButton, _ := gtk.ButtonNew()
 	rootLocationButton.Connect("clicked", func() {
 		this.locationHistory = utils.LocationHistory{
-			Locations: []dataModels.Location{location},
+			Locations: []dataModels.Location{dataModels.Location(location.Path)},
 		}
 
 		this.doLoadFiles()
@@ -499,15 +499,3 @@ func (this *filesPanel) handleFileClick(button *gtk.Button, rowIndex int) {
 
 	logger.TraceLeave("FilesPanel.handleFileClick()")
 }
-
-/*
-func (this *filesPanel) isReady() bool {
-	state, err := (&octoprint.SDStateRequest{}).Do(this.UI.Client)
-	if err != nil {
-		Logger.Error(err)
-		return false
-	}
-
-	return state.Ready
-}
-*/

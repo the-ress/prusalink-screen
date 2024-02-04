@@ -59,7 +59,7 @@ func (this *filamentPanel) initialize() {
 	this.filamentExtrudeButton = uiWidgets.CreateFilamentExtrudeButton(
 		this.UI.window,
 		this.UI.Client,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		this.amountToExtrudeStepButton,
 		this.flowRateStepButton,
 		true,
@@ -73,7 +73,7 @@ func (this *filamentPanel) initialize() {
 	this.filamentRetractButton = uiWidgets.CreateFilamentExtrudeButton(
 		this.UI.window,
 		this.UI.Client,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		this.amountToExtrudeStepButton,
 		this.flowRateStepButton,
 		false,
@@ -123,6 +123,10 @@ func (this *filamentPanel) showTemperaturePanel() {
 }
 
 func (this *filamentPanel) addTemperatureButton() {
-	this.temperatureButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Temperature", "heat-up.svg", "color1", this.showTemperaturePanel)
+	heatUpImage, err := this.UI.ImageLoader.GetImage(uiUtils.HeatUpSvg)
+	if err != nil {
+		panic(err)
+	}
+	this.temperatureButton = uiUtils.MustButtonImageStyle(heatUpImage, "Temperature", "color1", this.showTemperaturePanel)
 	this.Grid().Attach(this.temperatureButton, 0, 2, 1, 1)
 }

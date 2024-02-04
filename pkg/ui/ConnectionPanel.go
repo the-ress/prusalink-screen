@@ -112,7 +112,12 @@ func (this *connectionPanel) createActionBar() {
 	this.ActionBar = uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	this.ActionBar.SetHAlign(gtk.ALIGN_END)
 
-	this.RetryButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color-none", this.initializeConnectionState)
+	refreshImage, err := this.UI.ImageLoader.GetImage(uiUtils.RefreshSvg)
+	if err != nil {
+		panic(err)
+	}
+
+	this.RetryButton = uiUtils.MustButtonImageStyle(refreshImage, "Retry", "color-none", this.initializeConnectionState)
 	this.RetryButton.SetProperty("width-request", this.Scaled(100))
 
 	this.ActionBar.Add(this.RetryButton)

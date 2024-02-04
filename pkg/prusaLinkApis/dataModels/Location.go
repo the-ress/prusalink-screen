@@ -5,6 +5,6 @@ type Location string
 const (
 	// URIFiles = "/api/files"
 
-	Local  Location = "local"
-	SDCard Location = "sdcard"
+	Local  Location = "/local"
+	SDCard Location = "/sdcard"
 )

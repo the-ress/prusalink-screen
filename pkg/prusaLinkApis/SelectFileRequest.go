@@ -33,7 +33,7 @@ func (cmd *SelectFileRequest) Do(c *Client) error {
 		return err
 	}
 
-	uri := fmt.Sprintf("%s/%s/%s", FilesApiUri, cmd.Location, cmd.Path)
+	uri := fmt.Sprintf("%s%s/%s", FilesApiUri, cmd.Location, cmd.Path)
 	_, err := c.doJsonRequest("POST", uri, buffer, FilesLocationPathPOSTErrors, true)
 	return err
 }

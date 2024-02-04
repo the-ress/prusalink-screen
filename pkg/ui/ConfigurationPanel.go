@@ -25,19 +25,26 @@ func GetConfigurationPanelInstance(
 func (this *configurationPanel) initialize() {
 	defer this.Initialize()
 
+	networkImage, err := this.UI.ImageLoader.GetImage(uiUtils.NetworkSvg)
+	if err != nil {
+		panic(err)
+	}
 	networkButton := uiUtils.MustButtonImageStyle(
-		this.UI.Config,
+		networkImage,
 		"Network",
-		"network.svg",
 		"color3",
 		this.showNetworkPanel,
 	)
 	this.Grid().Attach(networkButton, 2, 0, 1, 1)
 
+	infoImage, err := this.UI.ImageLoader.GetImage(uiUtils.InfoSvg)
+	if err != nil {
+		panic(err)
+	}
+
 	systemButton := uiUtils.MustButtonImageStyle(
-		this.UI.Config,
+		infoImage,
 		"System",
-		"info.svg",
 		"color4",
 		this.showSystemPanel,
 	)

@@ -58,18 +58,30 @@ func (this *SplashPanel) createActionBar() gtk.IWidget {
 	actionBar := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBar.SetHAlign(gtk.ALIGN_END)
 
-	this.RetryButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Retry", "refresh.svg", "color2", this.releaseFromHold)
+	refreshImage, err := this.UI.ImageLoader.GetImage(uiUtils.RefreshSvg)
+	if err != nil {
+		panic(err)
+	}
+	this.RetryButton = uiUtils.MustButtonImageStyle(refreshImage, "Retry", "color2", this.releaseFromHold)
 	this.RetryButton.SetProperty("width-request", this.Scaled(100))
 	this.RetryButton.SetProperty("visible", true)
 	actionBar.Add(this.RetryButton)
 	ctx, _ := this.RetryButton.GetStyleContext()
 	ctx.AddClass("hidden")
 
-	systemButton := uiUtils.MustButtonImageStyle(this.UI.Config, "System", "info.svg", "color3", this.showSystem)
+	infoImage, err := this.UI.ImageLoader.GetImage(uiUtils.InfoSvg)
+	if err != nil {
+		panic(err)
+	}
+	systemButton := uiUtils.MustButtonImageStyle(infoImage, "System", "color3", this.showSystem)
 	systemButton.SetProperty("width-request", this.Scaled(100))
 	actionBar.Add(systemButton)
 
-	networkButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Network", "network.svg", "color4", this.showNetwork)
+	networkImage, err := this.UI.ImageLoader.GetImage(uiUtils.NetworkSvg)
+	if err != nil {
+		panic(err)
+	}
+	networkButton := uiUtils.MustButtonImageStyle(networkImage, "Network", "color4", this.showNetwork)
 	networkButton.SetProperty("width-request", this.Scaled(100))
 	actionBar.Add(networkButton)
 

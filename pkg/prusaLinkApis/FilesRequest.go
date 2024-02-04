@@ -26,7 +26,7 @@ type FilesRequest struct {
 func (cmd *FilesRequest) Do(c *Client) (*dataModels.FilesResponse, error) {
 	uri := fmt.Sprintf("%s?recursive=%t", FilesApiUri, cmd.Recursive)
 	if cmd.Location != "" {
-		uri = fmt.Sprintf("%s/%s?recursive=%t", FilesApiUri, cmd.Location, cmd.Recursive)
+		uri = fmt.Sprintf("%s%s?recursive=%t", FilesApiUri, cmd.Location, cmd.Recursive)
 	}
 
 	bytes, err := c.doJsonRequest("GET", uri, nil, FilesLocationGETErrors, true)

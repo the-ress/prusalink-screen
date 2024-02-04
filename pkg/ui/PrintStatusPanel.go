@@ -162,28 +162,37 @@ func (this *printStatusPanel) createToolBarButtons() {
 	)
 	this.Grid().Attach(this.resumeButton, 1, 2, 1, 1)
 
+	stopImage, err := this.UI.ImageLoader.GetImage(uiUtils.StopSvg)
+	if err != nil {
+		panic(err)
+	}
 	this.cancelButton = uiUtils.MustButtonImageStyle(
-		this.UI.Config,
+		stopImage,
 		"Cancel",
-		"stop.svg",
 		"color-warning-sign-yellow",
 		this.handleCancelClicked,
 	)
 	this.Grid().Attach(this.cancelButton, 2, 2, 1, 1)
 
+	printingControlImage, err := this.UI.ImageLoader.GetImage(uiUtils.PrintingControlSvg)
+	if err != nil {
+		panic(err)
+	}
 	this.controlButton = uiUtils.MustButtonImageStyle(
-		this.UI.Config,
+		printingControlImage,
 		"Control",
-		"printing-control.svg",
 		"color3",
 		this.handleControlClicked,
 	)
 	this.Grid().Attach(this.controlButton, 3, 2, 1, 1)
 
+	completeImage, err := this.UI.ImageLoader.GetImage(uiUtils.CompleteSvg)
+	if err != nil {
+		panic(err)
+	}
 	this.completedButton = uiUtils.MustButtonImageStyle(
-		this.UI.Config,
+		completeImage,
 		"Done",
-		"complete.svg",
 		"color3",
 		this.handleCompleteClicked,
 	)

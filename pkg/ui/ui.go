@@ -30,6 +30,7 @@ type UI struct {
 	sync.Mutex
 
 	Config          *config.ScreenConfig
+	ImageLoader     *uiUtils.ImageLoader
 	PanelHistory    *stack.Stack
 	Client          *prusaLinkApis.Client
 	Printer         *domain.PrinterService
@@ -53,10 +54,6 @@ type UI struct {
 }
 
 func NewUi(config *config.ScreenConfig) *UI {
-	logger.TraceEnter("ui.NewUi()")
-
-	endpoint := config.PrusaLinkHost
-	key := config.PrusaLinkApiKey
 	width := config.WindowSize.Width
 	height := config.WindowSize.Height
 
@@ -68,41 +65,67 @@ func NewUi(config *config.ScreenConfig) *UI {
 		panic("the window's height was not specified")
 	}
 
-	client := prusaLinkApis.NewClient(endpoint, key)
+	client := prusaLinkApis.NewClient(config.PrusaLinkHost, config.PrusaLinkApiKey)
+	printer := domain.NewPrinterService(client)
+
+	window := createUiWindow(width, height, config.CssStyleFilePath)
+	grid := createUiGrid(window)
+
 	instance := &UI{
 		PanelHistory:               stack.New(),
 		Client:                     client,
 		Config:                     config,
-		Printer:                    domain.NewPrinterService(client),
+		ImageLoader:                uiUtils.NewImageLoader(config),
+		Printer:                    printer,
 		NotificationsBox:           uiWidgets.NewNotificationsBox(),
 		OctoPrintPluginIsAvailable: false,
 		MenuStructure:              nil,
 		UiState:                    Uninitialized,
 		finishedIdle:               false,
-		window:                     uiUtils.MustWindow(gtk.WINDOW_TOPLEVEL),
+		window:                     window,
+		grid:                       grid,
 		time:                       time.Now(),
 		width:                      width,
 		height:                     height,
+		scaleFactor:                getUiScaleFactor(width, height),
 	}
 
-	instance.initialize1()
-
-	logger.TraceLeave("ui.NewUi()")
+	go instance.consumeStateUpdates(printer.GetStateUpdates())
+	window.ShowAll()
 
 	return instance
 }
 
-// TODO: rename initialize1() and initialize2()
-func (this *UI) initialize1() {
-	logger.TraceEnter("ui.initialize1()")
+func createUiGrid(window *gtk.Window) *gtk.Grid {
+	overlay := uiUtils.MustOverlay()
+	window.Add(overlay)
 
-	this.window.Connect("configure-event", func(win *gtk.Window) {
+	grid := uiUtils.MustGrid()
+	overlay.Add(grid)
+	return grid
+}
+
+func createUiWindow(width int, height int, cssStyleFilePath string) *gtk.Window {
+	addStyleForDefaultScreen(cssStyleFilePath)
+
+	window := uiUtils.MustWindow(gtk.WINDOW_TOPLEVEL)
+
+	window.SetTitle(common.WindowName)
+	window.SetDefaultSize(width, height)
+	window.SetResizable(false)
+
+	window.Connect("destroy", func() {
+		logger.Debug("window destroy callback was called, now executing gtkMainQuit()")
+		gtk.MainQuit()
+	})
+
+	window.Connect("configure-event", func(win *gtk.Window) {
 		allocatedWidth := win.GetAllocatedWidth()
 		allocatedHeight := win.GetAllocatedHeight()
 		sizeWidth, sizeHeight := win.GetSize()
 
-		if (allocatedWidth > this.width || allocatedHeight > this.height) ||
-			(sizeWidth > this.width || sizeHeight > this.height) {
+		if (allocatedWidth > width || allocatedHeight > height) ||
+			(sizeWidth > width || sizeHeight > height) {
 			logger.Errorf(
 				"Window resize went past max size.  allocatedWidth:%d allocatedHeight:%d sizeWidth:%d sizeHeight:%d",
 				allocatedWidth,
@@ -112,28 +135,26 @@ func (this *UI) initialize1() {
 			)
 			logger.Errorf(
 				"Window resize went past max size.  Target width and height: %dx%d",
-				this.width,
-				this.height,
+				width,
+				height,
 			)
 		}
 	})
 
-	switch {
-	case this.width > 480:
-		this.scaleFactor = 2
+	return window
+}
 
-	case this.width > 1000:
-		this.scaleFactor = 3
+func getUiScaleFactor(width int, height int) int {
+	switch {
+	case width > 480:
+		return 2
+
+	case width > 1000:
+		return 3
 
 	default:
-		this.scaleFactor = 1
+		return 1
 	}
-
-	this.initialize2()
-
-	go this.consumeStateUpdates(this.Printer.GetStateUpdates())
-
-	logger.TraceLeave("ui.initialize1()")
 }
 
 func (this *UI) consumeStateUpdates(ch chan domain.PrinterState) {
@@ -202,45 +223,16 @@ func (this *UI) SetFinishedIdle() {
 	this.refresh()
 }
 
-func (this *UI) initialize2() {
-	logger.TraceEnter("ui.initialize2()")
-
-	defer this.window.ShowAll()
-	this.loadStyle()
-
-	this.window.SetTitle(common.WindowName)
-	this.window.SetDefaultSize(this.width, this.height)
-	this.window.SetResizable(false)
-
-	this.window.Connect("destroy", func() {
-		logger.Debug("window destroy callback was called, now executing MainQuit()")
-		gtk.MainQuit()
-	})
-
-	overlay := uiUtils.MustOverlay()
-	this.window.Add(overlay)
-
-	this.grid = uiUtils.MustGrid()
-	overlay.Add(this.grid)
-
-	logger.TraceLeave("ui.initialize2()")
-}
-
-func (this *UI) loadStyle() {
-	logger.TraceEnter("ui.loadStyle()")
-
-	cssProvider := uiUtils.MustCssProviderFromFile(this.Config, common.CssFileName)
+func addStyleForDefaultScreen(cssStyleFilePath string) {
+	cssProvider := uiUtils.MustCssProviderFromFile(cssStyleFilePath, common.CssFileName)
 
 	screenDefault, err := gdk.ScreenGetDefault()
 	if err != nil {
 		logger.LogError("ui.loadStyle()", "ScreenGetDefault()", err)
-		logger.TraceLeave("ui.loadStyle()")
 		return
 	}
 
 	gtk.AddProviderForScreen(screenDefault, cssProvider, uint(gtk.STYLE_PROVIDER_PRIORITY_USER))
-
-	logger.TraceLeave("ui.loadStyle()")
 }
 
 func (this *UI) validateMenuItems(menuItems []dataModels.MenuItem, name string, isRoot bool) bool {
@@ -293,15 +285,11 @@ func (this *UI) validateMenuItems(menuItems []dataModels.MenuItem, name string, 
 }
 
 func (this *UI) GoToPanel(panel interfaces.IPanel) {
-	logger.TraceEnter("ui.GoToPanel()")
-
 	panelName := panel.Name()
 	logger.Debugf("ui.GoToPanel() - panel name is %s", panelName)
 
-	this.SetUiToPanel(panel)
+	this.setUiToPanel(panel)
 	this.PanelHistory.Push(panel)
-
-	logger.TraceLeave("ui.GoToPanel()")
 }
 
 func (this *UI) GoToPreviousPanel() {
@@ -321,17 +309,15 @@ func (this *UI) GoToPreviousPanel() {
 	}
 
 	currentPanel := this.PanelHistory.Pop().(interfaces.IPanel)
-	this.RemovePanelFromUi(currentPanel)
+	this.removePanelFromUi(currentPanel)
 
 	parentPanel := this.PanelHistory.Peek().(interfaces.IPanel)
-	this.SetUiToPanel(parentPanel)
+	this.setUiToPanel(parentPanel)
 
 	logger.TraceLeave("ui.GoToPreviousPanel()")
 }
 
-func (this *UI) GetCurrentPanel() interfaces.IPanel {
-	logger.TraceEnter("ui.GetCurrentPanel()")
-
+func (this *UI) getCurrentPanel() interfaces.IPanel {
 	currentPanel := interfaces.IPanel(nil)
 
 	stackLength := this.PanelHistory.Len()
@@ -341,37 +327,27 @@ func (this *UI) GetCurrentPanel() interfaces.IPanel {
 		logger.Error("ui.GetCurrentPanel() was called, but PanelHistory is empty")
 	}
 
-	logger.TraceLeave("ui.GetCurrentPanel()")
-
 	return currentPanel
 }
 
-func (this *UI) SetUiToPanel(panel interfaces.IPanel) {
-	logger.TraceEnter("ui.SetUiToPanel()")
-
+func (this *UI) setUiToPanel(panel interfaces.IPanel) {
 	logger.Infof("Setting panel to %q", panel.Name())
 
 	stackLength := this.PanelHistory.Len()
 	if stackLength > 0 {
-		currentPanel := this.GetCurrentPanel()
-		this.RemovePanelFromUi(currentPanel)
+		currentPanel := this.getCurrentPanel()
+		this.removePanelFromUi(currentPanel)
 	}
 
 	panel.PreShow()
 	panel.Show()
 	this.grid.Attach(panel.Grid(), 0, 0, 1, 1)
 	this.grid.ShowAll()
-
-	logger.TraceLeave("ui.SetUiToPanel()")
 }
 
-func (this *UI) RemovePanelFromUi(panel interfaces.IPanel) {
-	logger.TraceEnter("ui.RemovePanelFromUi()")
-
-	defer panel.Hide()
+func (this *UI) removePanelFromUi(panel interfaces.IPanel) {
 	this.grid.Remove(panel.Grid())
-
-	logger.TraceLeave("ui.RemovePanelFromUi()")
+	panel.Hide()
 }
 
 func (this *UI) GoToConnectionPanel() {

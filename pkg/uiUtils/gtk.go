@@ -13,6 +13,59 @@ import (
 	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
+type ImageFileName string
+
+const (
+	RefreshSvg         ImageFileName = "refresh.svg"
+	RestartSvg         ImageFileName = "restart.svg"
+	RebootSvg          ImageFileName = "reboot.svg"
+	ShutdownSvg        ImageFileName = "shutdown.svg"
+	InfoSvg            ImageFileName = "info.svg"
+	NetworkSvg         ImageFileName = "network.svg"
+	HeatUpSvg          ImageFileName = "heat-up.svg"
+	PrintSvg           ImageFileName = "print.svg"
+	MoveSvg            ImageFileName = "move.svg"
+	FilamentSpoolSvg   ImageFileName = "filament-spool.svg"
+	StopSvg            ImageFileName = "stop.svg"
+	PrintingControlSvg ImageFileName = "printing-control.svg"
+	CompleteSvg        ImageFileName = "complete.svg"
+	ExtruderExtrudeSvg ImageFileName = "extruder-extrude.svg"
+	ExtruderRetractSvg ImageFileName = "extruder-retract.svg"
+	HomeSvg            ImageFileName = "home.svg"
+	HomeXSvg           ImageFileName = "home-x.svg"
+	HomeYSvg           ImageFileName = "home-y.svg"
+	HomeZSvg           ImageFileName = "home-z.svg"
+	IncreaseSvg        ImageFileName = "increase.svg"
+	DecreaseSvg        ImageFileName = "decrease.svg"
+)
+
+type ImageLoader struct {
+	config *config.ScreenConfig
+}
+
+func NewImageLoader(config *config.ScreenConfig) *ImageLoader {
+	return &ImageLoader{
+		config: config,
+	}
+}
+
+func (this *ImageLoader) GetImage(fileName ImageFileName) (*gtk.Image, error) {
+	filePath := imagePath(this.config.CssStyleFilePath, string(fileName))
+	if !utils.FileExists(filePath) {
+		return nil, fmt.Errorf("Image file doesn't exist: %s", filePath)
+	}
+
+	return gtk.ImageNewFromFile(filePath)
+}
+
+func (this *ImageLoader) MustGetImage(fileName ImageFileName) *gtk.Image {
+	image, err := this.GetImage(fileName)
+	if err != nil {
+		panic(err)
+	}
+	return image
+}
+
 // MustWindow returns a new gtk.Window, if error panics.
 func MustWindow(windowType gtk.WindowType) *gtk.Window {
 	win, err := gtk.WindowNew(windowType)
@@ -127,8 +180,8 @@ func MustLabelWithImage(config *config.ScreenConfig, imageFileName, format strin
 }
 
 // MustButtonImageStyle returns a new gtk.Button with the given label, image and clicked callback, if error panics.
-func MustButtonImageStyle(config *config.ScreenConfig, buttonLabel, imageFileName string, style string, clicked func()) *gtk.Button {
-	button := MustButtonImageUsingFilePath(config, buttonLabel, imageFileName, clicked)
+func MustButtonImageStyle(image *gtk.Image, buttonLabel, style string, clicked func()) *gtk.Button {
+	button := MustButtonImageUsingImage(buttonLabel, image, clicked)
 	ctx, _ := button.GetStyleContext()
 	ctx.AddClass(style)
 
@@ -217,7 +270,7 @@ func MustImageFromFileWithSize(config *config.ScreenConfig, imageFileName string
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
 
-	imageFilePath := imagePath(config, imageFileName)
+	imageFilePath := imagePath(config.CssStyleFilePath, imageFileName)
 	if !utils.FileExists(imageFilePath) {
 		logger.Error("MustImageFromFileWithSize() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
 		//debug.PrintStack()			need to import "runtime/debug"
@@ -243,7 +296,7 @@ func MustPixbufFromFileWithSize(config *config.ScreenConfig, imageFileName strin
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
 
-	imageFilePath := imagePath(config, imageFileName)
+	imageFilePath := imagePath(config.CssStyleFilePath, imageFileName)
 	if !utils.FileExists(imageFilePath) {
 		logger.Error("MustImageFromFileWithSize() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
 		//debug.PrintStack()			need to import "runtime/debug"
@@ -274,7 +327,7 @@ func MustImageFromFile(config *config.ScreenConfig, imageFileName string) *gtk.I
 		//debug.PrintStack()			need to import "runtime/debug"
 	}
 
-	imageFilePath := imagePath(config, imageFileName)
+	imageFilePath := imagePath(config.CssStyleFilePath, imageFileName)
 	if !utils.FileExists(imageFilePath) {
 		logger.Error("MustImageFromFile() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
 		//debug.PrintStack()			need to import "runtime/debug"
@@ -369,14 +422,14 @@ func GetScaledSize(originalWidth, originalHeight, destWidth, destHeight float64)
 }
 
 // MustCSSProviderFromFile returns a new gtk.CssProvider for a given css file, if error panics.
-func MustCssProviderFromFile(config *config.ScreenConfig, cssFileName string) *gtk.CssProvider {
+func MustCssProviderFromFile(cssStyleFilePath string, cssFileName string) *gtk.CssProvider {
 	cssProvider, err := gtk.CssProviderNew()
 	if err != nil {
 		logger.LogError("PANIC!!! - MustCssProviderFromFile()", "gtk.CssProviderNew()", err)
 		panic(err)
 	}
 
-	cssFilePath := cssFilePath(config, cssFileName)
+	cssFilePath := cssFilePath(cssStyleFilePath, cssFileName)
 	if err := cssProvider.LoadFromPath(cssFilePath); err != nil {
 		logger.LogError("PANIC!!! - MustCssProviderFromFile()", "cssProvider.LoadFromPath()", err)
 		panic(err)
@@ -385,12 +438,12 @@ func MustCssProviderFromFile(config *config.ScreenConfig, cssFileName string) *g
 	return cssProvider
 }
 
-func cssFilePath(config *config.ScreenConfig, cssFileName string) string {
-	return filepath.Join(config.CssStyleFilePath, cssFileName)
+func cssFilePath(cssStyleFilePath string, cssFileName string) string {
+	return filepath.Join(cssStyleFilePath, cssFileName)
 }
 
-func imagePath(config *config.ScreenConfig, imageFileName string) string {
-	return filepath.Join(config.CssStyleFilePath, common.ImageFolder, imageFileName)
+func imagePath(cssStyleFilePath string, fileName string) string {
+	return filepath.Join(cssStyleFilePath, common.ImageFolder, fileName)
 }
 
 // MustOverlay returns a new gtk.Overlay, if error panics.

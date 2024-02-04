@@ -62,7 +62,7 @@ func (this *systemPanel) initialize() {
 	this.printerFirmwareInfoBox = uiWidgets.NewPrinterFirmwareInfoBox(this.UI.Config, logoWidth)
 	this.Grid().Attach(this.printerFirmwareInfoBox, 1, 0, 1, 1)
 
-	this.prusaConnectInfoBox = uiWidgets.NewPrusaConnectInfoBox(this.UI.Config)
+	this.prusaConnectInfoBox = uiWidgets.NewPrusaConnectInfoBox(this.UI.Config, logoWidth)
 	this.Grid().Attach(this.prusaConnectInfoBox, 2, 0, 1, 1)
 
 	this.prusaLinkScreenInfoBox = uiWidgets.NewPrusaLinkScreenInfoBox(this.UI.Config, common.AppVersion)
@@ -71,9 +71,9 @@ func (this *systemPanel) initialize() {
 	// Second row
 	this.shutdownSystemButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		"Shutdown System",
-		"shutdown",
+		uiUtils.ShutdownSvg,
 		"color-warning-sign-red",
 		"You are about to shutdown the system.\n\nThis action may disrupt any ongoing print jobs (depending on your setup).",
 		func() {
@@ -96,9 +96,9 @@ func (this *systemPanel) initialize() {
 
 	this.rebootSystemButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		"Reboot System",
-		"reboot",
+		uiUtils.RebootSvg,
 		"color-warning-sign-red",
 		"You are about to reboot the system.\n\nThis action may disrupt any ongoing print jobs (depending on your setup).",
 		func() {
@@ -121,9 +121,9 @@ func (this *systemPanel) initialize() {
 
 	this.restartPrusaLinkButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		"Restart PrusaLink",
-		"restart",
+		uiUtils.RestartSvg,
 		"color-warning-sign-yellow-dark",
 		"You are about to restart the PrusaLink server.\n\nThis action may disrupt any ongoing print jobs (depending on your setup).",
 		func() {
@@ -148,9 +148,9 @@ func (this *systemPanel) initialize() {
 
 	this.restartPrusaLinkScreenButton = uiWidgets.NewSystemCommandButton(
 		this.UI.window,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		"Restart Screen",
-		"restart",
+		uiUtils.RestartSvg,
 		"color-warning-sign-yellow-dark",
 		"You are about to restart the PrusaLink Screen UI.",
 		func() {

@@ -2,7 +2,6 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
@@ -19,16 +18,24 @@ type TemperatureIncreaseButton struct {
 
 func CreateTemperatureIncreaseButton(
 	client *prusaLinkApis.Client,
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	temperatureAmountStepButton *TemperatureAmountStepButton,
 	selectHotendStepButton *SelectToolStepButton,
 	isIncrease bool,
 ) *TemperatureIncreaseButton {
 	var base *gtk.Button
 	if isIncrease {
-		base = uiUtils.MustButtonImageStyle(config, "Increase", "increase.svg", "", nil)
+		image, err := imageLoader.GetImage(uiUtils.IncreaseSvg)
+		if err != nil {
+			panic(err)
+		}
+		base = uiUtils.MustButtonImageStyle(image, "Increase", "", nil)
 	} else {
-		base = uiUtils.MustButtonImageStyle(config, "Decrease", "decrease.svg", "", nil)
+		image, err := imageLoader.GetImage(uiUtils.DecreaseSvg)
+		if err != nil {
+			panic(err)
+		}
+		base = uiUtils.MustButtonImageStyle(image, "Decrease", "", nil)
 	}
 
 	instance := &TemperatureIncreaseButton{

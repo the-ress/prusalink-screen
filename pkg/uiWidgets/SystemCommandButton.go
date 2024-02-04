@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
@@ -14,19 +13,22 @@ type SystemCommandButton struct {
 
 func NewSystemCommandButton(
 	parentWindow *gtk.Window,
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	name string,
-	action string,
+	imageFileName uiUtils.ImageFileName,
 	style string,
 	confirmation string,
 	callback func(),
 ) *SystemCommandButton {
 	confirmationMessage := fmt.Sprintf("%s\n\nDo you wish to proceed?", confirmation)
 
+	image, err := imageLoader.GetImage(imageFileName)
+	if err != nil {
+		panic(err)
+	}
 	base := uiUtils.MustButtonImageStyle(
-		config,
+		image,
 		name,
-		action+".svg",
 		style,
 		func() { uiUtils.MustConfirmDialogBox(parentWindow, confirmationMessage, callback) },
 	)

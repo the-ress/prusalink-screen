@@ -27,19 +27,39 @@ func GetPrintMenuPanelInstance(
 func (this *printMenuPanel) initialize() {
 	defer this.Initialize()
 
-	moveButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Move", "move.svg", "color1", this.showMove)
+	moveImage, err := this.UI.ImageLoader.GetImage(uiUtils.MoveSvg)
+	if err != nil {
+		panic(err)
+	}
+	moveButton := uiUtils.MustButtonImageStyle(moveImage, "Move", "color1", this.showMove)
 	this.Grid().Attach(moveButton, 0, 0, 1, 1)
 
-	filamentButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Filament", "filament-spool.svg", "color2", this.showFilament)
+	filamentSpoolImage, err := this.UI.ImageLoader.GetImage(uiUtils.FilamentSpoolSvg)
+	if err != nil {
+		panic(err)
+	}
+	filamentButton := uiUtils.MustButtonImageStyle(filamentSpoolImage, "Filament", "color2", this.showFilament)
 	this.Grid().Attach(filamentButton, 1, 0, 1, 1)
 
-	temperatureButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Temperature", "heat-up.svg", "color3", this.showTemperature)
+	heatUpImage, err := this.UI.ImageLoader.GetImage(uiUtils.HeatUpSvg)
+	if err != nil {
+		panic(err)
+	}
+	temperatureButton := uiUtils.MustButtonImageStyle(heatUpImage, "Temperature", "color3", this.showTemperature)
 	this.Grid().Attach(temperatureButton, 2, 0, 1, 1)
 
-	networkButton := uiUtils.MustButtonImageStyle(this.UI.Config, "Network", "network.svg", "color1", this.showNetwork)
+	networkImage, err := this.UI.ImageLoader.GetImage(uiUtils.NetworkSvg)
+	if err != nil {
+		panic(err)
+	}
+	networkButton := uiUtils.MustButtonImageStyle(networkImage, "Network", "color1", this.showNetwork)
 	this.Grid().Attach(networkButton, 3, 0, 1, 1)
 
-	systemButton := uiUtils.MustButtonImageStyle(this.UI.Config, "System", "info.svg", "color2", this.showSystem)
+	infoImage, err := this.UI.ImageLoader.GetImage(uiUtils.InfoSvg)
+	if err != nil {
+		panic(err)
+	}
+	systemButton := uiUtils.MustButtonImageStyle(infoImage, "System", "color2", this.showSystem)
 	this.Grid().Attach(systemButton, 0, 1, 1, 1)
 }
 

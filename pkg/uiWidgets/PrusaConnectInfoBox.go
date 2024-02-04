@@ -9,9 +9,14 @@ type PrusaConnectInfoBox struct {
 	*SystemInfoBox
 }
 
-func NewPrusaConnectInfoBox(config *config.ScreenConfig) *PrusaConnectInfoBox {
+func NewPrusaConnectInfoBox(
+	config *config.ScreenConfig,
+	logoWidth int,
+) *PrusaConnectInfoBox {
+	logoHeight := logoWidth
+
 	base := NewSystemInfoBox(
-		uiUtils.MustImageFromFile(config, "logos/puzzle-piece.png"),
+		uiUtils.MustImageFromFileWithSize(config, "logos/prusa-connect.png", logoWidth, logoHeight),
 		"PrusaConnect",
 	)
 

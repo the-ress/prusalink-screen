@@ -54,7 +54,7 @@ func (this *temperaturePanel) initialize() {
 	// First row
 	this.decreaseButton = uiWidgets.CreateTemperatureIncreaseButton(
 		this.UI.Client,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		this.temperatureAmountStepButton,
 		this.selectHotendStepButton,
 		false,
@@ -67,7 +67,7 @@ func (this *temperaturePanel) initialize() {
 
 	this.increaseButton = uiWidgets.CreateTemperatureIncreaseButton(
 		this.UI.Client,
-		this.UI.Config,
+		this.UI.ImageLoader,
 		this.temperatureAmountStepButton,
 		this.selectHotendStepButton,
 		true,
@@ -82,7 +82,11 @@ func (this *temperaturePanel) initialize() {
 	this.Grid().Attach(this.temperatureStatusBox, 1, 1, 2, 1)
 
 	// Third row
-	this.presetsButton = uiUtils.MustButtonImageStyle(this.UI.Config, "Presets", "heat-up.svg", "color2", this.showTemperaturePresetsPanel)
+	heatUpImage, err := this.UI.ImageLoader.GetImage(uiUtils.HeatUpSvg)
+	if err != nil {
+		panic(err)
+	}
+	this.presetsButton = uiUtils.MustButtonImageStyle(heatUpImage, "Presets", "color2", this.showTemperaturePresetsPanel)
 	this.Grid().Attach(this.presetsButton, 0, 2, 1, 1)
 }
 
