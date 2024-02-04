@@ -81,8 +81,8 @@ func (this *printStatusPanel) initialize() {
 }
 
 func (this *printStatusPanel) createToolButtons() {
-	this.nozzleButton = uiWidgets.CreateToolPrintingButton(this.UI.Config, 0)
-	this.bedButton = uiWidgets.CreateToolPrintingButton(this.UI.Config, -1)
+	this.nozzleButton = uiWidgets.CreateToolPrintingButton(0, this.UI.ImageLoader)
+	this.bedButton = uiWidgets.CreateToolPrintingButton(-1, this.UI.ImageLoader)
 	this.Grid().Attach(this.nozzleButton, 0, 0, 2, 1)
 	this.Grid().Attach(this.bedButton, 0, 1, 2, 1)
 }
@@ -100,21 +100,21 @@ func (this *printStatusPanel) createThumbnailBox() {
 }
 
 func (this *printStatusPanel) createInfoBox() *gtk.Box {
-	this.fileLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "file-gcode.svg", "")
+	this.fileLabelWithImage = uiUtils.MustLabelWithImage(this.UI.ImageLoader, uiUtils.FileGcodeSvg, "")
 	ctx, _ := this.fileLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 	this.fileLabelWithImage.Label.SetEllipsize(pango.ELLIPSIZE_END)
 	this.fileLabelWithImage.Label.SetMarginEnd(this.Scaled(20))
 
-	this.timeLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time:")
+	this.timeLabelWithImage = uiUtils.MustLabelWithImage(this.UI.ImageLoader, uiUtils.TimeSvg, "Print time:")
 	ctx, _ = this.timeLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 
-	this.timeLeftLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "time.svg", "Print time left:")
+	this.timeLeftLabelWithImage = uiUtils.MustLabelWithImage(this.UI.ImageLoader, uiUtils.TimeSvg, "Print time left:")
 	ctx, _ = this.timeLeftLabelWithImage.GetStyleContext()
 	ctx.AddClass("printing-status-label")
 
-	// this.layerLabelWithImage = uiUtils.MustLabelWithImage(this.UI.Config, "time.svg", "")
+	// this.layerLabelWithImage = uiUtils.MustLabelWithImage(this.UI.ImageLoader, uiUtils.TimeSvg, "")
 	// ctx, _ = this.layerLabelWithImage.GetStyleContext()
 	// ctx.AddClass("printing-status-label")
 
@@ -146,18 +146,18 @@ func (this *printStatusPanel) createProgressBar() *gtk.ProgressBar {
 }
 
 func (this *printStatusPanel) createToolBarButtons() {
-	this.pauseButton = uiUtils.MustButtonImageUsingFilePath(
-		this.UI.Config,
+	pauseImage := this.UI.ImageLoader.MustGetImage(uiUtils.PauseSvg)
+	this.pauseButton = uiUtils.MustButtonImage(
 		"Pause",
-		"pause.svg",
+		pauseImage,
 		this.handlePauseClicked,
 	)
 	this.Grid().Attach(this.pauseButton, 1, 2, 1, 1)
 
-	this.resumeButton = uiUtils.MustButtonImageUsingFilePath(
-		this.UI.Config,
+	resumeImage := this.UI.ImageLoader.MustGetImage(uiUtils.ResumeSvg)
+	this.resumeButton = uiUtils.MustButtonImage(
 		"Resume",
-		"resume.svg",
+		resumeImage,
 		this.handleResumeClicked,
 	)
 	this.Grid().Attach(this.resumeButton, 1, 2, 1, 1)

@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
@@ -14,13 +13,11 @@ import (
 
 func ToolImageFileName(
 	index int,
-) string {
+) uiUtils.ImageFileName {
 	if index < 0 {
-		return "bed.svg"
-	} else if index == 0 {
-		return "hotend.svg"
+		return uiUtils.BedSvg
 	} else {
-		return fmt.Sprintf("hotend-%d.svg", index)
+		return uiUtils.HotendSvg
 	}
 }
 
@@ -48,13 +45,15 @@ type ToolButton struct {
 func CreateToolButton(
 	index int,
 	printer *domain.PrinterService,
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 ) *ToolButton {
 	imageFileName := ToolImageFileName(index)
 	toolName := ToolName(index)
 
+	image := imageLoader.MustGetImage(imageFileName)
+
 	instance := &ToolButton{
-		Button:  uiUtils.MustButtonImageUsingFilePath(config, "", imageFileName, nil),
+		Button:  uiUtils.MustButtonImage("", image, nil),
 		tool:    toolName,
 		printer: printer,
 	}

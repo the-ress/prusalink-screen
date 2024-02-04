@@ -2,7 +2,6 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
@@ -17,10 +16,12 @@ type CoolDownButton struct {
 
 func CreateCoolDownButton(
 	client *prusaLinkApis.Client,
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	callback func(),
 ) *CoolDownButton {
-	base := uiUtils.MustButtonImageUsingFilePath(config, "All Off", "cool-down.svg", nil)
+	image := imageLoader.MustGetImage(uiUtils.CoolDownSvg)
+
+	base := uiUtils.MustButtonImage("All Off", image, nil)
 
 	instance := &CoolDownButton{
 		Button:   base,

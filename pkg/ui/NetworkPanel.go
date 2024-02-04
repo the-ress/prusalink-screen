@@ -4,19 +4,11 @@ import (
 	"fmt"
 	"net"
 
-	// "os"
-	// "strconv"
-	// "time"
-
 	"github.com/gotk3/gotk3/gtk"
-	"pifke.org/wpasupplicant"
-
-	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
-
-	// "github.com/the-ress/prusalink-screen/pkg/uiWidgets"
 	"github.com/the-ress/prusalink-screen/pkg/utils"
+	"pifke.org/wpasupplicant"
 )
 
 type networkPanel struct {
@@ -200,7 +192,7 @@ func (this *networkPanel) addNetwork(box *gtk.Box, ssid string) {
 		this.UI.GoToPanel(GetConnectToNetworkPanelInstance(this.UI, ssid))
 	}
 
-	image := uiUtils.MustImageFromFileWithSize(this.UI.Config, "network.svg", this.Scaled(25), this.Scaled(25))
+	image := this.UI.ImageLoader.MustGetImageWithSize(uiUtils.NetworkSvg, this.Scaled(25), this.Scaled(25))
 	button := uiUtils.MustButton(image, clicked)
 
 	name := uiUtils.MustButtonText(utils.StrEllipsisLen(ssid, 18), clicked)
@@ -232,7 +224,7 @@ func (this *networkPanel) createActionBar() gtk.IWidget {
 	layout.SetHExpand(true)
 
 	// NOTE: If a message is logged that the image (SVG) can't be loaded, try installing librsvg.
-	backImage := uiUtils.MustImageFromFileWithSize(this.UI.Config, "back.svg", this.Scaled(40), this.Scaled(40))
+	backImage := this.UI.ImageLoader.MustGetImageWithSize(uiUtils.BackSvg, this.Scaled(40), this.Scaled(40))
 	backButton := uiUtils.MustButton(backImage, func() {
 		this.UI.GoToPreviousPanel()
 	})

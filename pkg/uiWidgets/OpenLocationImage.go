@@ -11,9 +11,9 @@ func CreateOpenLocationImage(
 	index int,
 	buttonWidth int,
 	buttonHeight int,
-	pixbufCache *uiUtils.PixbufCache,
+	imageLoader *uiUtils.ImageLoader,
 ) *gtk.Image {
 	colorClass := fmt.Sprintf("color%d", (index%4)+1)
 
-	return CreateActionImage("open.svg", buttonWidth, buttonHeight, colorClass, pixbufCache)
+	return CreateActionImage(uiUtils.OpenSvg, buttonWidth, buttonHeight, colorClass, imageLoader)
 }

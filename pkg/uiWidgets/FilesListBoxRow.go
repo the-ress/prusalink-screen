@@ -20,7 +20,7 @@ func CreateFilesListBoxRow(
 	printerImageHeight int,
 	rowIndex int,
 	rowClickHandler func(button *gtk.Button, index int),
-	pixbufCache *uiUtils.PixbufCache,
+	imageLoader *uiUtils.ImageLoader,
 ) (*FilesListBoxRow, *gtk.Box) {
 	const ROW_PADDING = 0
 	base := CreateClickableListBoxRow(rowIndex, ROW_PADDING, rowClickHandler)
@@ -44,7 +44,7 @@ func CreateFilesListBoxRow(
 		fileSystemImageHeight,
 		printerImageWidth,
 		printerImageHeight,
-		pixbufCache,
+		imageLoader,
 	)
 	verticalLayoutBox.Add(filesInfoAndActionSubRow)
 

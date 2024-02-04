@@ -2,7 +2,6 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
@@ -19,10 +18,9 @@ type MoveButton struct {
 
 func CreateMoveButton(
 	client *prusaLinkApis.Client,
-	config *config.ScreenConfig,
 	amountToMoveStepButton *AmountToMoveStepButton,
 	label string,
-	image string,
+	image *gtk.Image,
 	axis dataModels.Axis,
 	direction float64,
 ) *MoveButton {
@@ -35,7 +33,7 @@ func CreateMoveButton(
 		axis:                   axis,
 		direction:              direction,
 	}
-	base := MustPressedButton(config, label, image, instance.handlePressed, 200)
+	base := MustPressedButton(label, image, instance.handlePressed, 200)
 	// ... and then set the button
 	instance.Button = base
 

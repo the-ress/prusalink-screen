@@ -35,9 +35,9 @@ func CreateSvgImageRadioButton(
 ) *SvgImageRadioButton {
 	var base *gtk.Button
 	if isSelected {
-		base = uiUtils.MustButtonImageUsingImage(caption, selectedImage, nil)
+		base = uiUtils.MustButtonImage(caption, selectedImage, nil)
 	} else {
-		base = uiUtils.MustButtonImageUsingImage(caption, image, nil)
+		base = uiUtils.MustButtonImage(caption, image, nil)
 	}
 
 	styleContext, _ := base.GetStyleContext()

@@ -79,8 +79,8 @@ func (this *idleStatusPanel) showFiles() {
 func (this *idleStatusPanel) showTools() {
 	logger.TraceEnter("IdleStatusPanel.showTools()")
 
-	this.nozzleButton = uiWidgets.CreateToolButton(0, this.UI.Printer, this.UI.Config)
-	this.bedButton = uiWidgets.CreateToolButton(-1, this.UI.Printer, this.UI.Config)
+	this.nozzleButton = uiWidgets.CreateToolButton(0, this.UI.Printer, this.UI.ImageLoader)
+	this.bedButton = uiWidgets.CreateToolButton(-1, this.UI.Printer, this.UI.ImageLoader)
 
 	toolGrid := uiUtils.MustGrid()
 	toolGrid.SetRowHomogeneous(true)

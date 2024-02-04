@@ -25,7 +25,7 @@ func CreateSplashPanel(ui *UI) *SplashPanel {
 func (this *SplashPanel) initialize() {
 	logger.TraceEnter("SplashPanel.initialize()")
 
-	logo := uiUtils.MustImageFromFile(this.UI.Config, "logos/logo.png")
+	logo := this.UI.ImageLoader.MustGetImage(uiUtils.SplashLogoPng)
 	this.Label = uiUtils.MustLabel("...")
 	this.Label.SetHExpand(true)
 	this.Label.SetLineWrap(true)

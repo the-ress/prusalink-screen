@@ -1,7 +1,6 @@
 package uiWidgets
 
 import (
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
@@ -14,17 +13,17 @@ type FlowRateStepButton struct {
 
 func CreateFlowRateStepButton(
 	client *prusaLinkApis.Client,
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	colorVariation int,
 	clicked func(),
 ) *FlowRateStepButton {
 	base := CreateStepButton(
-		config,
+		imageLoader,
 		colorVariation,
 		clicked,
-		Step{"Normal (100%)", "speed-normal.svg", nil, 100},
-		Step{"Fast (125%)", "speed-fast.svg", nil, 125},
-		Step{"Slow (75%)", "speed-slow.svg", nil, 75},
+		Step{"Normal (100%)", uiUtils.SpeedNormalSvg, nil, 100},
+		Step{"Fast (125%)", uiUtils.SpeedFastSvg, nil, 125},
+		Step{"Slow (75%)", uiUtils.SpeedSlowSvg, nil, 75},
 	)
 
 	instance := &FlowRateStepButton{

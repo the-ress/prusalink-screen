@@ -111,22 +111,6 @@ func CheckIfHotendTemperatureIsTooLow(client *prusaLinkApis.Client, action strin
 	return false
 }
 
-func GetToolheadFileName() string {
-	return "toolhead.svg"
-}
-
-func GetExtruderFileName() string {
-	return "extruder-typeB.svg"
-}
-
-func GetHotendFileName() string {
-	return "hotend.svg"
-}
-
-func GetNozzleFileName() string {
-	return "nozzle.svg"
-}
-
 func GetTemperatureDataString(temperatureData dataModels.ToolTemperatureData) string {
 	return fmt.Sprintf("%.0f°C / %.0f°C", temperatureData.Actual, temperatureData.Target)
 }

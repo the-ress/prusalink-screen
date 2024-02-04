@@ -8,7 +8,7 @@ import (
 func CreatePrintImage(
 	buttonWidth int,
 	buttonHeight int,
-	pixbufCache *uiUtils.PixbufCache,
+	imageLoader *uiUtils.ImageLoader,
 ) *gtk.Image {
-	return CreateActionImage("print.svg", buttonWidth, buttonHeight, "color-warning-sign-yellow", pixbufCache)
+	return CreateActionImage(uiUtils.PrintSvg, buttonWidth, buttonHeight, "color-warning-sign-yellow", imageLoader)
 }

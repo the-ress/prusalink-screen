@@ -8,63 +8,8 @@ import (
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
 	"github.com/the-ress/prusalink-screen/pkg/common"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
-	"github.com/the-ress/prusalink-screen/pkg/utils"
 )
-
-type ImageFileName string
-
-const (
-	RefreshSvg         ImageFileName = "refresh.svg"
-	RestartSvg         ImageFileName = "restart.svg"
-	RebootSvg          ImageFileName = "reboot.svg"
-	ShutdownSvg        ImageFileName = "shutdown.svg"
-	InfoSvg            ImageFileName = "info.svg"
-	NetworkSvg         ImageFileName = "network.svg"
-	HeatUpSvg          ImageFileName = "heat-up.svg"
-	PrintSvg           ImageFileName = "print.svg"
-	MoveSvg            ImageFileName = "move.svg"
-	FilamentSpoolSvg   ImageFileName = "filament-spool.svg"
-	StopSvg            ImageFileName = "stop.svg"
-	PrintingControlSvg ImageFileName = "printing-control.svg"
-	CompleteSvg        ImageFileName = "complete.svg"
-	ExtruderExtrudeSvg ImageFileName = "extruder-extrude.svg"
-	ExtruderRetractSvg ImageFileName = "extruder-retract.svg"
-	HomeSvg            ImageFileName = "home.svg"
-	HomeXSvg           ImageFileName = "home-x.svg"
-	HomeYSvg           ImageFileName = "home-y.svg"
-	HomeZSvg           ImageFileName = "home-z.svg"
-	IncreaseSvg        ImageFileName = "increase.svg"
-	DecreaseSvg        ImageFileName = "decrease.svg"
-)
-
-type ImageLoader struct {
-	config *config.ScreenConfig
-}
-
-func NewImageLoader(config *config.ScreenConfig) *ImageLoader {
-	return &ImageLoader{
-		config: config,
-	}
-}
-
-func (this *ImageLoader) GetImage(fileName ImageFileName) (*gtk.Image, error) {
-	filePath := imagePath(this.config.CssStyleFilePath, string(fileName))
-	if !utils.FileExists(filePath) {
-		return nil, fmt.Errorf("Image file doesn't exist: %s", filePath)
-	}
-
-	return gtk.ImageNewFromFile(filePath)
-}
-
-func (this *ImageLoader) MustGetImage(fileName ImageFileName) *gtk.Image {
-	image, err := this.GetImage(fileName)
-	if err != nil {
-		panic(err)
-	}
-	return image
-}
 
 // MustWindow returns a new gtk.Window, if error panics.
 func MustWindow(windowType gtk.WindowType) *gtk.Window {
@@ -170,10 +115,10 @@ const LabelImageSize = 20
 
 // MustLabelWithImage returns a new LabelWithImage based on a gtk.Box containing
 // a gtk.Label with a gtk.Image, the image is scaled at LabelImageSize.
-func MustLabelWithImage(config *config.ScreenConfig, imageFileName, format string, args ...interface{}) *LabelWithImage {
+func MustLabelWithImage(imageLoader *ImageLoader, imageFileName ImageFileName, format string, args ...interface{}) *LabelWithImage {
 	label := MustLabel(format, args...)
 	box := MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
-	box.Add(MustImageFromFileWithSize(config, imageFileName, LabelImageSize, LabelImageSize))
+	box.Add(imageLoader.MustGetImageWithSize(imageFileName, LabelImageSize, LabelImageSize))
 	box.Add(label)
 
 	return &LabelWithImage{Label: label, Box: box}
@@ -181,21 +126,16 @@ func MustLabelWithImage(config *config.ScreenConfig, imageFileName, format strin
 
 // MustButtonImageStyle returns a new gtk.Button with the given label, image and clicked callback, if error panics.
 func MustButtonImageStyle(image *gtk.Image, buttonLabel, style string, clicked func()) *gtk.Button {
-	button := MustButtonImageUsingImage(buttonLabel, image, clicked)
+	button := MustButtonImage(buttonLabel, image, clicked)
 	ctx, _ := button.GetStyleContext()
 	ctx.AddClass(style)
 
 	return button
 }
-func MustButtonImageUsingFilePath(config *config.ScreenConfig, buttonLabel string, imageFileName string, clicked func()) *gtk.Button {
-	image := MustImageFromFile(config, imageFileName)
-	return MustButtonImageUsingImage(buttonLabel, image, clicked)
-}
-
-func MustButtonImageUsingImage(buttonLabel string, image *gtk.Image, clicked func()) *gtk.Button {
+func MustButtonImage(buttonLabel string, image *gtk.Image, clicked func()) *gtk.Button {
 	button, err := gtk.ButtonNewWithLabel(buttonLabel)
 	if err != nil {
-		logger.LogError("PANIC!!! - MustButtonImageUsingFilePath()", "gtk.ButtonNewWithLabel()", err)
+		logger.LogError("PANIC!!! - MustButtonImage()", "gtk.ButtonNewWithLabel()", err)
 		panic(err)
 	}
 
@@ -212,8 +152,7 @@ func MustButtonImageUsingImage(buttonLabel string, image *gtk.Image, clicked fun
 	return button
 }
 
-func MustToggleButton(config *config.ScreenConfig, label string, imageFileName string, clicked func()) *gtk.ToggleButton {
-	image := MustImageFromFile(config, imageFileName)
+func MustToggleButton(label string, image *gtk.Image, clicked func()) *gtk.ToggleButton {
 	button, err := gtk.ToggleButtonNewWithLabel(label)
 	if err != nil {
 		logger.LogError("PANIC!!! - MustToggleButton()", "gtk.ToggleButtonNewWithLabel()", err)
@@ -262,84 +201,6 @@ func MustButtonText(label string, clicked func()) *gtk.Button {
 	}
 
 	return button
-}
-
-func MustImageFromFileWithSize(config *config.ScreenConfig, imageFileName string, width, height int) *gtk.Image {
-	if imageFileName == "" {
-		logger.Error("MustImageFromFileWithSize() - imageFileName is empty")
-		//debug.PrintStack()			need to import "runtime/debug"
-	}
-
-	imageFilePath := imagePath(config.CssStyleFilePath, imageFileName)
-	if !utils.FileExists(imageFilePath) {
-		logger.Error("MustImageFromFileWithSize() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
-		//debug.PrintStack()			need to import "runtime/debug"
-	}
-
-	pixbuf, err := gdk.PixbufNewFromFileAtScale(imageFilePath, width, height, true)
-	if err != nil {
-		logger.LogError("gtk.MustImageFromFileWithSize()", "PixbufNewFromFileAtScale()", err)
-	}
-
-	image, err := gtk.ImageNewFromPixbuf(pixbuf)
-	if err != nil {
-		logger.LogError("PANIC!!! - MustImageFromFileWithSize()", "gtk.ImageNewFromPixbuf()", err)
-		panic(err)
-	}
-
-	return image
-}
-
-func MustPixbufFromFileWithSize(config *config.ScreenConfig, imageFileName string, width, height int) *gdk.Pixbuf {
-	if imageFileName == "" {
-		logger.Error("MustImageFromFileWithSize() - imageFileName is empty")
-		//debug.PrintStack()			need to import "runtime/debug"
-	}
-
-	imageFilePath := imagePath(config.CssStyleFilePath, imageFileName)
-	if !utils.FileExists(imageFilePath) {
-		logger.Error("MustImageFromFileWithSize() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
-		//debug.PrintStack()			need to import "runtime/debug"
-	}
-
-	pixbuf, err := gdk.PixbufNewFromFileAtScale(imageFilePath, width, height, true)
-	if err != nil {
-		logger.LogError("gtk.MustImageFromFileWithSize()", "PixbufNewFromFileAtScale()", err)
-	}
-
-	return pixbuf
-}
-
-func MustImageFromPixbuf(pixbuf *gdk.Pixbuf) *gtk.Image {
-	image, err := gtk.ImageNewFromPixbuf(pixbuf)
-	if err != nil {
-		logger.LogError("PANIC!!! - MustImageFromFileWithSize()", "gtk.ImageNewFromPixbuf()", err)
-		panic(err)
-	}
-
-	return image
-}
-
-// MustImageFromFile returns a new gtk.Image based on the given file, if error panics.
-func MustImageFromFile(config *config.ScreenConfig, imageFileName string) *gtk.Image {
-	if imageFileName == "" {
-		logger.Error("MustImageFromFile() - imageFileName is empty")
-		//debug.PrintStack()			need to import "runtime/debug"
-	}
-
-	imageFilePath := imagePath(config.CssStyleFilePath, imageFileName)
-	if !utils.FileExists(imageFilePath) {
-		logger.Error("MustImageFromFile() - imageFilePath is '" + imageFilePath + "', but doesn't exist")
-		//debug.PrintStack()			need to import "runtime/debug"
-	}
-
-	image, err := gtk.ImageNewFromFile(imageFilePath)
-	if err != nil {
-		logger.LogError("PANIC!!! - MustImageFromFile()", "gtk.ImageNewFromFile()", err)
-		panic(err)
-	}
-
-	return image
 }
 
 func ImageFromBuffer(buffer []byte) (*gtk.Image, error) {

@@ -56,16 +56,16 @@ func (this *systemPanel) initialize() {
 
 	// First row
 	logoWidth := this.Scaled(52)
-	this.prusaLinkInfoBox = uiWidgets.NewPrusaLinkInfoBox(this.UI.Config, logoWidth)
+	this.prusaLinkInfoBox = uiWidgets.NewPrusaLinkInfoBox(this.UI.ImageLoader, logoWidth)
 	this.Grid().Attach(this.prusaLinkInfoBox, 0, 0, 1, 1)
 
-	this.printerFirmwareInfoBox = uiWidgets.NewPrinterFirmwareInfoBox(this.UI.Config, logoWidth)
+	this.printerFirmwareInfoBox = uiWidgets.NewPrinterFirmwareInfoBox(this.UI.ImageLoader, logoWidth)
 	this.Grid().Attach(this.printerFirmwareInfoBox, 1, 0, 1, 1)
 
-	this.prusaConnectInfoBox = uiWidgets.NewPrusaConnectInfoBox(this.UI.Config, logoWidth)
+	this.prusaConnectInfoBox = uiWidgets.NewPrusaConnectInfoBox(this.UI.ImageLoader, logoWidth)
 	this.Grid().Attach(this.prusaConnectInfoBox, 2, 0, 1, 1)
 
-	this.prusaLinkScreenInfoBox = uiWidgets.NewPrusaLinkScreenInfoBox(this.UI.Config, common.AppVersion)
+	this.prusaLinkScreenInfoBox = uiWidgets.NewPrusaLinkScreenInfoBox(this.UI.ImageLoader, common.AppVersion)
 	this.Grid().Attach(this.prusaLinkScreenInfoBox, 3, 0, 1, 1)
 
 	// Second row

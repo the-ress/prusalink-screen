@@ -1,26 +1,26 @@
 package uiWidgets
 
-import "github.com/the-ress/prusalink-screen/pkg/config"
+import "github.com/the-ress/prusalink-screen/pkg/uiUtils"
 
 type AmountToExtrudeStepButton struct {
 	*StepButton
 }
 
 func CreateAmountToExtrudeStepButton(
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	colorVariation int,
 	clicked func(),
 ) *AmountToExtrudeStepButton {
 	base := CreateStepButton(
-		config,
+		imageLoader,
 		colorVariation,
 		clicked,
-		Step{" 20mm", "move-step.svg", nil, 20},
-		Step{" 50mm", "move-step.svg", nil, 50},
-		Step{"100mm", "move-step.svg", nil, 100},
-		Step{"  1mm", "move-step.svg", nil, 1},
-		Step{"  5mm", "move-step.svg", nil, 5},
-		Step{" 10mm", "move-step.svg", nil, 10},
+		Step{" 20mm", uiUtils.MoveStepSvg, nil, 20},
+		Step{" 50mm", uiUtils.MoveStepSvg, nil, 50},
+		Step{"100mm", uiUtils.MoveStepSvg, nil, 100},
+		Step{"  1mm", uiUtils.MoveStepSvg, nil, 1},
+		Step{"  5mm", uiUtils.MoveStepSvg, nil, 5},
+		Step{" 10mm", uiUtils.MoveStepSvg, nil, 10},
 	)
 
 	instance := &AmountToExtrudeStepButton{

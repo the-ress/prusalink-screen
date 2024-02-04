@@ -60,7 +60,7 @@ func (this *connectionPanel) initialize() {
 	logger.TraceEnter("ConnectionPanel.initialize()")
 
 	_, windowHeight := this.UI.window.GetSize()
-	unscaledLogo := uiUtils.MustImageFromFile(this.UI.Config, "logos/octoscreen-logo.svg")
+	unscaledLogo := this.UI.ImageLoader.MustGetImage(uiUtils.PrusaLinkScreenLogoSvg)
 	pixbuf := unscaledLogo.GetPixbuf()
 	width := pixbuf.GetWidth()
 	height := pixbuf.GetHeight()
@@ -73,7 +73,7 @@ func (this *connectionPanel) initialize() {
 	displayWidth := int(originalLogoWidth * scaleFactor)
 	displayHeight = int(originalLogoHeight * scaleFactor)
 
-	this.Logo = uiUtils.MustImageFromFileWithSize(this.UI.Config, "logos/octoscreen-logo.svg", displayWidth, displayHeight)
+	this.Logo = this.UI.ImageLoader.MustGetImageWithSize(uiUtils.PrusaLinkScreenLogoSvg, displayWidth, displayHeight)
 
 	pixbuf.ScaleSimple(
 		this.UI.scaleFactor*width,

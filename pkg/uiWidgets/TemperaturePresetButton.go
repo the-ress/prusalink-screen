@@ -14,7 +14,6 @@ type TemperaturePresetButton struct {
 	*gtk.Button
 
 	printer           *domain.PrinterService
-	imageFileName     string
 	temperaturePreset *dataModels.TemperaturePreset
 	callback          func()
 }
@@ -22,17 +21,16 @@ type TemperaturePresetButton struct {
 func CreateTemperaturePresetButton(
 	printer *domain.PrinterService,
 	config *config.ScreenConfig,
-	imageFileName string,
+	image *gtk.Image,
 	temperaturePreset *dataModels.TemperaturePreset,
 	callback func(),
 ) *TemperaturePresetButton {
 	presetName := utils.StrEllipsisLen(temperaturePreset.Name, 10)
-	base := uiUtils.MustButtonImageUsingFilePath(config, presetName, imageFileName, nil)
+	base := uiUtils.MustButtonImage(presetName, image, nil)
 
 	instance := &TemperaturePresetButton{
 		Button:            base,
 		printer:           printer,
-		imageFileName:     imageFileName,
 		temperaturePreset: temperaturePreset,
 		callback:          callback,
 	}

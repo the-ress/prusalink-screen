@@ -52,8 +52,8 @@ func (this *filamentPanel) initialize() {
 	defer this.Initialize()
 
 	// Create the step buttons first, since they are needed by some of the other controls.
-	this.flowRateStepButton = uiWidgets.CreateFlowRateStepButton(this.UI.Client, this.UI.Config, 1, nil)
-	this.amountToExtrudeStepButton = uiWidgets.CreateAmountToExtrudeStepButton(this.UI.Config, 2, nil)
+	this.flowRateStepButton = uiWidgets.CreateFlowRateStepButton(this.UI.Client, this.UI.ImageLoader, 1, nil)
+	this.amountToExtrudeStepButton = uiWidgets.CreateAmountToExtrudeStepButton(this.UI.ImageLoader, 2, nil)
 
 	// First row
 	this.filamentExtrudeButton = uiWidgets.CreateFilamentExtrudeButton(
@@ -91,7 +91,7 @@ func (this *filamentPanel) initialize() {
 	// )
 	// this.Grid().Attach(this.filamentLoadButton, 0, 1, 1, 1)
 
-	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client, this.UI.Config)
+	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client, this.UI.ImageLoader)
 	this.Grid().Attach(this.temperatureStatusBox, 1, 1, 2, 1)
 
 	// this.filamentUnloadButton = uiWidgets.CreateFilamentLoadButton(

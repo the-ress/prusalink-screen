@@ -5,15 +5,14 @@ import (
 	"sync"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 type Step struct {
 	Label         string
-	ImageFileName string
-	Image         gtk.IWidget
+	ImageFileName uiUtils.ImageFileName
+	Image         *gtk.Image
 	Value         interface{}
 }
 
@@ -25,11 +24,11 @@ type StepButton struct {
 	CurrentStepIndex int
 	clicked          func()
 
-	config *config.ScreenConfig
+	imageLoader *uiUtils.ImageLoader
 }
 
 func CreateStepButton(
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	colorVariation int,
 	clicked func(),
 	steps ...Step,
@@ -40,7 +39,11 @@ func CreateStepButton(
 		panic("StepButton.CreateStepButton() - steps is empty")
 	}
 
-	base := uiUtils.MustButtonImageUsingFilePath(config, steps[0].Label, steps[0].ImageFileName, nil)
+	for i := 0; i < stepCount; i++ {
+		steps[i].Image = imageLoader.MustGetImage(steps[i].ImageFileName)
+	}
+
+	base := uiUtils.MustButtonImage(steps[0].Label, steps[0].Image, nil)
 	if stepCount > 1 {
 		ctx, _ := base.GetStyleContext()
 		colorClass := fmt.Sprintf("color-dash-%d", colorVariation)
@@ -50,17 +53,9 @@ func CreateStepButton(
 	instance := &StepButton{
 		Button:           base,
 		Steps:            steps,
-		CurrentStepIndex: -1,
+		CurrentStepIndex: 0,
 		clicked:          clicked,
-		config:           config,
-	}
-
-	if stepCount > 0 {
-		for i := 0; i < stepCount; i++ {
-			instance.Steps[i].Image = uiUtils.MustImageFromFile(config, instance.Steps[i].ImageFileName)
-		}
-
-		instance.CurrentStepIndex = 0
+		imageLoader:      imageLoader,
 	}
 
 	instance.Button.Connect("clicked", instance.handleClick)
@@ -85,7 +80,7 @@ func (this *StepButton) AddStep(step Step) {
 
 	this.Steps = append(this.Steps, step)
 	index := len(this.Steps) - 1
-	this.Steps[index].Image = uiUtils.MustImageFromFile(this.config, this.Steps[index].ImageFileName)
+	this.Steps[index].Image = this.imageLoader.MustGetImage(this.Steps[index].ImageFileName)
 }
 
 func (this *StepButton) handleClick() {

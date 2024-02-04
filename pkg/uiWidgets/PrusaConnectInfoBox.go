@@ -1,7 +1,6 @@
 package uiWidgets
 
 import (
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
@@ -10,13 +9,13 @@ type PrusaConnectInfoBox struct {
 }
 
 func NewPrusaConnectInfoBox(
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	logoWidth int,
 ) *PrusaConnectInfoBox {
 	logoHeight := logoWidth
 
 	base := NewSystemInfoBox(
-		uiUtils.MustImageFromFileWithSize(config, "logos/prusa-connect.png", logoWidth, logoHeight),
+		imageLoader.MustGetImageWithSize(uiUtils.PrusaConnectLogoPng, logoWidth, logoHeight),
 		"PrusaConnect",
 	)
 

@@ -2,7 +2,6 @@ package uiWidgets
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
@@ -18,7 +17,7 @@ type TemperatureStatusBox struct {
 
 func CreateTemperatureStatusBox(
 	client *prusaLinkApis.Client,
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 ) *TemperatureStatusBox {
 	base := uiUtils.MustBox(gtk.ORIENTATION_VERTICAL, 5)
 
@@ -30,10 +29,10 @@ func CreateTemperatureStatusBox(
 	instance.SetVAlign(gtk.ALIGN_CENTER)
 	instance.SetHAlign(gtk.ALIGN_CENTER)
 
-	instance.nozzleLabel = uiUtils.MustLabelWithImage(config, uiUtils.GetNozzleFileName(), "")
+	instance.nozzleLabel = uiUtils.MustLabelWithImage(imageLoader, uiUtils.NozzleSvg, "")
 	instance.Add(instance.nozzleLabel)
 
-	instance.bedLabel = uiUtils.MustLabelWithImage(config, "bed.svg", "")
+	instance.bedLabel = uiUtils.MustLabelWithImage(imageLoader, uiUtils.BedSvg, "")
 	instance.Add(instance.bedLabel)
 
 	return instance

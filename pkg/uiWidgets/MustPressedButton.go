@@ -5,19 +5,15 @@ import (
 	"time"
 
 	"github.com/gotk3/gotk3/gtk"
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
-	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
 func MustPressedButton(
-	config *config.ScreenConfig,
 	label string,
-	imageFileName string,
+	image *gtk.Image,
 	pressed func(),
 	speed time.Duration,
 ) *gtk.Button {
-	image := uiUtils.MustImageFromFile(config, imageFileName)
 	isReleased := make(chan bool)
 	var mutex sync.Mutex
 

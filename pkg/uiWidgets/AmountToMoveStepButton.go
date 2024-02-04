@@ -1,26 +1,26 @@
 package uiWidgets
 
-import "github.com/the-ress/prusalink-screen/pkg/config"
+import "github.com/the-ress/prusalink-screen/pkg/uiUtils"
 
 type AmountToMoveStepButton struct {
 	*StepButton
 }
 
 func CreateAmountToMoveStepButton(
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	colorVariation int,
 	clicked func(),
 ) *AmountToMoveStepButton {
 	base := CreateStepButton(
-		config,
+		imageLoader,
 		colorVariation,
 		clicked,
-		Step{"10mm", "move-step.svg", nil, 10.00},
-		Step{"20mm", "move-step.svg", nil, 20.00},
-		Step{"50mm", "move-step.svg", nil, 50.00},
-		Step{"0.02mm", "move-step.svg", nil, 0.02},
-		Step{"0.1mm", "move-step.svg", nil, 0.10},
-		Step{" 1mm", "move-step.svg", nil, 1.00},
+		Step{"10mm", uiUtils.MoveStepSvg, nil, 10.00},
+		Step{"20mm", uiUtils.MoveStepSvg, nil, 20.00},
+		Step{"50mm", uiUtils.MoveStepSvg, nil, 50.00},
+		Step{"0.02mm", uiUtils.MoveStepSvg, nil, 0.02},
+		Step{"0.1mm", uiUtils.MoveStepSvg, nil, 0.10},
+		Step{" 1mm", uiUtils.MoveStepSvg, nil, 1.00},
 	)
 
 	instance := &AmountToMoveStepButton{

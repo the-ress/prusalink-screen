@@ -13,20 +13,20 @@ func CreateFilesInfoAndActionSubRow(
 	fileSystemImageHeight int,
 	printerImageWidth int,
 	printerImageHeight int,
-	pixbufCache *uiUtils.PixbufCache,
+	imageLoader *uiUtils.ImageLoader,
 ) *gtk.Box {
 	infoAndActionRow := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 
 	isFolder := fileResponse.IsFolder()
 
 	// Column 1: Folder or File icon.
-	var itemImage *gtk.Image
+	var imageFileName uiUtils.ImageFileName
 	if isFolder {
-		itemImage = pixbufCache.MustImageFromFileWithSize("folder.svg", fileSystemImageWidth, fileSystemImageHeight)
+		imageFileName = uiUtils.FolderSvg
 	} else {
-		itemImage = pixbufCache.MustImageFromFileWithSize("file-gcode.svg", fileSystemImageWidth, fileSystemImageHeight)
+		imageFileName = uiUtils.FileGcodeSvg
 	}
-	infoAndActionRow.Add(itemImage)
+	infoAndActionRow.Add(imageLoader.MustGetImageWithSize(imageFileName, fileSystemImageWidth, fileSystemImageHeight))
 
 	// Column 2: File name and file info.
 	name := fileResponse.Name
@@ -38,9 +38,9 @@ func CreateFilesInfoAndActionSubRow(
 	// Column 3: Printer image.
 	var actionImage *gtk.Image
 	if isFolder {
-		actionImage = CreateOpenLocationImage(index, printerImageWidth, printerImageHeight, pixbufCache)
+		actionImage = CreateOpenLocationImage(index, printerImageWidth, printerImageHeight, imageLoader)
 	} else {
-		actionImage = CreatePrintImage(printerImageWidth, printerImageHeight, pixbufCache)
+		actionImage = CreatePrintImage(printerImageWidth, printerImageHeight, imageLoader)
 	}
 
 	actionBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)

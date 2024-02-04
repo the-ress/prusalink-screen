@@ -1,13 +1,9 @@
 package ui
 
 import (
-	// "github.com/gotk3/gotk3/gtk"
-
-	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	// "github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type movePanel struct {
@@ -35,16 +31,23 @@ func (this *movePanel) initialize() {
 	defer this.Initialize()
 
 	// Create the step button first, since it is needed by some of the other controls.
-	this.amountToMoveStepButton = uiWidgets.CreateAmountToMoveStepButton(this.UI.Config, 1, nil)
+	this.amountToMoveStepButton = uiWidgets.CreateAmountToMoveStepButton(this.UI.ImageLoader, 1, nil)
 
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "X-", "move-x-.svg", dataModels.XAxis, -1), 0, 1, 1, 1)
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "X+", "move-x+.svg", dataModels.XAxis, 1), 2, 1, 1, 1)
+	moveXMinusImage := this.UI.ImageLoader.MustGetImage(uiUtils.MoveXMinusSvg)
+	moveXPlusImage := this.UI.ImageLoader.MustGetImage(uiUtils.MoveXPlusSvg)
+	moveYPlusImage := this.UI.ImageLoader.MustGetImage(uiUtils.MoveYPlusSvg)
+	moveYMinusImage := this.UI.ImageLoader.MustGetImage(uiUtils.MoveYMinusSvg)
+	moveZPlusImage := this.UI.ImageLoader.MustGetImage(uiUtils.MoveZPlusSvg)
+	moveZMinusImage := this.UI.ImageLoader.MustGetImage(uiUtils.MoveZMinusSvg)
 
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Y+", "move-y+.svg", dataModels.YAxis, 1), 1, 0, 1, 1)
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Y-", "move-y-.svg", dataModels.YAxis, -1), 1, 2, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X-", moveXMinusImage, dataModels.XAxis, -1), 0, 1, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "X+", moveXPlusImage, dataModels.XAxis, 1), 2, 1, 1, 1)
 
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Z+", "move-z+.svg", dataModels.ZAxis, 1), 3, 0, 1, 1)
-	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.UI.Config, this.amountToMoveStepButton, "Z-", "move-z-.svg", dataModels.ZAxis, -1), 3, 1, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y+", moveYPlusImage, dataModels.YAxis, 1), 1, 0, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Y-", moveYMinusImage, dataModels.YAxis, -1), 1, 2, 1, 1)
+
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z+", moveZPlusImage, dataModels.ZAxis, 1), 3, 0, 1, 1)
+	this.Grid().Attach(uiWidgets.CreateMoveButton(this.UI.Client, this.amountToMoveStepButton, "Z-", moveZMinusImage, dataModels.ZAxis, -1), 3, 1, 1, 1)
 
 	this.Grid().Attach(this.amountToMoveStepButton, 1, 1, 1, 1)
 }

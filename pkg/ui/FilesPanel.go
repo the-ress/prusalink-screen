@@ -47,7 +47,6 @@ func GetFilesPanelInstance(
 		instance := &filesPanel{
 			CommonPanel:     CreateCommonPanel("FilesPanel", ui),
 			locationHistory: locationHistory,
-			pixbufCache:     uiUtils.CreatePixbufCache(ui.Config),
 		}
 
 		instance.initializeUi()
@@ -71,7 +70,7 @@ func (this *filesPanel) CreateListBox() {
 
 func (this *filesPanel) CreateFooter() {
 	this.actionFooter = uiWidgets.CreateActionFooter(
-		this.UI.Config,
+		this.UI.ImageLoader,
 		this.Scaled(40),
 		this.Scaled(40),
 
@@ -282,9 +281,9 @@ func (this *filesPanel) addRootLocation(i int, location dataModels.StorageLocati
 func (this *filesPanel) createRootLocationButton(i int, location dataModels.StorageLocation) *gtk.Button {
 	var itemImage *gtk.Image
 	if location.Type == "LOCAL" {
-		itemImage = uiUtils.MustImageFromFileWithSize(this.UI.Config, "prusa-link-storage.svg", this.Scaled(35), this.Scaled(35))
+		itemImage = this.UI.ImageLoader.MustGetImageWithSize(uiUtils.PrusaLinkStorageSvg, this.Scaled(35), this.Scaled(35))
 	} else {
-		itemImage = uiUtils.MustImageFromFileWithSize(this.UI.Config, "sd.svg", this.Scaled(35), this.Scaled(35))
+		itemImage = this.UI.ImageLoader.MustGetImageWithSize(uiUtils.SdSvg, this.Scaled(35), this.Scaled(35))
 	}
 
 	topBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
@@ -300,7 +299,7 @@ func (this *filesPanel) createRootLocationButton(i int, location dataModels.Stor
 	labelsBox := uiWidgets.CreateLabelsBox(nameLabel, infoLabel)
 	topBox.Add(labelsBox)
 
-	actionImage := uiWidgets.CreateOpenLocationImage(i, this.Scaled(40), this.Scaled(40), this.pixbufCache)
+	actionImage := uiWidgets.CreateOpenLocationImage(i, this.Scaled(40), this.Scaled(40), this.UI.ImageLoader)
 
 	actionBox := uiUtils.MustBox(gtk.ORIENTATION_HORIZONTAL, 5)
 	actionBox.Add(actionImage)
@@ -339,7 +338,7 @@ func (this *filesPanel) addSortedFiles(sortedFiles []*dataModels.FileResponse) {
 				this.Scaled(40),
 				index,
 				this.handleFolderClick,
-				this.pixbufCache,
+				this.UI.ImageLoader,
 			)
 			this.filesListBoxRows = append(this.filesListBoxRows, filesListBoxRow)
 			this.scrollableListBox.Add(filesListBoxRow)
@@ -364,7 +363,7 @@ func (this *filesPanel) addSortedFiles(sortedFiles []*dataModels.FileResponse) {
 				this.Scaled(40),
 				index,
 				this.handleFileClick,
-				this.pixbufCache,
+				this.UI.ImageLoader,
 			)
 			this.filesListBoxRows = append(this.filesListBoxRows, filesListBoxRow)
 			this.scrollableListBox.Add(filesListBoxRow)
@@ -399,7 +398,7 @@ func (this *filesPanel) downloadThumbnails(
 		if row.previewSubRow != nil {
 			uiWidgets.CreatePreviewThumbnail(
 				ctx,
-				this.UI.Config,
+				this.UI.ImageLoader,
 				row.previewSubRow,
 				row.model,
 				this.UI.Client,

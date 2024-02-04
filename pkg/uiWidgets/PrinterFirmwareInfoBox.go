@@ -1,7 +1,6 @@
 package uiWidgets
 
 import (
-	"github.com/the-ress/prusalink-screen/pkg/config"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 )
 
@@ -10,13 +9,13 @@ type PrinterFirmwareInfoBox struct {
 }
 
 func NewPrinterFirmwareInfoBox(
-	config *config.ScreenConfig,
+	imageLoader *uiUtils.ImageLoader,
 	logoWidth int,
 ) *PrinterFirmwareInfoBox {
 	logoHeight := logoWidth
 
 	base := NewSystemInfoBox(
-		uiUtils.MustImageFromFileWithSize(config, "logos/prusa-printer.png", logoWidth, logoHeight),
+		imageLoader.MustGetImageWithSize(uiUtils.PrusaPrinterLogoPng, logoWidth, logoHeight),
 		"Firmware",
 	)
 

@@ -3,8 +3,6 @@ package ui
 import (
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
-
-	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
 	"github.com/the-ress/prusalink-screen/pkg/domain"
 	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
@@ -48,8 +46,8 @@ func (this *temperaturePanel) initialize() {
 	defer this.Initialize()
 
 	// Create the step buttons first, since they are needed by some of the other controls.
-	this.selectHotendStepButton = uiWidgets.CreateSelectHotendStepButton(this.UI.Client, this.UI.Config, true, 1, nil)
-	this.temperatureAmountStepButton = uiWidgets.CreateTemperatureAmountStepButton(this.UI.Config, 2, nil)
+	this.selectHotendStepButton = uiWidgets.CreateSelectHotendStepButton(this.UI.Client, this.UI.ImageLoader, true, 1, nil)
+	this.temperatureAmountStepButton = uiWidgets.CreateTemperatureAmountStepButton(this.UI.ImageLoader, 2, nil)
 
 	// First row
 	this.decreaseButton = uiWidgets.CreateTemperatureIncreaseButton(
@@ -75,10 +73,10 @@ func (this *temperaturePanel) initialize() {
 	this.Grid().Attach(this.increaseButton, 3, 0, 1, 1)
 
 	// Second row
-	this.coolDownButton = uiWidgets.CreateCoolDownButton(this.UI.Client, this.UI.Config, nil)
+	this.coolDownButton = uiWidgets.CreateCoolDownButton(this.UI.Client, this.UI.ImageLoader, nil)
 	this.Grid().Attach(this.coolDownButton, 0, 1, 1, 1)
 
-	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client, this.UI.Config)
+	this.temperatureStatusBox = uiWidgets.CreateTemperatureStatusBox(this.UI.Client, this.UI.ImageLoader)
 	this.Grid().Attach(this.temperatureStatusBox, 1, 1, 2, 1)
 
 	// Third row

@@ -6,14 +6,14 @@ import (
 )
 
 func CreateActionImage(
-	imageFileName string,
+	fileName uiUtils.ImageFileName,
 	buttonWidth int,
 	buttonHeight int,
 	colorClass string,
-	pixbufCache *uiUtils.PixbufCache,
+	imageLoader *uiUtils.ImageLoader,
 ) *gtk.Image {
-	image := pixbufCache.MustImageFromFileWithSize(
-		imageFileName,
+	image := imageLoader.MustGetImageWithSize(
+		fileName,
 		buttonWidth,
 		buttonHeight,
 	)

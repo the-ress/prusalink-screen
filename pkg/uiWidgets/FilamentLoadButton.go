@@ -1,12 +1,8 @@
 package uiWidgets
 
 // import (
-// 	// "fmt"
-
 // 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 // 	"github.com/gotk3/gotk3/gtk"
-
-// 	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
 // 	"github.com/the-ress/prusalink-screen/pkg/utils"
 // )
 
@@ -31,9 +27,9 @@ package uiWidgets
 // ) *FilamentLoadButton {
 // 	var base *gtk.Button
 // 	if isForward {
-// 		base = uiUtils.MustButtonImageStyle("Load", "filament-spool-load.svg", "", nil)
+// 		base = uiUtils.MustButtonImageStyle("Load", uiUtils.FilamentSpoolLoadSvg, "", nil)
 // 	} else {
-// 		base = uiUtils.MustButtonImageStyle("Unload", "filament-spool-unload.svg", "", nil)
+// 		base = uiUtils.MustButtonImageStyle("Unload", uiUtils.FilamentSpoolUnloadSvg, "", nil)
 // 	}
 
 // 	instance := &FilamentLoadButton{

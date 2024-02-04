@@ -1,13 +1,9 @@
 package ui
 
 import (
-	// "github.com/the-ress/prusalink-screen/pkg/interfaces"
-
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
-
-	// "github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
+	"github.com/the-ress/prusalink-screen/pkg/uiUtils"
 	"github.com/the-ress/prusalink-screen/pkg/uiWidgets"
-	// "github.com/the-ress/prusalink-screen/pkg/utils"
 )
 
 type temperaturePresetsPanel struct {
@@ -37,7 +33,7 @@ func (this *temperaturePresetsPanel) initialize() {
 }
 
 func (this *temperaturePresetsPanel) createAllOffButton() {
-	allOffButton := uiWidgets.CreateCoolDownButton(this.UI.Client, this.UI.Config, this.UI.GoToPreviousPanel)
+	allOffButton := uiWidgets.CreateCoolDownButton(this.UI.Client, this.UI.ImageLoader, this.UI.GoToPreviousPanel)
 	this.AddButton(allOffButton)
 }
 
@@ -102,10 +98,11 @@ func (this *temperaturePresetsPanel) createTemperaturePresetButtons() {
 	count := 0
 	for _, temperaturePreset := range temperaturePresets {
 		if count < maxSlots {
+			image := this.UI.ImageLoader.MustGetImage(uiUtils.HeatUpSvg)
 			temperaturePresetButton := uiWidgets.CreateTemperaturePresetButton(
 				this.UI.Printer,
 				this.UI.Config,
-				"heat-up.svg",
+				image,
 				temperaturePreset,
 				this.UI.GoToPreviousPanel,
 			)
