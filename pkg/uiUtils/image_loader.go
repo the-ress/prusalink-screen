@@ -85,12 +85,12 @@ func NewImageLoader(config *config.ScreenConfig) *ImageLoader {
 }
 
 func (this *ImageLoader) GetImage(fileName ImageFileName) (*gtk.Image, error) {
-	filePath := imagePath(this.config.CssStyleFilePath, string(fileName))
-	if !utils.FileExists(filePath) {
-		return nil, fmt.Errorf("Image file doesn't exist: %s", filePath)
+	pixbuf, err := this.GetPixbuf(fileName)
+	if err != nil {
+		return nil, err
 	}
 
-	return gtk.ImageNewFromFile(filePath)
+	return this.GetImageFromPixbuf(pixbuf)
 }
 
 func (this *ImageLoader) GetImageWithSize(fileName ImageFileName, width, height int) (*gtk.Image, error) {
@@ -100,6 +100,28 @@ func (this *ImageLoader) GetImageWithSize(fileName ImageFileName, width, height 
 	}
 
 	return this.GetImageFromPixbuf(pixbuf)
+}
+
+func (this *ImageLoader) GetPixbuf(fileName ImageFileName) (*gdk.Pixbuf, error) {
+	pixbuf := this.pixbufCache.GetPixbuf(fileName)
+	if pixbuf != nil {
+		// Return cached pixbuf
+		return pixbuf, nil
+	}
+
+	filePath := imagePath(this.config.CssStyleFilePath, string(fileName))
+	if !utils.FileExists(filePath) {
+		return nil, fmt.Errorf("Image file doesn't exist: %s", filePath)
+	}
+
+	pixbuf, err := gdk.PixbufNewFromFile(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to load image %s: %q", filePath, err)
+	}
+
+	this.pixbufCache.SetPixbuf(fileName, pixbuf)
+
+	return pixbuf, nil
 }
 
 func (this *ImageLoader) GetPixbufWithSize(fileName ImageFileName, width, height int) (*gdk.Pixbuf, error) {
