@@ -17,15 +17,13 @@ import (
 func main() {
 	defer mainDefer()
 
-	logger.TraceEnter("PrusaLinkScreen - main.main()")
-
 	startSystemDHeartbeat()
 
 	initializeGtk()
 
 	config, err := config.ReadConfig()
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
 	setLogLevel(config.LogLevel)
@@ -39,8 +37,6 @@ func main() {
 	_ = ui.NewUi(config)
 
 	gtk.Main()
-
-	logger.TraceLeave("OctoScreen - main.main()")
 }
 
 func startSystemDHeartbeat() {

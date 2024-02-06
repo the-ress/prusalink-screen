@@ -112,7 +112,7 @@ func (this *filesPanel) doLoadFiles() {
 	uiUtils.EmptyTheContainer(listBoxContainer)
 
 	atRootLevel := this.displayRootLocations()
-	// If we are at the "root" level (where the option for Local (OctoPrint) and SD are displayed),
+	// If we are at the "root" level (where the option for Local and SD are displayed),
 	// but SD is not ready, push us up into Local so the user doesn't have to work harder than
 	// they have to.
 	if atRootLevel && !this.sdIsReady() {

@@ -29,5 +29,7 @@ func CreateFatalErrorWindow(message string, description string) *gtk.Window {
 	label.SetVAlign(gtk.ALIGN_START)
 	window.Add(label)
 
+	window.ShowAll()
+
 	return window
 }

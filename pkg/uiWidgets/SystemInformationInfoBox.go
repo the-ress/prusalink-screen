@@ -20,9 +20,9 @@ type SystemInformationInfoBox struct {
 	uiScaleFactor int
 	memoryLabel   *gtk.Label
 	// loadAverageLabel				*gtk.Label
-	octoScreenResolutionLabel *gtk.Label
-	allocatedResolutionLabel  *gtk.Label
-	currentResolutionLabel    *gtk.Label
+	windowResolutionLabel    *gtk.Label
+	allocatedResolutionLabel *gtk.Label
+	currentResolutionLabel   *gtk.Label
 	// uiScaleFactorLabel				*gtk.Label
 }
 
@@ -48,9 +48,9 @@ func CreateSystemInformationInfoBox(
 		uiScaleFactor: uiScaleFactor,
 		memoryLabel:   createStyledLabel(),
 		// loadAverageLabel:			createStyledLabel(),
-		octoScreenResolutionLabel: createStyledLabel(),
-		allocatedResolutionLabel:  createStyledLabel(),
-		currentResolutionLabel:    createStyledLabel(),
+		windowResolutionLabel:    createStyledLabel(),
+		allocatedResolutionLabel: createStyledLabel(),
+		currentResolutionLabel:   createStyledLabel(),
 		// uiScaleFactorLabel:			createStyledLabel(),
 	}
 
@@ -63,7 +63,7 @@ func CreateSystemInformationInfoBox(
 	}
 
 	if instance.logLevel == "debug" {
-		instance.Add(instance.octoScreenResolutionLabel)
+		instance.Add(instance.windowResolutionLabel)
 		instance.Add(instance.allocatedResolutionLabel)
 		instance.Add(instance.currentResolutionLabel)
 		//instance.Add(instance.uiScaleFactorLabel)
@@ -108,10 +108,10 @@ func (this *SystemInformationInfoBox) refreshLoadAverageLabel() {
 }
 */
 
-func (this *SystemInformationInfoBox) refreshOctoScreenResolutionLabel() {
+func (this *SystemInformationInfoBox) refreshWindowResolutionLabel() {
 	windowSize := this.config.WindowSize
 
-	this.octoScreenResolutionLabel.SetText(fmt.Sprintf(
+	this.windowResolutionLabel.SetText(fmt.Sprintf(
 		"Window size: %dx%d",
 		windowSize.Width,
 		windowSize.Height,
@@ -162,7 +162,7 @@ func (this *SystemInformationInfoBox) Refresh() {
 	//this.refreshLoadAverageLabel()
 
 	if this.logLevel == "debug" {
-		this.refreshOctoScreenResolutionLabel()
+		this.refreshWindowResolutionLabel()
 		this.refreshAllocatedResolutionLabel()
 		this.refreshCurrentResolutionLabel()
 		// this.refreshUiScaleFactorLabel()

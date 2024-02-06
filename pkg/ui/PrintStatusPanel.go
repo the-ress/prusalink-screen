@@ -36,12 +36,6 @@ type printStatusPanel struct {
 	thumbnailDisplayed      bool
 	cancelThumbnailDownload context.CancelFunc
 
-	// layerLabelWithImage	*uiUtils.LabelWithImage
-	// The info for the current / total layers is not available
-	// See https://community.octoprint.org/t/layer-number-and-total-layers-from-api/8005/4
-	// and https://docs.octoprint.org/en/master/api/datamodel.html#sec-api-datamodel-jobs-job
-	// Darn.
-
 	// Progress
 	progressBar *gtk.ProgressBar
 

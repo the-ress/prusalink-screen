@@ -184,7 +184,7 @@ func (this *connectionPanel) update(state domain.PrinterState) {
 func (this *connectionPanel) initializeConnectionState() {
 	this.displayButtons(false)
 
-	this.Label.SetText("Attempting to connect to OctoPrint")
+	this.Label.SetText("Attempting to connect to PrusaLink")
 }
 
 func (this *connectionPanel) showSystem() {

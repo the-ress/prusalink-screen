@@ -16,22 +16,20 @@ import (
 // ErrUnauthorized missing or invalid API key
 var ErrUnauthorized = errors.New("Missing or invalid API key")
 
-// A Client manages communication with the OctoPrint API.
+// A Client manages communication with the PrusaLink API.
 type Client struct {
-	// Endpoint address to the OctoPrint REST API server.
+	// Endpoint address to the PrusaLink REST API server.
 	Endpoint string
 
-	// APIKey used to connect to the OctoPrint REST API server.
+	// APIKey used to connect to the PrusaLink REST API server.
 	APIKey string
 
 	// HTTP client connection.
 	httpClient *http.Client
 }
 
-// NewClient returns a new OctoPrint API client with provided base URL and API
-// Key. If baseURL does not have a trailing slash, one is added automatically. If
-// 'Access Control' is enabled at OctoPrint configuration an apiKey should be
-// provided (http://docs.octoprint.org/en/master/api/general.html#authorization).
+// NewClient returns a new PrusaLink API client with provided base URL and API
+// Key. If baseURL does not have a trailing slash, one is added automatically.
 func NewClient(endpoint, apiKey string) *Client {
 	return &Client{
 		Endpoint: endpoint,
@@ -102,7 +100,7 @@ func (this *Client) doRequest(
 	req.Header.Add("Host", "localhost")
 	req.Header.Add("Accept", "*/*")
 
-	userAgent := fmt.Sprintf("go-octoprint/%s", Version)
+	userAgent := fmt.Sprintf("go-prusalink-screen/%s", Version)
 	logger.Debugf("userAgent: %s", userAgent)
 	req.Header.Add("User-Agent", userAgent)
 

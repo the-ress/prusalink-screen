@@ -6,7 +6,7 @@ import (
 
 	// "os"
 	// "strconv"
-	"strings"
+
 	"sync"
 	"time"
 
@@ -42,11 +42,10 @@ type UI struct {
 
 	currentState domain.PrinterState
 
-	OctoPrintPluginIsAvailable bool
-	NotificationsBox           *uiWidgets.NotificationsBox
-	grid                       *gtk.Grid
-	window                     *gtk.Window
-	time                       time.Time
+	NotificationsBox *uiWidgets.NotificationsBox
+	grid             *gtk.Grid
+	window           *gtk.Window
+	time             time.Time
 
 	width       int
 	height      int
@@ -68,26 +67,27 @@ func NewUi(config *config.ScreenConfig) *UI {
 	client := prusaLinkApis.NewClient(config.PrusaLinkHost, config.PrusaLinkApiKey)
 	printer := domain.NewPrinterService(client)
 
+	menuStructure := getDefaultMenuItems()
+
 	window := createUiWindow(width, height, config.CssStyleFilePath)
 	grid := createUiGrid(window)
 
 	instance := &UI{
-		PanelHistory:               stack.New(),
-		Client:                     client,
-		Config:                     config,
-		ImageLoader:                uiUtils.NewImageLoader(config),
-		Printer:                    printer,
-		NotificationsBox:           uiWidgets.NewNotificationsBox(),
-		OctoPrintPluginIsAvailable: false,
-		MenuStructure:              nil,
-		UiState:                    Uninitialized,
-		finishedIdle:               false,
-		window:                     window,
-		grid:                       grid,
-		time:                       time.Now(),
-		width:                      width,
-		height:                     height,
-		scaleFactor:                getUiScaleFactor(width, height),
+		PanelHistory:     stack.New(),
+		Client:           client,
+		Config:           config,
+		ImageLoader:      uiUtils.NewImageLoader(config),
+		Printer:          printer,
+		NotificationsBox: uiWidgets.NewNotificationsBox(),
+		MenuStructure:    menuStructure,
+		UiState:          Uninitialized,
+		finishedIdle:     false,
+		window:           window,
+		grid:             grid,
+		time:             time.Now(),
+		width:            width,
+		height:           height,
+		scaleFactor:      getUiScaleFactor(width, height),
 	}
 
 	go instance.consumeStateUpdates(printer.GetStateUpdates())
@@ -364,24 +364,4 @@ func (this *UI) GoToPrintStatusPanel() {
 	instance := getPrintStatusPanelInstance(this)
 	instance.progressBar.SetText("0%")
 	this.GoToPanel(instance)
-}
-
-func (this *UI) errToUser(err error) string {
-	logger.TraceEnter("ui.errToUser()")
-
-	text := strings.ToLower(err.Error())
-	if strings.Contains(text, "connection refused") {
-		logger.TraceLeave("ui.errToUser() - connection refused")
-		return "Unable to connect to OctoPrint, check if it is running."
-	} else if strings.Contains(text, "request canceled") {
-		logger.TraceLeave("ui.errToUser() - request canceled")
-		return "Loading..."
-	} else if strings.Contains(text, "connection broken") {
-		logger.TraceLeave("ui.errToUser() - connection broken")
-		return "Loading..."
-	}
-
-	msg := fmt.Sprintf("ui.errToUser() - unexpected error: %s", text)
-	logger.TraceLeave(msg)
-	return fmt.Sprintf("Unexpected Error: %s", text)
 }

@@ -190,4 +190,4 @@ https://github.com/Z-Bolt/OctoScreen/wiki/Project-Roadmap
 
 GNU Affero General Public License v3.0, see [LICENSE](LICENSE)
 
-This project is a hard fork from [Octoprint-TFT](https://github.com/mcuadros/OctoPrint-TFT) created by [@mcuadros](https://github.com/mcuadros/OctoPrint-TFT)
+This project is a hard fork from [OctoScreen](https://github.com/Z-Bolt/OctoScreen/) created by [@Z-Bolt](https://github.com/Z-Bolt) which is a hard fork from [Octoprint-TFT](https://github.com/mcuadros/OctoPrint-TFT) created by [@mcuadros](https://github.com/mcuadros)

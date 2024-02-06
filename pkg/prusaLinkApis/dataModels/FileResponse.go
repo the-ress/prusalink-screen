@@ -7,7 +7,6 @@ package dataModels
 // "time"
 
 // FileResponse contains information regarding a file.
-// https://docs.octoprint.org/en/master/api/datamodel.html#file-information
 type FileResponse struct {
 	// Name is name of the file without path. E.g. “file.gco” for a file
 	// “file.gco” located anywhere in the file system.
@@ -47,18 +46,8 @@ type FileResponse struct {
 	// Date when this file was uploaded.  Only available for `local` files.
 	Date JsonTime `json:"m_timestamp"`
 
-	// Origin of the file, `local` when stored in OctoPrint’s `uploads` folder,
-	// `sdcard` when stored on the printer’s SD card (if available).
-	Origin string `json:"origin"`
-
 	// Refs references relevant to this file, left out in abridged version.
 	Refs Reference `json:"refs"`
-
-	// GCodeAnalysis information from the analysis of the GCODE file, if
-	// available. Left out in abridged version.
-	GCodeAnalysis GCodeAnalysisInformation `json:"gcodeAnalysis"`
-
-	// * Additional properties not listed in the SDK...
 
 	// Print information from the print stats of a file.
 	Print PrintStats `json:"print"`

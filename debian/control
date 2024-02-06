@@ -26,15 +26,14 @@ Depends: ${shlibs:Depends},
          xinit,
          x11-xserver-utils
 Provides: x-display-manager
-Description: A OctoPrint touch interface for TFT touch modules based on GTK+3
- OOctoScreen OOctoScreen, a touch interface for TFT touch modules
+Description: A PrusaLink graphic interface for touchscreens based on GTK+3
+ PrusaLink Screen, a graphic interface for touchscreens
  based on GTK+3.
  .
  Is a X application to be executed directly in the X Server without any
- windows manager, as frontend of a OctoPrint (http://octoprint.org)
- server in a Raspberry Pi equipped with any TFT Touch module
- (https://www.waveshare.com/wiki/3.5inch_RPi_LCD_(A)).
+ windows manager, as frontend of PrusaLink
+ (https://help.prusa3d.com/guide/prusalink-and-prusa-connect-setup-mk3-s-_221744)
+ running on a Raspberry Pi equipped with a touchscreen
+ (https://www.waveshare.com/wiki/7HP-CAPQLED).
  .
- Allows you to control your 3D Printer, like you can do with any TFT/LCD
- panel (http://reprap.org/wiki/RepRapTouch), but using OctoPrint and a
- Raspberry Pi.
+ Allows you to control your Prusa printer using a touchscreen interface.

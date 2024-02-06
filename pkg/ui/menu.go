@@ -5,7 +5,6 @@ import (
 
 	"github.com/the-ress/prusalink-screen/pkg/interfaces"
 	"github.com/the-ress/prusalink-screen/pkg/logger"
-	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis"
 	"github.com/the-ress/prusalink-screen/pkg/prusaLinkApis/dataModels"
 	// "github.com/the-ress/prusalink-screen/pkg/uiWidgets"
 )
@@ -59,7 +58,7 @@ func getPanel(
 	}
 }
 
-func getDefaultMenuItems(client *prusaLinkApis.Client) []dataModels.MenuItem {
+func getDefaultMenuItems() []dataModels.MenuItem {
 	defaultMenuItemsForSingleToolhead := `[
 		{
 			"name": "Home",

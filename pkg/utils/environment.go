@@ -11,60 +11,6 @@ import (
 const MISSING_ENV_TOKEN = ">>MISSING<<"
 const INVALID_ENV_TOKEN = "!!!INVALID!!!"
 
-func RequiredEnvironmentVariablesAreSet(apiKey string) bool {
-	if !environmentVariableIsSet(common.EnvStylePath) {
-		return false
-	}
-
-	if !environmentVariableIsSet(common.EnvPrusaLinkHost) {
-		return false
-	}
-
-	// APIKey/OCTOPRINT_APIKEY can be set in either OctoScreen's config file,
-	// or in OctoPrint's config file.  In main.init(), APIKey is initialized to whatever
-	// it can find first.
-	//
-	// APIKey is global to the "main" namespace, but the "utils" namespace is a child,
-	// and due to GoLang's rules, /main/utils doesn't have access to globals in /main,
-	// so APIKey has to be passed into RequiredEnvironmentVariablesAreSet().
-	//
-	// if( !environmentVariableIsSet(EnvOctoPrintApiKey) ) {
-	// 	return false
-	// }
-	if apiKey == "" {
-		return false
-	}
-
-	return true
-}
-
-func environmentVariableIsSet(environmentVariable string) bool {
-	return os.Getenv(environmentVariable) != ""
-}
-
-func NameOfMissingRequiredEnvironmentVariable(apiKey string) string {
-	if !environmentVariableIsSet(common.EnvStylePath) {
-		return common.EnvStylePath
-	}
-
-	if !environmentVariableIsSet(common.EnvPrusaLinkHost) {
-		return common.EnvPrusaLinkHost
-	}
-
-	// Similar comment as to the one that's in RequiredEnvironmentVariablesAreSet()...
-	// Since the runtime value of APIKey is set in main.init(), and can be set by either
-	// being defined in OctoScreen's config file or in OctoPrint's config file,
-	// the value needs to be passed into NameOfMissingRequiredEnvironmentVariable().
-	// if( !environmentVariableIsSet(EnvOctoPrintApiKey) ) {
-	// 	return EnvOctoPrintApiKey
-	// }
-	if apiKey == "" {
-		return common.EnvPrusaLinkApiKey
-	}
-
-	return "UNKNOWN"
-}
-
 func DumpSystemInformation() {
 	logger.Info("System Information...")
 	logger.Infof("PrusaLink Screen version: %q", common.AppVersion)

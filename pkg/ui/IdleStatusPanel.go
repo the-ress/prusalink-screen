@@ -40,15 +40,7 @@ func (this *idleStatusPanel) initialize() {
 		logger.Error("IdleStatusPanel.initialize() - this.UI is nil")
 	}
 
-	var menuItems []dataModels.MenuItem
-	if this.UI.MenuStructure == nil || len(this.UI.MenuStructure) < 1 {
-		logger.Info("IdleStatusPanel.initialize() - Loading default menu")
-		this.UI.MenuStructure = getDefaultMenuItems(this.UI.Client)
-	} else {
-		logger.Info("IdleStatusPanel.initialize() - Loading octo menu")
-	}
-
-	menuItems = this.UI.MenuStructure
+	menuItems := this.UI.MenuStructure
 
 	menuGrid := uiUtils.MustGrid()
 	menuGrid.SetRowHomogeneous(true)

@@ -12,7 +12,7 @@ import (
 // SelectFileRequest selects a file for printing.
 type SelectFileRequest struct {
 	// Location is target location on which to send the command for is located,
-	// either local (for OctoPrint’s uploads folder) or sdcard for the
+	// either local, or sdcard for the
 	// printer’s SD card (if available).
 	Location dataModels.Location `json:"-"`
 

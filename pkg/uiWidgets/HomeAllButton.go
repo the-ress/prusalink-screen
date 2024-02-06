@@ -47,18 +47,4 @@ func (this *HomeAllButton) handleClicked() {
 	if err != nil {
 		logger.LogError("HomeAllButton.handleClicked()", "Do(PrintHeadHomeRequest)", err)
 	}
-
-	/*
-		// If there are issues with version A, there's also version B:
-		cmd := &octoprint.CommandRequest{}
-		cmd.Commands = []string{
-			"G28 Z",
-			"G28 X",
-			"G28 Y",
-		}
-
-		if err := cmd.Do(m.UI.Client); err != nil {
-			logger.LogError("HomeAllButton.handleClicked()", "Do(CommandRequest)", err)
-		}
-	*/
 }

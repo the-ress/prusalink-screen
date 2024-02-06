@@ -39,9 +39,5 @@ func (cmd *FilesRequest) Do(c *Client) (*dataModels.FilesResponse, error) {
 		return nil, err
 	}
 
-	if len(response.Children) > 0 {
-		response.Files = response.Children
-	}
-
 	return response, err
 }

@@ -114,20 +114,6 @@ func RunWithWaitingBox(
 	dialogBox.Run()
 }
 
-// func hotendTemperatureIsTooLow(temperatureData octoprint.TemperatureData, action string, parentWindow *gtk.Window) bool {
-// 	targetTemperature := temperatureData.Target
-// 	Logger.Infof("ui_utils.HotendTemperatureIsTooLow() - targetTemperature is %.2f", targetTemperature)
-
-// 	actualTemperature := temperatureData.Actual
-// 	Logger.Infof("ui_utils.HotendTemperatureIsTooLow() - actualTemperature is %.2f", actualTemperature)
-
-// 	if targetTemperature <= 150.0 || actualTemperature <= 150.0 {
-// 		return true
-// 	}
-
-// 	return false
-// }
-
 func EmptyTheContainer(container *gtk.Container) {
 	children := container.GetChildren()
 	defer children.Free()
